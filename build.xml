@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<project name="jSite" default="compile">
+
+	<!-- create this file if you want to re-distribute jSite -->
+	<property file="build.properties" />
+	
+	<!-- default values if no build.properties is present -->
+	<property name="version" value="custom" />
+	<property name="javac.debug" value="false" />
+	
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="bin.dir" value="${basedir}/build" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="images.dir" value="${basedir}/images" />
+	
+	<!-- if the next lines fails, disable or delete it. you don't need it. unless you stole my development machine. -->
+	<available filepath="${basedir}/../todesbaum-lib" file="build.xml" property="maintainer-build" />
+	<available filepath="${basedir}/../todesbaum-lib" file="build.xml" property="todesbaum.src" value="${basedir}/../todesbaum-lib/src" />
+	
+	<!-- default values for non-maintainer builds -->
+	<property name="todesbaum.src" value="${src.dir}" />
+
+	<target name="prepare">
+		<mkdir dir="${bin.dir}" />
+	</target>
+
+	<target name="compile-maintainer" depends="prepare" if="maintainer-build">
+		<javac destdir="${bin.dir}" debug="false" optimize="true">
+			<src path="${src.dir}" />
+			<sourcepath path="${todesbaum.src}" />
+		</javac>
+	</target>
+	
+	<target name="compile-non-maintainer" depends="prepare" unless="maintainer-build">
+		<javac destdir="${bin.dir}" debug="false" optimize="true">
+			<src path="${src.dir}" />
+			<sourcepath path="${todesbaum.src}" />
+		</javac>
+	</target>
+	
+	<target name="compile" depends="compile-maintainer, compile-non-maintainer" description="compile jSite">
+		<copy todir="${bin.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${images.dir}">
+				<include name="**/*.png" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean" description="cleans the build environment">
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<target name="dist-clean" depends="clean" description="cleans build and distribution environments">
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="prepare-dist">
+		<mkdir dir="${dist.dir}" />
+	</target>
+		
+	<target name="prepare-src-dist" depends="prepare-dist">
+		<mkdir dir="${dist.dir}/${ant.project.name}-${version}" />
+		<mkdir dir="${dist.dir}/${ant.project.name}-${version}/src" />
+		<mkdir dir="${dist.dir}/${ant.project.name}-${version}/images" />
+	</target>
+
+	<target name="jar" depends="compile, prepare-dist" description="creates jSite jar file">
+		<jar destfile="${dist.dir}/${ant.project.name}.jar">
+			<fileset dir="${bin.dir}" />
+			<manifest>
+				<attribute name="Main-Class" value="de.todesbaum.jsite.main.Main"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="dist-bin-zip" depends="jar" description="create binary distribution zip">
+		<zip destfile="${dist.dir}/${ant.project.name}-${version}-bin.zip">
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}.jar" />
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="COPYING" />
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="dist-bin-tbz2" depends="jar" description="create binary distribution tar.bz2">
+		<tar destfile="${dist.dir}/${ant.project.name}-${version}-bin.tar.bz2" compression="bzip2">
+			<tarfileset dir="${dist.dir}">
+				<include name="${ant.project.name}.jar" />
+			</tarfileset>
+			<tarfileset dir="${basedir}">
+				<include name="COPYING" />
+			</tarfileset>
+		</tar>
+	</target>
+	
+	<target name="dist-bin" depends="dist-bin-zip, dist-bin-tbz2"/>
+	
+	<target name="collect-maintainer-src" depends="prepare-src-dist" if="maintainer-build">
+		<copy todir="${dist.dir}/${ant.project.name}-${version}/src">
+			<fileset dir="${todesbaum.src}">
+				<includesfile name="build.collect-src.files" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="collect-src" depends="prepare-src-dist, collect-maintainer-src">
+		<copy todir="${dist.dir}/${ant.project.name}-${version}/src">
+			<fileset dir="${src.dir}">
+				<include name="**/*.java" />
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.dir}/${ant.project.name}-${version}/images">
+			<fileset dir="${images.dir}">
+				<include name="**/*.png" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.dir}/${ant.project.name}-${version}">
+			<fileset dir="${basedir}">
+				<include name="COPYING" />
+				<include name="build.xml" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="dist-src" depends="dist-src-zip, dist-src-tbz2" />
+	
+	<target name="dist-src-zip" depends="collect-src" description="create source distribution zip">
+		<zip destfile="${dist.dir}/${ant.project.name}-${version}-src.zip">
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}-${version}/**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="dist-src-tbz2" depends="collect-src" description="create source distribution tar.bz2">
+		<tar destfile="${dist.dir}/${ant.project.name}-${version}-src.tar.bz2" compression="bzip2">
+			<tarfileset dir="${dist.dir}">
+				<include name="${ant.project.name}-${version}/**/*" />
+			</tarfileset>
+		</tar>
+	</target>
+	
+	<target name="dist" depends="dist-bin, dist-src" description="creates all distribution files"/>
+	
+	<target name="build-collect-src" depends="clean, compile" if="maintainer-build">
+		<exec executable="/bin/sh" output="build.collect-src.files">
+			<arg value="-c"/>
+			<arg value="find build -type f | grep -v '\$' | sed 's,^build/,,' | grep '^de/todesbaum/util/' | sed 's,class$,java,'" />
+		</exec>
+	</target>
+
+</project>
+
