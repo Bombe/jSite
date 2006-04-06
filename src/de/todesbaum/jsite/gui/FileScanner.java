@@ -90,6 +90,7 @@ public class FileScanner implements Runnable {
 				continue;
 			}
 			String filename = project.shortenFilename(file);
+			filename = filename.replace('\\', '/');
 			fileList.add(filename);
 		}
 	}

@@ -21,11 +21,11 @@ package de.todesbaum.jsite.main;
 
 /**
  * @author <a href="mailto:droden@gmail.com">David Roden </a>
- * @version $Id: Version.java 457 2006-04-03 22:08:35Z bombe $
+ * @version $Id: Version.java 473 2006-04-06 17:59:57Z bombe $
  */
 public class Version {
 
-	private static final String VERSION = "0.4";
+	private static final String VERSION = "0.4.1";
 
 	public static final String getVersion() {
 		return VERSION;

@@ -59,7 +59,7 @@ import de.todesbaum.util.swing.WizardListener;
 
 /**
  * @author <a href="mailto:droden@gmail.com">David Roden </a>
- * @version $Id: Main.java 456 2006-04-03 17:54:44Z bombe $
+ * @version $Id: Main.java 464 2006-04-04 21:53:33Z bombe $
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
 
@@ -72,7 +72,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		PAGE_NODE_MANAGER, PAGE_PROJECTS, PAGE_PROJECT_FILES, PAGE_INSERT_PROJECT
 	}
 
-	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN };
+	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH };
 	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
 	private Action manageNodeAction;
 	private Action aboutAction;
