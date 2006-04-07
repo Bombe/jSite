@@ -46,6 +46,7 @@ public class TempFileInputStream extends FileInputStream {
 	 */
 	public TempFileInputStream(File file) throws FileNotFoundException {
 		super(file);
+		tempFile = file;
 	}
 
 	public void close() throws IOException {
