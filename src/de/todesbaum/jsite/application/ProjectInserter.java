@@ -138,8 +138,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
 		outputStream.addReplacement("$[URI]", project.getFinalURI(0));
 		for (int index = 1; index <= fileOption.getEditionRange(); index++) {
-		outputStream.addReplacement("$[URI+" + index + "]", project.getFinalURI(index));
 			outputStream.addReplacement("$[URI+" + index + "]", project.getFinalURI(index));
+			outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
 		}
 		StreamCopier.copy(fileInput, outputStream, length[0]);
 		outputStream.close();
