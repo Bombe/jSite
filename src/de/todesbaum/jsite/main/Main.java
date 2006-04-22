@@ -319,6 +319,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-node-running"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			configuration.save();
 			showPage(PageType.PAGE_INSERT_PROJECT);
 			nodeMenu.setEnabled(false);
 		} else if ("page.project.insert".equals(pageName)) {
