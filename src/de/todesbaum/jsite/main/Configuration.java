@@ -171,18 +171,38 @@ public class Configuration {
 		return Boolean.parseBoolean(nodeValue);
 	}
 
+	/**
+	 * Returns the hostname of the node.
+	 * @return The hostname of the node
+	 * @deprecated Use {@link #getSelectedNode()} instead
+	 */
 	public String getNodeAddress() {
 		return getNodeValue(new String[] { "node-address" }, "localhost");
 	}
 
+	/**
+	 * Sets the hostname of the node.
+	 * @param nodeAddress The hostname of the node
+	 * @deprecated Use {@link #setSelectedNode(Node)} instead
+	 */
 	public void setNodeAddress(String nodeAddress) {
 		rootNode.replace("node-address", nodeAddress);
 	}
 
+	/**
+	 * The port number of the node
+	 * @return The port number of the node
+	 * @deprecated Use {@link #getSelectedNode()} instead. 
+	 */
 	public int getNodePort() {
 		return getNodeIntValue(new String[] { "node-port" }, 9481);
 	}
 
+	/**
+	 * Sets the port number of the node.
+	 * @param nodePort The port number of the node
+	 * @deprecated Use {@link #setSelectedNode(Node)} instead
+	 */
 	public void setNodePort(int nodePort) {
 		rootNode.replace("node-port", String.valueOf(nodePort));
 	}
@@ -305,6 +325,10 @@ public class Configuration {
 		if (nodesNode == null) {
 			String hostname = getNodeAddress();
 			int port = getNodePort();
+			if (hostname == null) {
+				hostname = "127.0.0.1";
+				port = 9481;
+			}
 			return new Node[] { new Node(hostname, port, "Node") };
 		}
 		SimpleXML[] nodeNodes = nodesNode.getNodes("node");
@@ -344,7 +368,13 @@ public class Configuration {
 	public Node getSelectedNode() {
 		SimpleXML selectedNodeNode = rootNode.getNode("selected-node");
 		if (selectedNodeNode == null) {
-			return null;
+			String hostname = getNodeAddress();
+			int port = getNodePort();
+			if (hostname == null) {
+				hostname = "127.0.0.1";
+				port = 9481;
+			}
+			return new Node(hostname, port, "Node");
 		}
 		String name = selectedNodeNode.getNode("name").getValue();
 		String hostname = selectedNodeNode.getNode("hostname").getValue();
