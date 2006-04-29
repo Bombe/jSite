@@ -231,6 +231,9 @@ public class Connection {
 			}
 			nodeSocket = null;
 		}
+		synchronized (this) {
+			notify();
+		}
 		fireConnectionTerminated();
 	}
 

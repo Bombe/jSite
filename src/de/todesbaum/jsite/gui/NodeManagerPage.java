@@ -212,6 +212,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		} else if ("node-hostname".equals(documentName)) {
 			node.setHostname(documentText);
 			nodeList.repaint();
+			fireNodesUpdated(getNodes());
 		}
 	}
 

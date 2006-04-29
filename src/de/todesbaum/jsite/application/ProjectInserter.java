@@ -48,7 +48,7 @@ import de.todesbaum.util.io.StreamCopier;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ProjectInserter.java 440 2006-03-30 09:31:25Z bombe $
+ * @version $Id: ProjectInserter.java 486 2006-04-27 10:58:34Z bombe $
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
 
@@ -240,12 +240,19 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* create connection to node */
 		Connection connection = freenetInterface.getConnection("project-insert-" + counter++);
+		boolean connected = false;
+		Throwable cause = null;
 		try {
-			connection.connect();
+			connected = connection.connect();
 		} catch (IOException e1) {
-			fireProjectInsertFinished(false, e1);
+			cause = e1;
+		}
+		
+		if (!connected) {
+			fireProjectInsertFinished(false, cause);
 			return;
 		}
+		
 		Client client = new Client(connection);
 
 		/* create containers */
