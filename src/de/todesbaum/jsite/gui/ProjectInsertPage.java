@@ -35,7 +35,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import de.todesbaum.jsite.application.EditionProject;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Project;
@@ -46,7 +45,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ProjectInsertPage.java 408 2006-03-29 09:31:10Z bombe $
+ * @version $Id$
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener {
 
@@ -77,8 +76,6 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 
 		requestURITextField = new JTextField();
 		requestURITextField.setEditable(false);
-		requestURITextField.setBackground(getBackground());
-		requestURITextField.setBorder(null);
 
 		startTimeLabel = new JLabel();
 
@@ -127,18 +124,11 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				StringBuffer uriBuffer = new StringBuffer();
-				uriBuffer.append(project.getRequestURI());
-				uriBuffer.append(project.getPath());
-				if (project instanceof EditionProject) {
-					uriBuffer.append('-').append(((EditionProject) project).getEdition());
-				}
-				uriBuffer.append('/');
-				requestURITextField.setText(uriBuffer.toString());
+				requestURITextField.setText(project.getFinalRequestURI(0));
 			}
 		});
 	}
-
+	
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		projectInserter.setFreenetInterface(freenetInterface);
 	}
@@ -156,6 +146,17 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 
 			public void run() {
 				startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date(startTime)));
+			}
+		});
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void projectURIGenerated(Project project, final String uri) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				requestURITextField.setText(uri);
 			}
 		});
 	}

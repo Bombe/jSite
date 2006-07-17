@@ -26,7 +26,7 @@ import java.io.Writer;
  * Abstract base class for all put requests that insert a directory.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ClientPutDir.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public class ClientPutDir extends ClientPut {
 

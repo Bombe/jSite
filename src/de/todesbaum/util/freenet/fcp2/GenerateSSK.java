@@ -25,7 +25,7 @@ package de.todesbaum.util.freenet.fcp2;
  * The node can answer with the following messages: <code>SSKKeypair</code>.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: GenerateSSK.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  */
 public class GenerateSSK extends Command {
 

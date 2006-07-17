@@ -20,36 +20,71 @@
 package de.todesbaum.util.freenet.fcp2;
 
 /**
+ * The possible priority classes. Possible values are, in order of descending
+ * priority: <code>maximum</code> (anything more important than fproxy),
+ * <code>interactive</code> (fproxy), <code>semi-interactive</code> (fproxy
+ * immediate mode large file downloads, not to disk), <code>updatable</code>
+ * (updatable site checks), <code>bulk</code> (large file downloads to disk),
+ * <code>prefetch</code>, <code>minimum</code>.
+ * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: PriorityClass.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public final class PriorityClass {
 
+	/** Denotes <code>maximum</code> priority class. */
 	public static final PriorityClass MAXIMUM = new PriorityClass("maximum", 0);
+
+	/** Denotes <code>interactive</code> priority class. */
 	public static final PriorityClass INTERACTIVE = new PriorityClass("interactive", 1);
+
+	/** Denotes <code>semi-interactive</code> priority class. */
 	public static final PriorityClass SEMI_INTERACTIVE = new PriorityClass("semiInteractive", 2);
+
+	/** Denotes <code>updatable</code> priority class. */
 	public static final PriorityClass UPDATABLE = new PriorityClass("updatable", 3);
+
+	/** Denotes <code>bulk</code> priority class. */
 	public static final PriorityClass BULK = new PriorityClass("bulk", 4);
+
+	/** Denotes <code>prefetch</code> priority class. */
 	public static final PriorityClass PREFETCH = new PriorityClass("prefetch", 5);
+
+	/** Denotes <code>minimum</code> priority class. */
 	public static final PriorityClass MINIMUM = new PriorityClass("minimum", 6);
 
+	/** The name of the priority class. */
 	private String name;
+
+	/** The value of the priority class. */
 	private int value;
 
+	/**
+	 * Creates a new priority class with the specified name and value.
+	 * 
+	 * @param name
+	 *            The name of the priority class
+	 * @param value
+	 *            The value of the priority class
+	 */
 	private PriorityClass(String name, int value) {
 		this.name = name;
 		this.value = value;
 	}
 
 	/**
-	 * @return Returns the name.
+	 * Returns the name of this priority class.
+	 * 
+	 * @return The name of this priority class
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return Returns the value.
+	 * Returns the value of this priority class.
+	 * 
+	 * @return The value of this priority class
 	 */
 	public int getValue() {
 		return value;

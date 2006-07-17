@@ -42,7 +42,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: TWizard.java 426 2006-03-29 18:02:50Z bombe $
+ * @version $Id$
  */
 public class TWizard extends JFrame implements WindowListener {
 	

@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: TWizardPage.java 427 2006-03-29 18:03:06Z bombe $
+ * @version $Id$
  */
 public class TWizardPage extends JPanel {
 

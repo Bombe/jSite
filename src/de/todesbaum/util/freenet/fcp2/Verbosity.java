@@ -21,7 +21,7 @@ package de.todesbaum.util.freenet.fcp2;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Verbosity.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public final class Verbosity {
 

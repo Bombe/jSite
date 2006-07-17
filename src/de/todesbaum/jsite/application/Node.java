@@ -21,7 +21,7 @@ package de.todesbaum.jsite.application;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Node.java 419 2006-03-29 17:49:46Z bombe $
+ * @version $Id$
  */
 public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
@@ -78,6 +78,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 		this.port = port;
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if ((o == null) || !(o instanceof Node)) {
 			return false;
@@ -86,10 +87,12 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 		return name.equals(node.name) && hostname.equals(node.hostname) && (port == node.port);
 	}
 	
+	@Override
 	public int hashCode() {
 		return name.hashCode() ^ hostname.hashCode() ^ port;
 	}
 
+	@Override
 	public String toString() {
 		return name + " (" + hostname + ":" + port + ")";
 	}

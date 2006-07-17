@@ -26,7 +26,7 @@ import de.todesbaum.jsite.application.Node;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: NodeManagerListener.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public interface NodeManagerListener extends EventListener {
 

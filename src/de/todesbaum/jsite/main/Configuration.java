@@ -44,7 +44,7 @@ import de.todesbaum.util.xml.XML;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Configuration.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public class Configuration {
 
@@ -176,6 +176,7 @@ public class Configuration {
 	 * @return The hostname of the node
 	 * @deprecated Use {@link #getSelectedNode()} instead
 	 */
+	@Deprecated
 	public String getNodeAddress() {
 		return getNodeValue(new String[] { "node-address" }, "localhost");
 	}
@@ -185,6 +186,7 @@ public class Configuration {
 	 * @param nodeAddress The hostname of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
 	 */
+	@Deprecated
 	public void setNodeAddress(String nodeAddress) {
 		rootNode.replace("node-address", nodeAddress);
 	}
@@ -194,6 +196,7 @@ public class Configuration {
 	 * @return The port number of the node
 	 * @deprecated Use {@link #getSelectedNode()} instead. 
 	 */
+	@Deprecated
 	public int getNodePort() {
 		return getNodeIntValue(new String[] { "node-port" }, 9481);
 	}
@@ -203,6 +206,7 @@ public class Configuration {
 	 * @param nodePort The port number of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
 	 */
+	@Deprecated
 	public void setNodePort(int nodePort) {
 		rootNode.replace("node-port", String.valueOf(nodePort));
 	}

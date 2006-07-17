@@ -31,7 +31,7 @@ import javax.swing.AbstractListModel;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: SortedListModel.java 338 2006-03-20 15:40:48Z bombe $
+ * @version $Id$
  */
 public class SortedListModel extends AbstractListModel implements List {
 	

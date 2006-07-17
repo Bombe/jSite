@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ReplacingOutputStream.java 431 2006-03-29 18:06:18Z bombe $
+ * @version $Id$
  */
 public class ReplacingOutputStream extends FilterOutputStream {
 

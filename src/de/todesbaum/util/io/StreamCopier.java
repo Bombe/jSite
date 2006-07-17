@@ -25,7 +25,7 @@ import java.io.OutputStream;
  * Copies input from an {@link InputStream} to an {@link OutputStream}.
  * 
  * @author <a href="mailto:droden@gmail.com">David Roden</a>
- * @version $Id: StreamCopier.java 428 2006-03-29 18:03:36Z bombe $
+ * @version $Id$
  */
 public class StreamCopier {
 

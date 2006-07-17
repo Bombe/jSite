@@ -25,7 +25,7 @@ package de.todesbaum.util.freenet.fcp2;
  * the files of an insert.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: FileEntry.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  */
 public abstract class FileEntry {
 

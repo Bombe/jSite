@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: TLabel.java 280 2006-03-17 20:24:27Z bombe $
+ * @version $Id$
  */
 public class TLabel extends JLabel {
 

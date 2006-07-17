@@ -23,7 +23,7 @@ package de.todesbaum.util.freenet.fcp2;
  * Contains the hostname and port number of the Freenet node.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Node.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public class Node {
 

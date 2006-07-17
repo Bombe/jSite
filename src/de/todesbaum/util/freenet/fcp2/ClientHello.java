@@ -30,7 +30,7 @@ import java.io.Writer;
  * The node can answer with the following messages: <code>NodeHello</code>.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ClientHello.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public class ClientHello extends Command {
 

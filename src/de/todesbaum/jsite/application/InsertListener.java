@@ -23,7 +23,7 @@ import java.util.EventListener;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: InsertListener.java 397 2006-03-25 16:11:34Z bombe $
+ * @version $Id$
  */
 public interface InsertListener extends EventListener {
 
@@ -32,6 +32,7 @@ public interface InsertListener extends EventListener {
 	}
 
 	public void projectInsertStarted(Project project);
+	public void projectURIGenerated(Project project, String uri);
 
 	public void projectInsertProgress(Project project, int succeeded, int failed, int fatal, int total, boolean finalized);
 

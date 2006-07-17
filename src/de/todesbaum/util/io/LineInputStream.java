@@ -26,7 +26,7 @@ import java.io.InputStream;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: LineInputStream.java 429 2006-03-29 18:04:48Z bombe $
+ * @version $Id$
  */
 public class LineInputStream extends FilterInputStream {
 	

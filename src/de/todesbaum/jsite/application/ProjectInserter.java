@@ -48,7 +48,7 @@ import de.todesbaum.util.io.StreamCopier;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ProjectInserter.java 486 2006-04-27 10:58:34Z bombe $
+ * @version $Id$
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
 
@@ -72,6 +72,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	protected void fireProjectInsertStarted() {
 		for (InsertListener insertListener: insertListeners) {
 			insertListener.projectInsertStarted(project);
+		}
+	}
+	
+	protected void fireProjectURIGenerated(String uri) {
+		for (InsertListener insertListener: insertListeners) {
+			insertListener.projectURIGenerated(project, uri);
 		}
 	}
 
@@ -134,11 +140,10 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		ByteArrayOutputStream filteredByteOutputStream = new ByteArrayOutputStream(Math.min(Integer.MAX_VALUE, (int) length[0]));
 		ReplacingOutputStream outputStream = new ReplacingOutputStream(filteredByteOutputStream);
 		FileInputStream fileInput = new FileInputStream(file);
-		outputStream.addReplacement("$[CONTAINER]", "/");
 		outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
-		outputStream.addReplacement("$[URI]", project.getFinalURI(0));
+		outputStream.addReplacement("$[URI]", project.getFinalRequestURI(0));
 		for (int index = 1; index <= fileOption.getEditionRange(); index++) {
-			outputStream.addReplacement("$[URI+" + index + "]", project.getFinalURI(index));
+			outputStream.addReplacement("$[URI+" + index + "]", project.getFinalRequestURI(index));
 			outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
 		}
 		StreamCopier.copy(fileInput, outputStream, length[0]);
@@ -262,7 +267,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* collect files */
 		int edition = ((EditionProject) project).getEdition();
-		String dirURI = project.getInsertURI() + project.getPath() + "-" + edition;
+		String dirURI = "freenet:USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
 		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI);
 		putDir.setDefaultName(project.getIndexFile());
 		putDir.setVerbosity(Verbosity.ALL);
@@ -283,17 +288,20 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 
 		/* parse progress and success messages */
-		boolean success = true;
+		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
 		while (!finished) {
 			Message message = client.readMessage();
-			finished = (message == null) && (disconnected = client.isDisconnected());
+			finished = (message == null) || (disconnected = client.isDisconnected());
 			if (debug) {
 				System.out.println(message);
 			}
 			if (!finished) {
 				String messageName = message.getName();
+				if ("URIGenerated".equals(messageName)) {
+					fireProjectURIGenerated(message.get("URI"));
+				}
 				if ("SimpleProgress".equals(messageName)) {
 					int total = Integer.parseInt(message.get("Total"));
 					int succeeded = Integer.parseInt(message.get("Succeeded"));

@@ -24,7 +24,7 @@ package de.todesbaum.jsite.application;
  * currently the only project type.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: EditionProject.java 417 2006-03-29 12:36:54Z bombe $
+ * @version $Id$
  */
 public class EditionProject extends Project {
 
@@ -75,8 +75,8 @@ public class EditionProject extends Project {
 	 * @return The final request URI
 	 */
 	@Override
-	public String getFinalURI(int editionOffset) {
-		return requestURI + path + "-" + (edition + editionOffset) + "/";
+	public String getFinalRequestURI(int offset) {
+		return "freenet:USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
 	}
 
 }

@@ -25,7 +25,7 @@ import javax.swing.ImageIcon;
 
 /**
  * @author <a href="mailto:droden@gmail.com">David Roden</a>
- * @version $Id: IconLoader.java 130 2006-02-18 18:27:11Z bombe $
+ * @version $Id$
  */
 public class IconLoader {
 

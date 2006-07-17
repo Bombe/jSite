@@ -27,7 +27,7 @@ import java.io.Writer;
  * requests have in common.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ClientPut.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public abstract class ClientPut extends Command {
 

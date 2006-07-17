@@ -28,7 +28,7 @@ import de.todesbaum.util.mime.DefaultMIMETypes;
 
 /**
  * @author David Roden <dr@todesbaum.dyndns.org>
- * @version $Id: Project.java 357 2006-03-24 15:46:03Z bombe $
+ * @version $Id$
  */
 public abstract class Project implements Comparable {
 
@@ -77,7 +77,7 @@ public abstract class Project implements Comparable {
 	 *            The title to set.
 	 */
 	public void setName(String title) {
-		this.name = title;
+		name = title;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public abstract class Project implements Comparable {
 	 *            The lastInserted to set.
 	 */
 	public void setLastInsertionTime(long lastInserted) {
-		this.lastInsertionTime = lastInserted;
+		lastInsertionTime = lastInserted;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public abstract class Project implements Comparable {
 	 *            The name to set.
 	 */
 	public void setPath(String name) {
-		this.path = name;
+		path = name;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public abstract class Project implements Comparable {
 	 *            The insertURI to set.
 	 */
 	public void setInsertURI(String insertURI) {
-		this.insertURI = insertURI;
+		this.insertURI = shortenURI(insertURI);
 	}
 
 	/**
@@ -182,11 +182,25 @@ public abstract class Project implements Comparable {
 	 *            The requestURI to set.
 	 */
 	public void setRequestURI(String requestURI) {
-		this.requestURI = requestURI;
+		this.requestURI = shortenURI(requestURI);
 	}
 
+	@Override
 	public String toString() {
 		return name;
+	}
+	
+	private String shortenURI(String uri) {
+		if (uri.startsWith("freenet:")) {
+			uri = uri.substring("freenet:".length());
+		}
+		if (uri.startsWith("SSK@")) {
+			uri = uri.substring("SSK@".length());
+		}
+		if (uri.endsWith("/")) {
+			uri = uri.substring(0, uri.length() - 1);
+		}
+		return uri;
 	}
 
 	public String shortenFilename(File file) {
@@ -210,14 +224,18 @@ public abstract class Project implements Comparable {
 	}
 
 	public void setFileOption(String filename, FileOption fileOption) {
-		fileOptions.put(filename, fileOption);
+		if (fileOption != null) {
+			fileOptions.put(filename, fileOption);
+		} else {
+			fileOptions.remove(filename);
+		}
 	}
 
 	/**
 	 * @return Returns the fileOptions.
 	 */
 	public Map<String, FileOption> getFileOptions() {
-		return Collections.unmodifiableMap(fileOptions);
+		return Collections.unmodifiableMap(new HashMap<String, FileOption>(fileOptions));
 	}
 
 	/**
@@ -228,9 +246,9 @@ public abstract class Project implements Comparable {
 		this.fileOptions.clear();
 		this.fileOptions.putAll(fileOptions);
 	}
-
-	public String getFinalURI(int editionOffset) {
-		return requestURI + path + "/";
+	
+	public String getFinalRequestURI(int offset) {
+		return "freenet:USK@" + requestURI + "/" + path + "/";
 	}
 
 	/**

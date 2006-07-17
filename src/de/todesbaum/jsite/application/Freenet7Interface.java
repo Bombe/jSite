@@ -29,7 +29,7 @@ import de.todesbaum.util.freenet.fcp2.Node;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Freenet7Interface.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public class Freenet7Interface {
 

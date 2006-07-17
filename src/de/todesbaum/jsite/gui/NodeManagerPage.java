@@ -61,7 +61,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: NodeManagerPage.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public class NodeManagerPage extends TWizardPage implements ListSelectionListener, DocumentListener, ChangeListener {
 

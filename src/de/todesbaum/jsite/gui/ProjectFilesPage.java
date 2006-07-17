@@ -31,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -71,7 +72,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ProjectFilesPage.java 404 2006-03-26 02:11:03Z bombe $
+ * @version $Id$
  */
 public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
 
@@ -143,6 +144,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		deleteContainerAction.setEnabled(false);
 	}
 
+	@Override
 	public void pageAdded(TWizard wizard) {
 		this.wizard = wizard;
 		actionScan();
@@ -351,6 +353,13 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 					rebuildContainerComboBox();
 				}
 			});
+			Iterator<String> filenames = project.getFileOptions().keySet().iterator();
+			while (filenames.hasNext()) {
+				String filename = filenames.next();
+				if (!files.contains(filename)) {
+					project.setFileOption(filename, null);
+				}
+			}
 		} else {
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.scan-error"), null, JOptionPane.ERROR_MESSAGE);
 		}
@@ -462,8 +471,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	private void processDocumentUpdate(DocumentEvent documentEvent) {
 		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null)
+		if (filename == null) {
 			return;
+		}
 		FileOption fileOption = project.getFileOption(filename);
 		Document document = documentEvent.getDocument();
 		try {
@@ -503,8 +513,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 */
 	public void stateChanged(ChangeEvent changeEvent) {
 		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null)
+		if (filename == null) {
 			return;
+		}
 		FileOption fileOption = project.getFileOption(filename);
 		Object source = changeEvent.getSource();
 		if (source instanceof JSpinner) {

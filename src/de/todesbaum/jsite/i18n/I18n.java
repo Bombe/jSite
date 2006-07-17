@@ -20,19 +20,22 @@
 package de.todesbaum.jsite.i18n;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: I18n.java 355 2006-03-24 15:04:11Z bombe $
+ * @version $Id$
  */
 public class I18n {
 
+	private static Locale defaultLocale = new Locale("en");
 	private static Locale currentLocale;
 
 	public static Locale getLocale() {
-		if (currentLocale == null)
+		if (currentLocale == null) {
 			currentLocale = Locale.getDefault();
+		}
 		return currentLocale;
 	}
 
@@ -50,7 +53,11 @@ public class I18n {
 	}
 
 	public static String getMessage(String key) {
-		return getResourceBundle().getString(key);
+		try {
+			return getResourceBundle().getString(key);
+		} catch (MissingResourceException mre1) {
+			return getResourceBundle(defaultLocale).getString(key);
+		}
 	}
 
 }

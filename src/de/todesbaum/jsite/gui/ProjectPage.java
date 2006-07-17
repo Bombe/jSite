@@ -66,7 +66,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ProjectPage.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public class ProjectPage extends TWizardPage implements ListSelectionListener, ChangeListener, DocumentListener {
 
@@ -86,7 +86,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 	private JTextField projectPublicKeyTextField;
 	private JTextField projectPrivateKeyTextField;
 	private JTextField projectPathTextField;
-	private JSpinner projectEditionSpinner;
 
 	public ProjectPage() {
 		super();
@@ -240,15 +239,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField), new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectPathTextField, new GridBagConstraints(1, 7, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
-		projectEditionSpinner = new JSpinner(new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1));
-		((NumberEditor) projectEditionSpinner.getEditor()).getTextField().setColumns(6);
-		projectEditionSpinner.setName("project.edition");
-		projectEditionSpinner.addChangeListener(this);
-		projectEditionSpinner.setEnabled(false);
-
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.edition") + ":", KeyEvent.VK_E, projectEditionSpinner), new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectEditionSpinner, new GridBagConstraints(1, 8, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
-
 		return informationPanel;
 	}
 
@@ -308,8 +298,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 
 	protected void actionLocalPathBrowse() {
 		Project project = (Project) projectList.getSelectedValue();
-		if (project == null)
+		if (project == null) {
 			return;
+		}
 		pathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		if (pathChooser.showDialog(this, I18n.getMessage("jsite.project.action.browse.choose")) == JFileChooser.APPROVE_OPTION) {
 			projectLocalPathTextField.setText(pathChooser.getSelectedFile().getPath());
@@ -380,7 +371,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 		projectPublicKeyTextField.setEnabled(selectedRow > -1);
 		projectPrivateKeyTextField.setEnabled(selectedRow > -1);
 		projectPathTextField.setEnabled(selectedRow > -1);
-		projectEditionSpinner.setEnabled(selectedRow > -1);
 		projectLocalPathBrowseAction.setEnabled(selectedRow > -1);
 		projectDeleteAction.setEnabled(selectedRow > -1);
 		projectCloneAction.setEnabled(selectedRow > -1);
@@ -393,7 +383,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 			projectPathTextField.setText(selectedProject.getPath());
 			if (selectedProject instanceof EditionProject) {
 				EditionProject editionProject = (EditionProject) selectedProject;
-				projectEditionSpinner.setValue(editionProject.getEdition());
 			}
 		} else {
 			projectNameTextField.setText("");
@@ -402,7 +391,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 			projectPublicKeyTextField.setText("");
 			projectPrivateKeyTextField.setText("");
 			projectPathTextField.setText("");
-			projectEditionSpinner.setValue(0);
 		}
 	}
 

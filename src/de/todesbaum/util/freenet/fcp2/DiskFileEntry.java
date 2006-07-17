@@ -23,7 +23,7 @@ package de.todesbaum.util.freenet.fcp2;
  * A {@link FileEntry} that reads the content from a file on the disk.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: DiskFileEntry.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  */
 public class DiskFileEntry extends FileEntry {
 

@@ -32,7 +32,7 @@ import java.util.Vector;
  * command can be used to insert directories that do not exist on disk.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ClientPutComplexDir.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public class ClientPutComplexDir extends ClientPutDir {
 

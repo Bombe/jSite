@@ -27,7 +27,7 @@ import java.io.InputStream;
  * existing FCP connection.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: DirectFileEntry.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  */
 public class DirectFileEntry extends FileEntry {
 

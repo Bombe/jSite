@@ -59,7 +59,7 @@ import de.todesbaum.util.swing.WizardListener;
 
 /**
  * @author <a href="mailto:droden@gmail.com">David Roden </a>
- * @version $Id: Main.java 464 2006-04-04 21:53:33Z bombe $
+ * @version $Id$
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
 
@@ -278,6 +278,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			((ProjectFilesPage) pages.get(PageType.PAGE_PROJECT_FILES)).setProject(project);
 			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).setProject(project);
 			showPage(PageType.PAGE_PROJECT_FILES);
+			wizard.setNextName(I18n.getMessage("jsite.project-files.insert-now"));
 			wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		} else if ("page.project.files".equals(pageName)) {
 			ProjectPage projectPage = (ProjectPage) pages.get(PageType.PAGE_PROJECTS);
@@ -320,6 +321,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				return;
 			}
 			configuration.save();
+			wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			showPage(PageType.PAGE_INSERT_PROJECT);
 			nodeMenu.setEnabled(false);
 		} else if ("page.project.insert".equals(pageName)) {
@@ -338,6 +340,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		} else if ("page.project.files".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
+			wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			wizard.setPreviousName((String) manageNodeAction.getValue(Action.NAME));
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECT_FILES);

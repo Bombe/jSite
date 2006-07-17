@@ -25,7 +25,7 @@ import java.util.EventListener;
  * Interface for clients that want to be notified when a message was received.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: ConnectionListener.java 356 2006-03-24 15:13:38Z bombe $
+ * @version $Id$
  */
 public interface ConnectionListener extends EventListener {
 

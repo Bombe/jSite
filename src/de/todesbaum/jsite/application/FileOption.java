@@ -39,10 +39,10 @@ public class FileOption {
 		insert = DEFAULT_INSERT;
 		customKey = DEFAULT_CUSTOM_KEY;
 		this.defaultMimeType = defaultMimeType;
-		this.mimeType = defaultMimeType;
-		this.container = DEFAULT_CONTAINER;
-		this.editionRange = DEFAULT_EDITION_RANGE;
-		this.replaceEdition = DEFAULT_REPLACE_EDITION;
+		mimeType = defaultMimeType;
+		container = DEFAULT_CONTAINER;
+		editionRange = DEFAULT_EDITION_RANGE;
+		replaceEdition = DEFAULT_REPLACE_EDITION;
 	}
 
 	/**
@@ -124,18 +124,24 @@ public class FileOption {
 	}
 
 	public boolean isCustom() {
-		if (insert != DEFAULT_INSERT)
+		if (insert != DEFAULT_INSERT) {
 			return true;
-		if (!customKey.equals(DEFAULT_CUSTOM_KEY))
+		}
+		if (!customKey.equals(DEFAULT_CUSTOM_KEY)) {
 			return true;
-		if (!defaultMimeType.equals(mimeType))
+		}
+		if (!defaultMimeType.equals(mimeType)) {
 			return true;
-		if (!DEFAULT_CONTAINER.equals(container))
+		}
+		if (!DEFAULT_CONTAINER.equals(container)) {
 			return true;
-		if (replaceEdition != DEFAULT_REPLACE_EDITION)
+		}
+		if (replaceEdition != DEFAULT_REPLACE_EDITION) {
 			return true;
-		if (editionRange != DEFAULT_EDITION_RANGE)
+		}
+		if (editionRange != DEFAULT_EDITION_RANGE) {
 			return true;
+		}
 		return false;
 	}
 

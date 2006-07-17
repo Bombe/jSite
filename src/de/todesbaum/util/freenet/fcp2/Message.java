@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * <code>SSKKeypair</code>, and <code>EndListPersistentRequests</code>.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Message.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  * @see de.todesbaum.util.freenet.fcp2.Client
  */
 public class Message {

@@ -35,7 +35,7 @@ import java.io.Writer;
  * something you did not expect.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Command.java 371 2006-03-25 10:38:13Z bombe $
+ * @version $Id$
  */
 public abstract class Command {
 

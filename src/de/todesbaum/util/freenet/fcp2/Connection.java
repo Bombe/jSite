@@ -39,7 +39,7 @@ import de.todesbaum.util.io.TempFileInputStream;
  * A physical connection to a Freenet node.
  * 
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: Connection.java 413 2006-03-29 12:22:31Z bombe $
+ * @version $Id$
  */
 public class Connection {
 
@@ -155,9 +155,6 @@ public class Connection {
 			nodeSocket.setReceiveBufferSize(65535);
 			nodeInputStream = nodeSocket.getInputStream();
 			nodeOutputStream = nodeSocket.getOutputStream();
-			// nodeWriter = new TeeWriter(new
-			// OutputStreamWriter(nodeOutputStream, Charset.forName("UTF-8")),
-			// new PrintWriter(System.out));
 			nodeWriter = new OutputStreamWriter(nodeOutputStream, Charset.forName("UTF-8"));
 			nodeReader = new NodeReader(nodeInputStream);
 			Thread nodeReaderThread = new Thread(nodeReader);
@@ -267,7 +264,7 @@ public class Connection {
 	 * listeners about the messages.
 	 * 
 	 * @author David Roden &lt;droden@gmail.com&gt;
-	 * @version $Id: Connection.java 413 2006-03-29 12:22:31Z bombe $
+	 * @version $Id$
 	 */
 	private class NodeReader implements Runnable {
 
@@ -297,7 +294,7 @@ public class Connection {
 				Message message = null;
 				while (line != null) {
 					line = nodeReader.readLine();
-					// System.err.println("> " + line);
+					 System.err.println("> " + line);
 					if (line == null) {
 						break;
 					}

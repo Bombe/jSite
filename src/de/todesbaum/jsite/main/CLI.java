@@ -30,7 +30,7 @@ import de.todesbaum.jsite.application.ProjectInserter;
 
 /**
  * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id: CLI.java 418 2006-03-29 17:49:16Z bombe $
+ * @version $Id$
  */
 public class CLI implements InsertListener {
 
@@ -75,8 +75,7 @@ public class CLI implements InsertListener {
 		projectInserter.setFreenetInterface(freenetInterface);
 
 		Project currentProject = null;
-		for (int argumentIndex = 0, argumentSize = args.length; argumentIndex < argumentSize; argumentIndex++) {
-			String argument = args[argumentIndex];
+		for (String argument: args) {
 			String value = argument.substring(argument.indexOf('=') + 1).trim();
 			if (argument.startsWith("--node=")) {
 				Node newNode = getNode(value);
@@ -187,6 +186,10 @@ public class CLI implements InsertListener {
 		outputWriter.println("Starting Insert of project \"" + project.getName() + "\".");
 	}
 
+	public void projectURIGenerated(Project project, String uri) {
+		outputWriter.println("URI: " + uri);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -198,7 +201,7 @@ public class CLI implements InsertListener {
 	 * {@inheritDoc}
 	 */
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
-		outputWriter.println("Request URI: " + project.getFinalURI(0));
+		outputWriter.println("Request URI: " + project.getFinalRequestURI(0));
 		finished = true;
 		if (success) {
 			if (project instanceof EditionProject) {
