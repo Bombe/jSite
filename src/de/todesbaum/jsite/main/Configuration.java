@@ -53,13 +53,21 @@ public class Configuration {
 	private SimpleXML rootNode;
 
 	public Configuration() {
-		filename = System.getProperty("user.home") + "/.jSite/config7";
-		lockFilename = System.getProperty("user.home") + "/.jSite/lock7";
+		this(System.getProperty("user.home") + "/.jSite/config7");
+	}
+	
+	public Configuration(String filename) {
+		this(filename, filename + ".lock");
+	}
+	
+	public Configuration(String filename, String lockFilename) {
+		this.filename = filename;
+		this.lockFilename = lockFilename;
 		readConfiguration();
 	}
 	
 	private boolean createConfigDirectory() {
-		File configDirectory = new File(System.getProperty("user.home"), ".jSite");
+		File configDirectory = new File(filename).getAbsoluteFile().getParentFile();
 		return (configDirectory.exists() && configDirectory.isDirectory()) || configDirectory.mkdirs();
 	}
 
@@ -112,7 +120,7 @@ public class Configuration {
 	public boolean save() {
 		File configurationFile = new File(filename);
 		if (!configurationFile.exists()) {
-			File configurationFilePath = configurationFile.getParentFile();
+			File configurationFilePath = configurationFile.getAbsoluteFile().getParentFile();
 			if (!configurationFilePath.exists() && !configurationFilePath.mkdirs()) {
 				return false;
 			}

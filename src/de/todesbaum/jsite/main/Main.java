@@ -64,7 +64,7 @@ import de.todesbaum.util.swing.WizardListener;
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
 
 	private static boolean debug = false;
-	private Configuration configuration = new Configuration();
+	private Configuration configuration;
 	private Freenet7Interface freenetInterface = new Freenet7Interface();
 	protected Icon jSiteIcon;
 
@@ -82,6 +82,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private final Map<PageType, TWizardPage> pages = new HashMap<PageType, TWizardPage>();
 
 	private Main() {
+		this(null);
+	}
+	
+	private Main(String configFilename) {
+		if (configFilename != null) {
+			configuration = new Configuration(configFilename);
+		} else {
+			configuration = new Configuration();
+		}
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
 		if (!configuration.createLockFile()) {
@@ -405,13 +414,37 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	//
 	// MAIN METHOD
 	//
-
 	public static void main(String[] args) {
 		System.setProperty("swing.plaf.metal.userFont", "Tahoma");
 		System.setProperty("swing.plaf.metal.controlFont", "Tahoma");
 		System.setProperty("swing.aatext", "true");
-		debug = (args.length > 0) && (args[0].equals("--debug"));
-		new Main();
+		String configFilename = null;
+		boolean nextIsConfigFilename = false;
+		for (String argument: args) {
+			if (nextIsConfigFilename) {
+				configFilename = argument;
+				nextIsConfigFilename = false;
+			}
+			if ("--help".equals(argument)) {
+				printHelp();
+				return;
+			} else if ("--debug".equals(argument)) {
+				debug = true;
+			} else if ("--config-file".equals(argument)) {
+				nextIsConfigFilename = true;
+			}
+		}
+		if (nextIsConfigFilename) {
+			System.out.println("--config-file needs parameter!");
+			return;
+		}
+		new Main(configFilename);
 	}
 
+	private static void printHelp() {
+		System.out.println("--help\tshows this cruft");
+		System.out.println("--debug\tenables some debug output");
+		System.out.println("--config-file <file>\tuse specified configuration file");
+	}
+	
 }
