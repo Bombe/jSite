@@ -61,7 +61,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import de.todesbaum.jsite.application.EditionProject;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
@@ -443,7 +442,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		addContainerAction.setEnabled(enabled);
 		editContainerAction.setEnabled(enabled);
 		deleteContainerAction.setEnabled(enabled);
-		replacementCheckBox.setEnabled(enabled && insert && (project instanceof EditionProject));
+		replacementCheckBox.setEnabled(enabled && insert);
 		if (filename != null) {
 			FileOption fileOption = project.getFileOption(filename);
 			defaultFileCheckBox.setSelected(filename.equals(project.getIndexFile()));

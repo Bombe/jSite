@@ -25,6 +25,11 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -40,14 +45,9 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -55,7 +55,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import de.todesbaum.jsite.application.EditionProject;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
@@ -68,7 +67,7 @@ import de.todesbaum.util.swing.TWizardPage;
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
-public class ProjectPage extends TWizardPage implements ListSelectionListener, ChangeListener, DocumentListener {
+public class ProjectPage extends TWizardPage implements ListSelectionListener, DocumentListener, ClipboardOwner {
 
 	private Freenet7Interface freenetInterface;
 
@@ -76,6 +75,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 	private Action projectAddAction;
 	private Action projectDeleteAction;
 	private Action projectCloneAction;
+	private Action projectCopyURIAction;
 
 	private JFileChooser pathChooser;
 	private SortedListModel projectListModel;
@@ -170,6 +170,15 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 		projectCloneAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.clone-project.tooltip"));
 		projectCloneAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_L);
 		projectCloneAction.setEnabled(false);
+		
+		projectCopyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
+			public void actionPerformed(ActionEvent actionEvent) {
+				actionCopyURI();
+			}
+		};
+		projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
+		projectCopyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
+		projectCopyURIAction.setEnabled(false);
 	}
 
 	private JComponent createInformationPanel() {
@@ -182,6 +191,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 		functionButtons.add(new JButton(projectAddAction));
 		functionButtons.add(new JButton(projectDeleteAction));
 		functionButtons.add(new JButton(projectCloneAction));
+		functionButtons.add(new JButton(projectCopyURIAction));
 
 		informationPanel.add(functionButtons, BorderLayout.PAGE_START);
 		informationPanel.add(informationTable, BorderLayout.CENTER);
@@ -319,7 +329,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 			JOptionPane.showMessageDialog(this, MessageFormat.format(I18n.getMessage("jsite.project.keygen.io-error"), ioe1.getMessage()), null, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		EditionProject newProject = new EditionProject();
+		Project newProject = new Project();
 		newProject.setName(I18n.getMessage("jsite.project.new-project.name"));
 		newProject.setInsertURI(keyPair[0]);
 		newProject.setRequestURI(keyPair[1]);
@@ -344,14 +354,19 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 	protected void actionClone() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
-			Project newProject = null;
-			Project selectedProject = (Project) projectList.getSelectedValue();
-			if (selectedProject instanceof EditionProject) {
-				newProject = new EditionProject(selectedProject);
-			} // else { /* BUG! */ }
+			Project newProject = new Project((Project) projectList.getSelectedValue());
 			newProject.setName(MessageFormat.format(I18n.getMessage("jsite.project.action.clone-project.copy"), newProject.getName()));
 			projectListModel.add(newProject);
 			projectList.setSelectedIndex(projectListModel.indexOf(newProject));
+		}
+	}
+	
+	protected void actionCopyURI() {
+		int selectedIndex = projectList.getSelectedIndex();
+		if (selectedIndex > -1) {
+			Project selectedProject = (Project) projectList.getSelectedValue();
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(new StringSelection(selectedProject.getFinalRequestURI(0)), this);
 		}
 	}
 
@@ -374,6 +389,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 		projectLocalPathBrowseAction.setEnabled(selectedRow > -1);
 		projectDeleteAction.setEnabled(selectedRow > -1);
 		projectCloneAction.setEnabled(selectedRow > -1);
+		projectCopyURIAction.setEnabled(selectedRow > -1);
 		if (selectedRow > -1) {
 			projectNameTextField.setText(selectedProject.getName());
 			projectDescriptionTextField.setText(selectedProject.getDescription());
@@ -381,9 +397,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 			projectPublicKeyTextField.setText(selectedProject.getRequestURI());
 			projectPrivateKeyTextField.setText(selectedProject.getInsertURI());
 			projectPathTextField.setText(selectedProject.getPath());
-			if (selectedProject instanceof EditionProject) {
-				EditionProject editionProject = (EditionProject) selectedProject;
-			}
 		} else {
 			projectNameTextField.setText("");
 			projectDescriptionTextField.setText("");
@@ -397,23 +410,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 	//
 	// INTERFACE ChangeListener
 	//
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void stateChanged(ChangeEvent changeEvent) {
-		Object source = changeEvent.getSource();
-		if (source instanceof JSpinner) {
-			JSpinner spinner = (JSpinner) source;
-			Project currentProject = (Project) projectList.getSelectedValue();
-			if (currentProject == null) {
-				return;
-			}
-			if ("project.edition".equals(spinner.getName())) {
-				((EditionProject) currentProject).setEdition((Integer) spinner.getValue());
-			}
-		}
-	}
 
 	//
 	// INTERFACE DocumentListener
@@ -438,6 +434,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, C
 	 */
 	public void changedUpdate(DocumentEvent documentEvent) {
 		setTextField(documentEvent);
+	}
+	
+	//
+	// INTERFACE ClipboardOwner
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	}
 
 }

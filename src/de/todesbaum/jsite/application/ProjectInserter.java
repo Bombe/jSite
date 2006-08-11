@@ -266,7 +266,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		createContainers(files, containers, containerFiles);
 
 		/* collect files */
-		int edition = ((EditionProject) project).getEdition();
+		int edition = project.getEdition();
 		String dirURI = "freenet:USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
 		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI);
 		putDir.setDefaultName(project.getIndexFile());
@@ -288,6 +288,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 
 		/* parse progress and success messages */
+		String finalURI = null;
 		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
@@ -300,7 +301,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!finished) {
 				String messageName = message.getName();
 				if ("URIGenerated".equals(messageName)) {
-					fireProjectURIGenerated(message.get("URI"));
+					finalURI = message.get("URI");
+					fireProjectURIGenerated(finalURI);
 				}
 				if ("SimpleProgress".equals(messageName)) {
 					int total = Integer.parseInt(message.get("Total"));
@@ -318,9 +320,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/* post-insert work */
 		fireProjectInsertFinished(success, disconnected ? new IOException("Connection terminated") : null);
 		if (success) {
-			if (project instanceof EditionProject) {
-				((EditionProject) project).setEdition(edition + 1);
-			}
+			String editionPart = finalURI.substring(finalURI.lastIndexOf('/') + 1);
+			int newEdition = Integer.parseInt(editionPart);
+			project.setEdition(newEdition);
 		}
 	}
 

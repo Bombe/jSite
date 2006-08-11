@@ -30,7 +30,7 @@ import de.todesbaum.util.mime.DefaultMIMETypes;
  * @author David Roden <dr@todesbaum.dyndns.org>
  * @version $Id$
  */
-public abstract class Project implements Comparable {
+public class Project implements Comparable {
 
 	protected String name;
 	protected String description;
@@ -42,6 +42,8 @@ public abstract class Project implements Comparable {
 	protected String localPath;
 	protected String path;
 	protected long lastInsertionTime;
+	/** The edition to insert to. */
+	protected int edition;
 
 	protected Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 
@@ -59,6 +61,7 @@ public abstract class Project implements Comparable {
 		insertURI = project.insertURI;
 		requestURI = project.requestURI;
 		path = project.path;
+		edition = project.edition;
 		localPath = project.localPath;
 		indexFile = project.indexFile;
 		lastInsertionTime = project.lastInsertionTime;
@@ -197,6 +200,9 @@ public abstract class Project implements Comparable {
 		if (uri.startsWith("SSK@")) {
 			uri = uri.substring("SSK@".length());
 		}
+		if (uri.startsWith("USK@")) {
+			uri = uri.substring("USK@".length());
+		}
 		if (uri.endsWith("/")) {
 			uri = uri.substring(0, uri.length() - 1);
 		}
@@ -247,15 +253,39 @@ public abstract class Project implements Comparable {
 		this.fileOptions.putAll(fileOptions);
 	}
 	
-	public String getFinalRequestURI(int offset) {
-		return "freenet:USK@" + requestURI + "/" + path + "/";
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public int compareTo(Object o) {
 		return name.compareToIgnoreCase(((Project) o).name);
+	}
+
+	/**
+	 * Returns the edition of the project.
+	 * 
+	 * @return The edition of the project
+	 */
+	public int getEdition() {
+		return edition;
+	}
+
+	/**
+	 * Sets the edition of the project.
+	 * 
+	 * @param edition
+	 *            The edition to set
+	 */
+	public void setEdition(int edition) {
+		this.edition = edition;
+	}
+
+	/**
+	 * Constructs the final request URI including the edition number.
+	 * 
+	 * @return The final request URI
+	 */
+	public String getFinalRequestURI(int offset) {
+		return "freenet:USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
 	}
 
 }

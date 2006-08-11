@@ -23,10 +23,20 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.Date;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,11 +57,12 @@ import de.todesbaum.util.swing.TWizardPage;
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
-public class ProjectInsertPage extends TWizardPage implements InsertListener {
+public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
 
 	protected TWizard wizard;
 	protected ProjectInserter projectInserter;
 
+	protected Action copyURIAction;
 	protected JTextField requestURITextField;
 	protected JLabel startTimeLabel;
 	protected JProgressBar progressBar;
@@ -59,11 +70,23 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 
 	public ProjectInsertPage() {
 		super();
+		createActions();
 		pageInit();
 		setHeading(I18n.getMessage("jsite.insert.heading"));
 		setDescription(I18n.getMessage("jsite.insert.description"));
 		projectInserter = new ProjectInserter();
 		projectInserter.addInsertListener(this);
+	}
+	
+	private void createActions() {
+		copyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
+			public void actionPerformed(ActionEvent actionEvent) {
+				actionCopyURI();
+			}
+		};
+		copyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
+		copyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
+		copyURIAction.setEnabled(false);
 	}
 
 	private void pageInit() {
@@ -90,6 +113,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 		projectInsertPanel.add(startTimeLabel, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		projectInsertPanel.add(new JLabel(I18n.getMessage("jsite.insert.progress") + ":"), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 		projectInsertPanel.add(progressBar, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		projectInsertPanel.add(new JButton(copyURIAction), new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 
 		return projectInsertPanel;
 	}
@@ -103,6 +127,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 		wizard.setPreviousEnabled(false);
 		wizard.setNextEnabled(false);
 		wizard.setQuitEnabled(false);
+		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
 		projectInserter.start();
 	}
@@ -156,6 +181,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 	public void projectURIGenerated(Project project, final String uri) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				copyURIAction.setEnabled(true);
 				requestURITextField.setText(uri);
 			}
 		});
@@ -190,10 +216,30 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
+				progressBar.setValue(progressBar.getMaximum());
 				wizard.setNextEnabled(true);
 				wizard.setQuitEnabled(true);
 			}
 		});
+	}
+	
+	//
+	// ACTIONS
+	//
+	
+	protected void actionCopyURI() {
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
+	}
+
+	//
+	// INTERFACE ClipboardOwner
+	//
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	}
 
 }

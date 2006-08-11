@@ -21,7 +21,6 @@ package de.todesbaum.jsite.main;
 
 import java.io.PrintWriter;
 
-import de.todesbaum.jsite.application.EditionProject;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Node;
@@ -115,12 +114,7 @@ public class CLI implements InsertListener {
 					outputWriter.println("You can't specify --edition before --project.");
 					return;
 				}
-				if (currentProject instanceof EditionProject) {
-					((EditionProject) currentProject).setEdition(Integer.parseInt(value));
-				} else {
-					outputWriter.println("Project \"" + currentProject.getName() + "\" is not an edition-based project.");
-					return;
-				}
+				currentProject.setEdition(Integer.parseInt(value));
 			} else {
 				outputWriter.println("Unknown parameter: " + argument);
 				return;
@@ -203,11 +197,6 @@ public class CLI implements InsertListener {
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
 		outputWriter.println("Request URI: " + project.getFinalRequestURI(0));
 		finished = true;
-		if (success) {
-			if (project instanceof EditionProject) {
-				((EditionProject) project).setEdition(((EditionProject) project).getEdition() + 1);
-			}
-		}
 		this.success = success;
 		synchronized (lockObject) {
 			lockObject.notify();

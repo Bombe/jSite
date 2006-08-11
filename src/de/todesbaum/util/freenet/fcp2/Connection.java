@@ -294,7 +294,7 @@ public class Connection {
 				Message message = null;
 				while (line != null) {
 					line = nodeReader.readLine();
-					 System.err.println("> " + line);
+					// System.err.println("> " + line);
 					if (line == null) {
 						break;
 					}

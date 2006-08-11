@@ -34,7 +34,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.todesbaum.jsite.application.EditionProject;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
@@ -234,13 +233,7 @@ public class Configuration {
 			SimpleXML[] projectNodes = projectsNode.getNodes("project");
 			for (SimpleXML projectNode: projectNodes) {
 				try {
-					Project project = null;
-					SimpleXML typeNode = projectNode.getNode("type");
-					if ("edition".equals(typeNode.getValue())) {
-						EditionProject editionProject = new EditionProject();
-						project = editionProject;
-						editionProject.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue()));
-					}
+					Project project = new Project();
 					projects.add(project);
 					project.setDescription(projectNode.getNode("description").getValue());
 					project.setIndexFile(projectNode.getNode("index-file").getValue());
@@ -248,6 +241,7 @@ public class Configuration {
 					project.setLocalPath(projectNode.getNode("local-path").getValue());
 					project.setName(projectNode.getNode("name").getValue());
 					project.setPath(projectNode.getNode("path").getValue());
+					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue()));
 					project.setInsertURI(projectNode.getNode("insert-uri").getValue());
 					project.setRequestURI(projectNode.getNode("request-uri").getValue());
 					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
@@ -281,10 +275,7 @@ public class Configuration {
 		SimpleXML projectsNode = new SimpleXML("project-list");
 		for (Project project: projects) {
 			SimpleXML projectNode = projectsNode.append("project");
-			if (project instanceof EditionProject) {
-				projectNode.append("type", "edition");
-				projectNode.append("edition", String.valueOf(((EditionProject) project).getEdition()));
-			}
+			projectNode.append("edition", String.valueOf(project.getEdition()));
 			projectNode.append("description", project.getDescription());
 			projectNode.append("index-file", project.getIndexFile());
 			projectNode.append("last-insertion-time", String.valueOf(project.getLastInsertionTime()));
