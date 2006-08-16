@@ -59,7 +59,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	protected Project project;
 	private FileScanner fileScanner;
 	protected final Object lockObject = new Object();
-	private int maxRetries = 99999;
 
 	public void addInsertListener(InsertListener insertListener) {
 		insertListeners.add(insertListener);
@@ -115,14 +114,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		this.freenetInterface = freenetInterface;
-	}
-
-	/**
-	 * @param maxRetries
-	 *            The maxRetries to set.
-	 */
-	public void setMaxRetries(int maxRetries) {
-		this.maxRetries = maxRetries;
 	}
 
 	public void start() {
@@ -271,7 +262,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI);
 		putDir.setDefaultName(project.getIndexFile());
 		putDir.setVerbosity(Verbosity.ALL);
-		putDir.setMaxRetries(maxRetries);
+		putDir.setMaxRetries(-1);
 		for (String filename: files) {
 			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
 			if (fileEntry != null) {
