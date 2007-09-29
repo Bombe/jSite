@@ -82,7 +82,6 @@ public class ClientPutComplexDir extends ClientPutDir {
 				int read = 0;
 				while ((read = payloadInputStream.read(buffer)) != -1) {
 					payloadOutputStream.write(buffer, 0, read);
-					System.out.println("writing " + read + " bytes");
 				}
 				payloadOutputStream.flush();
 				fileEntries.add(fileEntry);
