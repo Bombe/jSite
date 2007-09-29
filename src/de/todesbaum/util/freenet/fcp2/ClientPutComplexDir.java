@@ -19,13 +19,17 @@
 
 package de.todesbaum.util.freenet.fcp2;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.SequenceInputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+
+import de.todesbaum.util.io.Closer;
 
 /**
  * Implementation of the <code>ClientPutComplexDir</code> command. This
@@ -43,7 +47,7 @@ public class ClientPutComplexDir extends ClientPutDir {
 	private boolean hasPayload = false;
 	
 	/** The input streams for the payload. */
-	private List<InputStream> payloadInputStreams = new ArrayList<InputStream>();
+	private File payloadFile;
 	
 	/** The total number of bytes of the payload. */
 	private long payloadLength = 0;
@@ -62,7 +66,33 @@ public class ClientPutComplexDir extends ClientPutDir {
 	 * @param fileEntry The file entry to add to the directory
 	 */
 	public void addFileEntry(FileEntry fileEntry) {
-		fileEntries.add(fileEntry);
+		if (payloadFile == null){
+			try {
+				payloadFile = File.createTempFile("payload", ".dat");
+				payloadFile.deleteOnExit();
+			} catch (IOException e) {
+			}
+		}
+		if (payloadFile != null) {
+			InputStream payloadInputStream = ((DirectFileEntry) fileEntry).getDataInputStream();
+			FileOutputStream payloadOutputStream = null;
+			try {
+				payloadOutputStream = new FileOutputStream(payloadFile, true);
+				byte[] buffer = new byte[65536];
+				int read = 0;
+				while ((read = payloadInputStream.read(buffer)) != -1) {
+					payloadOutputStream.write(buffer, 0, read);
+					System.out.println("writing " + read + " bytes");
+				}
+				payloadOutputStream.flush();
+				fileEntries.add(fileEntry);
+			} catch (IOException ioe1) {
+				/* hmm, ignore? */
+			} finally {
+				Closer.close(payloadOutputStream);
+				Closer.close(payloadInputStream);
+			}
+		}
 	}
 
 	/**
@@ -82,7 +112,6 @@ public class ClientPutComplexDir extends ClientPutDir {
 				hasPayload = true;
 				writer.write("Files." + fileIndex + ".DataLength=" + ((DirectFileEntry) fileEntry).getDataLength() + LINEFEED);
 				payloadLength += ((DirectFileEntry) fileEntry).getDataLength();
-				payloadInputStreams.add(((DirectFileEntry) fileEntry).getDataInputStream());
 			} else if (fileEntry instanceof DiskFileEntry) {
 				writer.write("Files." + fileIndex + ".Filename=" + ((DiskFileEntry) fileEntry).getFilename() + LINEFEED);
 			} else if (fileEntry instanceof RedirectFileEntry) {
@@ -113,9 +142,14 @@ public class ClientPutComplexDir extends ClientPutDir {
 	 */
 	@Override
 	protected InputStream getPayload() {
-		/* grr. use Vector here because it returns an Enumeration. */
-		Vector<InputStream> inputStreams = new Vector<InputStream>(payloadInputStreams);
-		return new SequenceInputStream(inputStreams.elements());
+		if (payloadFile != null) {
+			try {
+				return new FileInputStream(payloadFile);
+			} catch (FileNotFoundException e) {
+				/* shouldn't occur. */
+			}
+		}
+		return null;
 	}
 
 }

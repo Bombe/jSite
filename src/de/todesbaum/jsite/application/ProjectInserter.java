@@ -43,6 +43,7 @@ import de.todesbaum.util.freenet.fcp2.FileEntry;
 import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.RedirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
+import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.ReplacingOutputStream;
 import de.todesbaum.util.io.StreamCopier;
 
@@ -131,15 +132,19 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		ByteArrayOutputStream filteredByteOutputStream = new ByteArrayOutputStream(Math.min(Integer.MAX_VALUE, (int) length[0]));
 		ReplacingOutputStream outputStream = new ReplacingOutputStream(filteredByteOutputStream);
 		FileInputStream fileInput = new FileInputStream(file);
-		outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
-		outputStream.addReplacement("$[URI]", project.getFinalRequestURI(0));
-		for (int index = 1; index <= fileOption.getEditionRange(); index++) {
-			outputStream.addReplacement("$[URI+" + index + "]", project.getFinalRequestURI(index));
-			outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
+		try {
+			outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
+			outputStream.addReplacement("$[URI]", project.getFinalRequestURI(0));
+			for (int index = 1; index <= fileOption.getEditionRange(); index++) {
+				outputStream.addReplacement("$[URI+" + index + "]", project.getFinalRequestURI(index));
+				outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
+			}
+			StreamCopier.copy(fileInput, outputStream, length[0]);
+		} finally {
+			Closer.close(fileInput);
+			Closer.close(outputStream);
+			Closer.close(filteredByteOutputStream);
 		}
-		StreamCopier.copy(fileInput, outputStream, length[0]);
-		outputStream.close();
-		filteredByteOutputStream.close();
 		byte[] filteredBytes = filteredByteOutputStream.toByteArray();
 		length[0] = filteredBytes.length;
 		return new ByteArrayInputStream(filteredBytes);
@@ -150,35 +155,27 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		tempFile.deleteOnExit();
 		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
 		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-		for (String filename: containerFiles.get(containerName)) {
-			File dataFile = new File(project.getLocalPath(), filename);
-			if (dataFile.exists()) {
-				ZipEntry zipEntry = new ZipEntry(filename);
-				long[] fileLength = new long[1];
-				InputStream wrappedInputStream = createFileInputStream(filename, project.getFileOption(filename), edition, fileLength);
-				zipOutputStream.putNextEntry(zipEntry);
-				StreamCopier.copy(wrappedInputStream, zipOutputStream, fileLength[0]);
-				zipOutputStream.closeEntry();
-				wrappedInputStream.close();
+		try {
+			for (String filename: containerFiles.get(containerName)) {
+				File dataFile = new File(project.getLocalPath(), filename);
+				if (dataFile.exists()) {
+					ZipEntry zipEntry = new ZipEntry(filename);
+					long[] fileLength = new long[1];
+					InputStream wrappedInputStream = createFileInputStream(filename, project.getFileOption(filename), edition, fileLength);
+					try {
+						zipOutputStream.putNextEntry(zipEntry);
+						StreamCopier.copy(wrappedInputStream, zipOutputStream, fileLength[0]);
+					} finally {
+						zipOutputStream.closeEntry();
+						wrappedInputStream.close();
+					}
+				}
 			}
+		} finally {	
+			zipOutputStream.closeEntry();
+			Closer.close(zipOutputStream);
+			Closer.close(fileOutputStream);
 		}
-		zipOutputStream.closeEntry();
-
-		/* FIXME - create metadata */
-		// ZipEntry metadataEntry = new ZipEntry("metadata");
-		// zipOutputStream.putNextEntry(metadataEntry);
-		// Metadata zipMetadata = new Metadata();
-		// for (String filename: containerFiles.get(containerName)) {
-		// if (new File(project.getLocalPath(), filename).exists()) {
-		// DocumentMetadata zipEntryMetadata = new DocumentMetadata();
-		// zipEntryMetadata.setName(filename);
-		// zipEntryMetadata.setFormat(project.getFileOption(filename).getMimeType());
-		// zipMetadata.addDocument(zipEntryMetadata);
-		// }
-		// }
-		// zipOutputStream.write(zipMetadata.toByteArray());
-		// zipOutputStream.closeEntry();
-		zipOutputStream.close();
 
 		containerLength[0] = tempFile.length();
 		return new FileInputStream(tempFile);

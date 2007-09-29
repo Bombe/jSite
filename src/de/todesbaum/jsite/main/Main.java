@@ -415,9 +415,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	// MAIN METHOD
 	//
 	public static void main(String[] args) {
-		System.setProperty("swing.plaf.metal.userFont", "Tahoma");
-		System.setProperty("swing.plaf.metal.controlFont", "Tahoma");
-		System.setProperty("swing.aatext", "true");
 		String configFilename = null;
 		boolean nextIsConfigFilename = false;
 		for (String argument: args) {

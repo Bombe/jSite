@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.LineInputStream;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.io.TempFileInputStream;
@@ -253,7 +254,13 @@ public class Connection {
 		nodeWriter.write("EndMessage" + Command.LINEFEED);
 		nodeWriter.flush();
 		if (command.hasPayload()) {
-			StreamCopier.copy(command.getPayload(), nodeOutputStream, command.getPayloadLength());
+			InputStream payloadInputStream = null;
+			try {
+				payloadInputStream = command.getPayload();
+				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength());
+			} finally {
+				Closer.close(payloadInputStream);
+			}
 			nodeOutputStream.flush();
 		}
 	}
