@@ -76,6 +76,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	private Action projectDeleteAction;
 	private Action projectCloneAction;
 	private Action projectCopyURIAction;
+	private Action projectGenerateKeyAction;
 
 	private JFileChooser pathChooser;
 	private SortedListModel projectListModel;
@@ -179,6 +180,15 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
 		projectCopyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
 		projectCopyURIAction.setEnabled(false);
+		
+		projectGenerateKeyAction = new AbstractAction(I18n.getMessage("jsite.project.action.generate-new-key")) {
+			public void actionPerformed(ActionEvent actionEvent) {
+				actionGenerateNewKey();
+			}
+		};
+		projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
+		projectGenerateKeyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
+		projectGenerateKeyAction.setEnabled(false);
 	}
 
 	private JComponent createInformationPanel() {
@@ -231,7 +241,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPublicKeyTextField.setEnabled(false);
 
 		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.public-key") + ":", KeyEvent.VK_U, projectPublicKeyTextField), new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPublicKeyTextField, new GridBagConstraints(1, 5, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(projectPublicKeyTextField, new GridBagConstraints(1, 5, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(new JButton(projectGenerateKeyAction), new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectPrivateKeyTextField = new JTextField(27);
 		projectPrivateKeyTextField.getDocument().putProperty("name", "project.privatekey");
@@ -369,6 +380,27 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			clipboard.setContents(new StringSelection(selectedProject.getFinalRequestURI(0)), this);
 		}
 	}
+	
+	protected void actionGenerateNewKey() {
+		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.generate-new-key"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
+			return;
+		}
+		int selectedIndex = projectList.getSelectedIndex();
+		if (selectedIndex > -1) {
+			Project selectedProject = (Project) projectList.getSelectedValue();
+			String[] keyPair = null;
+			try {
+				keyPair = freenetInterface.generateKeyPair();
+			} catch (IOException ioe1) {
+				JOptionPane.showMessageDialog(this, MessageFormat.format(I18n.getMessage("jsite.project.keygen.io-error"), ioe1.getMessage()), null, JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			selectedProject.setInsertURI(keyPair[0]);
+			selectedProject.setRequestURI(keyPair[1]);
+			projectPublicKeyTextField.setText(selectedProject.getRequestURI());
+			projectPrivateKeyTextField.setText(selectedProject.getInsertURI());
+		}
+	}
 
 	//
 	// INTERFACE ListSelectionListener
@@ -390,6 +422,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectDeleteAction.setEnabled(selectedRow > -1);
 		projectCloneAction.setEnabled(selectedRow > -1);
 		projectCopyURIAction.setEnabled(selectedRow > -1);
+		projectGenerateKeyAction.setEnabled(selectedRow > -1);
 		if (selectedRow > -1) {
 			projectNameTextField.setText(selectedProject.getName());
 			projectDescriptionTextField.setText(selectedProject.getDescription());
