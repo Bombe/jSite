@@ -20,6 +20,7 @@
 package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -129,6 +130,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		wizard.setQuitEnabled(false);
 		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
+		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
 		projectInserter.start();
 	}
 
@@ -149,7 +151,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				requestURITextField.setText(project.getFinalRequestURI(0));
+				requestURITextField.setText(project.getFinalRequestURI(1));
 			}
 		});
 	}
@@ -196,6 +198,15 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			public void run() {
 				progressBar.setMaximum(total);
 				progressBar.setValue(succeeded + failed + fatal);
+				int progress = (succeeded + failed + fatal) * 100 / total;
+				StringBuilder progressString = new StringBuilder();
+				progressString.append(progress).append("% (");
+				progressString.append(succeeded + failed + fatal).append("/").append(total);
+				progressString.append(")");
+				progressBar.setString(progressString.toString());
+				if (finalized) {
+					progressBar.setFont(progressBar.getFont().deriveFont(Font.BOLD));
+				}
 			}
 		});
 	}
@@ -217,6 +228,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
+				progressBar.setString("Done");
 				wizard.setNextEnabled(true);
 				wizard.setQuitEnabled(true);
 			}
