@@ -126,6 +126,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		manageNodeAction = new AbstractAction(I18n.getMessage("jsite.menu.nodes.manage-nodes")) {
 			public void actionPerformed(ActionEvent actionEvent) {
 				showPage(PageType.PAGE_NODE_MANAGER);
+				wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
+				wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			}
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
