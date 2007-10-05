@@ -56,7 +56,11 @@ public class I18n {
 		try {
 			return getResourceBundle().getString(key);
 		} catch (MissingResourceException mre1) {
-			return getResourceBundle(defaultLocale).getString(key);
+			try {
+				return getResourceBundle(defaultLocale).getString(key);
+			} catch (MissingResourceException mre2) {
+				return key;
+			}
 		}
 	}
 

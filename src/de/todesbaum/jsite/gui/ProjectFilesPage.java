@@ -64,6 +64,7 @@ import javax.swing.text.Document;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.mime.DefaultMIMETypes;
 import de.todesbaum.util.swing.TLabel;
 import de.todesbaum.util.swing.TWizard;
@@ -75,14 +76,12 @@ import de.todesbaum.util.swing.TWizardPage;
  */
 public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
 
-	protected TWizard wizard;
-
 	protected Project project;
 
-	private Action scanAction;
-	private Action editContainerAction;
-	private Action addContainerAction;
-	private Action deleteContainerAction;
+	protected Action scanAction;
+	protected Action editContainerAction;
+	protected Action addContainerAction;
+	protected Action deleteContainerAction;
 
 	protected JList projectFileList;
 	private JCheckBox defaultFileCheckBox;
@@ -94,8 +93,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	private JSpinner replaceEditionRangeSpinner;
 	private JCheckBox replacementCheckBox;
 
-	public ProjectFilesPage() {
-		super();
+	public ProjectFilesPage(final TWizard wizard) {
+		super(wizard);
 		pageInit();
 	}
 
@@ -141,12 +140,28 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		};
 		deleteContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.delete-container.tooltip"));
 		deleteContainerAction.setEnabled(false);
+
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				scanAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.rescan"));
+				scanAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.rescan.tooltip"));
+				addContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.add-container"));
+				addContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.add-container.tooltip"));
+				editContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.edit-container"));
+				editContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.edit-container.tooltip"));
+				deleteContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.delete-container"));
+				deleteContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.delete-container.tooltip"));
+			}
+		});
 	}
 
 	@Override
 	public void pageAdded(TWizard wizard) {
-		this.wizard = wizard;
 		actionScan();
+		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
+		this.wizard.setNextName(I18n.getMessage("jsite.project-files.insert-now"));
+		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
 	private JComponent createProjectFilesPanel() {
@@ -166,7 +181,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		fileOptionsPanel.add(new JButton(scanAction), new GridBagConstraints(0, 0, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-		fileOptionsPanel.add(new JLabel("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>"), new GridBagConstraints(0, 1, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+		final JLabel fileOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>");
+		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 1, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
 
 		defaultFileCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.default"));
 		defaultFileCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.default.tooltip"));
@@ -190,7 +206,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsCustomKeyTextField.setEnabled(false);
 		fileOptionsCustomKeyTextField.getDocument().addDocumentListener(this);
 
-		fileOptionsPanel.add(new TLabel(I18n.getMessage("jsite.project-files.custom-key"), KeyEvent.VK_K, fileOptionsCustomKeyTextField), new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel customKeyLabel = new TLabel(I18n.getMessage("jsite.project-files.custom-key") + ":", KeyEvent.VK_K, fileOptionsCustomKeyTextField);
+		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(1, 4, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		fileOptionsMIMETypeComboBox = new JComboBox(DefaultMIMETypes.getAllMIMETypes());
@@ -199,7 +216,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsMIMETypeComboBox.addActionListener(this);
 		fileOptionsMIMETypeComboBox.setEnabled(false);
 
-		fileOptionsPanel.add(new TLabel(I18n.getMessage("jsite.project-files.mime-type"), KeyEvent.VK_M, fileOptionsMIMETypeComboBox), new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel mimeTypeLabel = new TLabel(I18n.getMessage("jsite.project-files.mime-type") + ":", KeyEvent.VK_M, fileOptionsMIMETypeComboBox);
+		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 5, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		containerComboBoxModel = new DefaultComboBoxModel();
@@ -209,7 +227,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.addActionListener(this);
 		fileOptionsContainerComboBox.setEnabled(false);
 
-		fileOptionsPanel.add(new TLabel(I18n.getMessage("jsite.project-files.container"), KeyEvent.VK_C, fileOptionsContainerComboBox), new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel containerLabel = new TLabel(I18n.getMessage("jsite.project-files.container") + ":", KeyEvent.VK_C, fileOptionsContainerComboBox);
+		fileOptionsPanel.add(containerLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsContainerComboBox, new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		fileOptionsPanel.add(new JButton(addContainerAction), new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		fileOptionsPanel.add(new JButton(editContainerAction), new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
@@ -230,18 +249,47 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		replaceEditionRangeSpinner.setToolTipText(I18n.getMessage("jsite.project-files.replacement.edition-range.tooltip"));
 		replaceEditionRangeSpinner.addChangeListener(this);
 		replaceEditionRangeSpinner.setEnabled(false);
-		fileOptionsReplacementPanel.add(new JLabel(I18n.getMessage("jsite.project-files.replacement.edition-range")));
+		final JLabel editionRangeLabel = new JLabel(I18n.getMessage("jsite.project-files.replacement.edition-range"));
+		fileOptionsReplacementPanel.add(editionRangeLabel);
 		fileOptionsReplacementPanel.add(replaceEditionRangeSpinner);
 
 		fileOptionsPanel.add(fileOptionsReplacementPanel, new GridBagConstraints(0, 7, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				fileOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>");
+				defaultFileCheckBox.setText(I18n.getMessage("jsite.project-files.default"));
+				defaultFileCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.default.tooltip"));
+				fileOptionsInsertCheckBox.setText(I18n.getMessage("jsite.project-files.insert"));
+				fileOptionsInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert.tooltip"));
+				fileOptionsCustomKeyTextField.setToolTipText(I18n.getMessage("jsite.project-files.custom-key.tooltip"));
+				customKeyLabel.setText(I18n.getMessage("jsite.project-files.custom-key") + ":");
+				fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
+				mimeTypeLabel.setText(I18n.getMessage("jsite.project-files.mime-type") + ":");
+				fileOptionsContainerComboBox.setToolTipText(I18n.getMessage("jsite.project-files.container.tooltip"));
+				containerLabel.setText(I18n.getMessage("jsite.project-files.container") + ":");
+				replacementCheckBox.setText(I18n.getMessage("jsite.project-files.replacement"));
+				replacementCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.replacement.tooltip"));
+				replaceEditionRangeSpinner.setToolTipText(I18n.getMessage("jsite.project-files.replacement.edition-range.tooltip"));
+				editionRangeLabel.setText(I18n.getMessage("jsite.project-files.replacement.edition-range"));
+			}
+		});
+
 		return projectFilesPanel;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(final Project project) {
 		this.project = project;
 		setHeading(MessageFormat.format(I18n.getMessage("jsite.project-files.heading"), project.getName()));
 		setDescription(I18n.getMessage("jsite.project-files.description"));
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				setHeading(MessageFormat.format(I18n.getMessage("jsite.project-files.heading"), project.getName()));
+				setDescription(I18n.getMessage("jsite.project-files.description"));
+			}
+		});
 	}
 
 	private List<String> getProjectFiles() {

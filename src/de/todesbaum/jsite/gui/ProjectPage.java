@@ -58,6 +58,7 @@ import javax.swing.text.Document;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.SortedListModel;
 import de.todesbaum.util.swing.TLabel;
 import de.todesbaum.util.swing.TWizard;
@@ -71,12 +72,12 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	private Freenet7Interface freenetInterface;
 
-	private Action projectLocalPathBrowseAction;
-	private Action projectAddAction;
-	private Action projectDeleteAction;
-	private Action projectCloneAction;
-	private Action projectCopyURIAction;
-	private Action projectGenerateKeyAction;
+	protected Action projectLocalPathBrowseAction;
+	protected Action projectAddAction;
+	protected Action projectDeleteAction;
+	protected Action projectCloneAction;
+	protected Action projectCopyURIAction;
+	protected Action projectGenerateKeyAction;
 
 	private JFileChooser pathChooser;
 	private SortedListModel projectListModel;
@@ -88,12 +89,20 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	private JTextField projectPrivateKeyTextField;
 	private JTextField projectPathTextField;
 
-	public ProjectPage() {
-		super();
+	public ProjectPage(final TWizard wizard) {
+		super(wizard);
 		setLayout(new BorderLayout(12, 12));
 		dialogInit();
 		setHeading(I18n.getMessage("jsite.project.heading"));
 		setDescription(I18n.getMessage("jsite.project.description"));
+		
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				setHeading(I18n.getMessage("jsite.project.heading"));
+				setDescription(I18n.getMessage("jsite.project.description"));
+			}
+		});
 	}
 
 	protected void dialogInit() {
@@ -117,7 +126,10 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	public void pageAdded(TWizard wizard) {
 		super.pageAdded(wizard);
 		projectList.clearSelection();
-		wizard.setNextEnabled(false);
+		this.wizard.setPreviousName(I18n.getMessage("jsite.menu.nodes.manage-nodes"));
+		this.wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
+		this.wizard.setNextEnabled(false);
 	}
 
 	/**
@@ -171,8 +183,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectCloneAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.clone-project.tooltip"));
 		projectCloneAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_L);
 		projectCloneAction.setEnabled(false);
-		
+
 		projectCopyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
+
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCopyURI();
 			}
@@ -180,8 +193,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
 		projectCopyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
 		projectCopyURIAction.setEnabled(false);
-		
+
 		projectGenerateKeyAction = new AbstractAction(I18n.getMessage("jsite.project.action.generate-new-key")) {
+
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionGenerateNewKey();
 			}
@@ -189,6 +203,24 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
 		projectGenerateKeyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
 		projectGenerateKeyAction.setEnabled(false);
+		
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				projectLocalPathBrowseAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.browse"));
+				projectLocalPathBrowseAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.browse.tooltip"));
+				projectAddAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.add-project"));
+				projectAddAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.add-project.tooltip"));
+				projectDeleteAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.delete-project"));
+				projectDeleteAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.delete-project.tooltip"));
+				projectCloneAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.clone-project"));
+				projectCloneAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.clone-project.tooltip"));
+				projectCopyURIAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.copy-uri"));
+				projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
+				projectGenerateKeyAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.generate-new-key"));
+				projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
+			}
+		});
 	}
 
 	private JComponent createInformationPanel() {
@@ -206,14 +238,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		informationPanel.add(functionButtons, BorderLayout.PAGE_START);
 		informationPanel.add(informationTable, BorderLayout.CENTER);
 
-		informationTable.add(new JLabel("<html><b>" + I18n.getMessage("jsite.project.project.information") + "</b></html>"), new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		final JLabel projectInformationLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.project.project.information") + "</b></html>");
+		informationTable.add(projectInformationLabel, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
 		projectNameTextField = new JTextField();
 		projectNameTextField.getDocument().putProperty("name", "project.name");
 		projectNameTextField.getDocument().addDocumentListener(this);
 		projectNameTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.name") + ":", KeyEvent.VK_N, projectNameTextField), new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectNameLabel = new TLabel(I18n.getMessage("jsite.project.project.name") + ":", KeyEvent.VK_N, projectNameTextField);
+		informationTable.add(projectNameLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectNameTextField, new GridBagConstraints(1, 1, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectDescriptionTextField = new JTextField();
@@ -221,7 +255,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectDescriptionTextField.getDocument().addDocumentListener(this);
 		projectDescriptionTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.description") + ":", KeyEvent.VK_D, projectDescriptionTextField), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectDescriptionLabel = new TLabel(I18n.getMessage("jsite.project.project.description") + ":", KeyEvent.VK_D, projectDescriptionTextField);
+		informationTable.add(projectDescriptionLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectDescriptionTextField, new GridBagConstraints(1, 2, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectLocalPathTextField = new JTextField();
@@ -229,18 +264,21 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectLocalPathTextField.getDocument().addDocumentListener(this);
 		projectLocalPathTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.local-path") + ":", KeyEvent.VK_L, projectLocalPathTextField), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectLocalPathLabel = new TLabel(I18n.getMessage("jsite.project.project.local-path") + ":", KeyEvent.VK_L, projectLocalPathTextField);
+		informationTable.add(projectLocalPathLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectLocalPathTextField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		informationTable.add(new JButton(projectLocalPathBrowseAction), new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
-		informationTable.add(new JLabel("<html><b>" + I18n.getMessage("jsite.project.project.address") + "</b></html>"), new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+		final JLabel projectAddressLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.project.project.address") + "</b></html>");
+		informationTable.add(projectAddressLabel, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
 		projectPublicKeyTextField = new JTextField(27);
 		projectPublicKeyTextField.getDocument().putProperty("name", "project.publickey");
 		projectPublicKeyTextField.getDocument().addDocumentListener(this);
 		projectPublicKeyTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.public-key") + ":", KeyEvent.VK_U, projectPublicKeyTextField), new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectPublicKeyLabel = new TLabel(I18n.getMessage("jsite.project.project.public-key") + ":", KeyEvent.VK_U, projectPublicKeyTextField);
+		informationTable.add(projectPublicKeyLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectPublicKeyTextField, new GridBagConstraints(1, 5, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		informationTable.add(new JButton(projectGenerateKeyAction), new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
@@ -249,7 +287,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPrivateKeyTextField.getDocument().addDocumentListener(this);
 		projectPrivateKeyTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.private-key") + ":", KeyEvent.VK_R, projectPrivateKeyTextField), new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectPrivateKeyLabel = new TLabel(I18n.getMessage("jsite.project.project.private-key") + ":", KeyEvent.VK_R, projectPrivateKeyTextField);
+		informationTable.add(projectPrivateKeyLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectPrivateKeyTextField, new GridBagConstraints(1, 6, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectPathTextField = new JTextField();
@@ -257,7 +296,21 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPathTextField.getDocument().addDocumentListener(this);
 		projectPathTextField.setEnabled(false);
 
-		informationTable.add(new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField), new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel projectPathLabel = new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField);
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				projectInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.project.project.information") + "</b></html>");
+				projectNameLabel.setText(I18n.getMessage("jsite.project.project.name") + ":");
+				projectDescriptionLabel.setText(I18n.getMessage("jsite.project.project.description") + ":");
+				projectLocalPathLabel.setText(I18n.getMessage("jsite.project.project.local-path") + ":");
+				projectAddressLabel.setText("<html><b>" + I18n.getMessage("jsite.project.project.address") + "</b></html>");
+				projectPublicKeyLabel.setText(I18n.getMessage("jsite.project.project.public-key") + ":");
+				projectPrivateKeyLabel.setText(I18n.getMessage("jsite.project.project.private-key") + ":");
+				projectPathLabel.setText(I18n.getMessage("jsite.project.project.path") + ":");
+			}
+		});
+		informationTable.add(projectPathLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		informationTable.add(projectPathTextField, new GridBagConstraints(1, 7, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		return informationPanel;

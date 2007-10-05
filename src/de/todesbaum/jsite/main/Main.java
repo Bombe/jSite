@@ -52,6 +52,7 @@ import de.todesbaum.jsite.gui.ProjectFilesPage;
 import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.image.IconLoader;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -73,9 +74,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH };
-	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
-	private Action manageNodeAction;
-	private Action aboutAction;
+	protected Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
+	protected Action manageNodeAction;
+	protected Action aboutAction;
 	protected TWizard wizard;
 	protected JMenu nodeMenu;
 	private Node selectedNode;
@@ -100,8 +101,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		wizard = new TWizard();
 		createActions();
 		wizard.setJMenuBar(createMenuBar());
-		wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
-		wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 		wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 		wizard.setPreviousEnabled(false);
 		wizard.setNextEnabled(true);
@@ -111,7 +110,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
-		wizard.setPreviousName((String) manageNodeAction.getValue(Action.NAME));
 	}
 
 	private void createActions() {
@@ -136,11 +134,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), Version.getVersion()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
 			}
 		};
+		
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+			public void run() {
+				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
+				aboutAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.about"));
+			}
+		});
 	}
 
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu languageMenu = new JMenu(I18n.getMessage("jsite.menu.languages"));
+		final JMenu languageMenu = new JMenu(I18n.getMessage("jsite.menu.languages"));
 		menuBar.add(languageMenu);
 		ButtonGroup languageButtonGroup = new ButtonGroup();
 		for (Locale locale: SUPPORTED_LOCALES) {
@@ -163,31 +168,43 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		panel.setOpaque(false);
 		menuBar.add(panel);
 
-		JMenu helpMenu = new JMenu(I18n.getMessage("jsite.menu.help"));
+		final JMenu helpMenu = new JMenu(I18n.getMessage("jsite.menu.help"));
 		menuBar.add(helpMenu);
 		helpMenu.add(aboutAction);
+		
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+			public void run() {
+				languageMenu.setText(I18n.getMessage("jsite.menu.languages"));
+				nodeMenu.setText(I18n.getMessage("jsite.menu.nodes"));
+				helpMenu.setText(I18n.getMessage("jsite.menu.help"));
+				for (Map.Entry<Locale, Action> languageActionEntry: languageActions.entrySet()) {
+					languageActionEntry.getValue().putValue(Action.NAME, I18n.getMessage("jsite.menu.language." + languageActionEntry.getKey().getLanguage()));
+				}
+			}
+		});
+		
 		return menuBar;
 	}
 
 	private void initPages() {
-		NodeManagerPage nodeManagerPage = new NodeManagerPage();
+		NodeManagerPage nodeManagerPage = new NodeManagerPage(wizard);
 		nodeManagerPage.setName("page.node-manager");
 		nodeManagerPage.addNodeManagerListener(this);
 		nodeManagerPage.setNodes(configuration.getNodes());
 		pages.put(PageType.PAGE_NODE_MANAGER, nodeManagerPage);
 
-		ProjectPage projectPage = new ProjectPage();
+		ProjectPage projectPage = new ProjectPage(wizard);
 		projectPage.setName("page.project");
 		projectPage.setProjects(configuration.getProjects());
 		projectPage.setFreenetInterface(freenetInterface);
 		projectPage.addListSelectionListener(this);
 		pages.put(PageType.PAGE_PROJECTS, projectPage);
 
-		ProjectFilesPage projectFilesPage = new ProjectFilesPage();
+		ProjectFilesPage projectFilesPage = new ProjectFilesPage(wizard);
 		projectFilesPage.setName("page.project.files");
 		pages.put(PageType.PAGE_PROJECT_FILES, projectFilesPage);
 
-		ProjectInsertPage projectInsertPage = new ProjectInsertPage();
+		ProjectInsertPage projectInsertPage = new ProjectInsertPage(wizard);
 		projectInsertPage.setDebug(debug);
 		projectInsertPage.setName("page.project.insert");
 		projectInsertPage.setFreenetInterface(freenetInterface);
@@ -242,11 +259,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		Action languageAction = languageActions.get(supportedLocale);
 		JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) languageAction.getValue("menuItem");
 		menuItem.setSelected(true);
-		/* show the restart message in the other language! */
-		Locale currentLocale = I18n.getLocale();
 		I18n.setLocale(supportedLocale);
-		JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.menu.language.change.restart-message"), null, JOptionPane.INFORMATION_MESSAGE);
-		I18n.setLocale(currentLocale);
+		for (Runnable i18nRunnable: I18nContainer.getInstance()) {
+			try {
+				i18nRunnable.run();
+			} catch (Throwable t) {
+				/* we probably shouldn't swallow this. */
+			}
+		}
+		wizard.setPage(wizard.getPage());
 		configuration.setLocale(supportedLocale);
 	}
 
@@ -274,7 +295,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		String pageName = wizard.getPage().getName();
 		if ("page.node-manager".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
-			wizard.setPreviousName((String) manageNodeAction.getValue(Action.NAME));
 		} else if ("page.project".equals(pageName)) {
 			ProjectPage projectPage = (ProjectPage) wizard.getPage();
 			Project project = projectPage.getSelectedProject();
@@ -289,8 +309,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			((ProjectFilesPage) pages.get(PageType.PAGE_PROJECT_FILES)).setProject(project);
 			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).setProject(project);
 			showPage(PageType.PAGE_PROJECT_FILES);
-			wizard.setNextName(I18n.getMessage("jsite.project-files.insert-now"));
-			wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		} else if ("page.project.files".equals(pageName)) {
 			ProjectPage projectPage = (ProjectPage) pages.get(PageType.PAGE_PROJECTS);
 			Project project = projectPage.getSelectedProject();
@@ -332,8 +350,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				return;
 			}
 			configuration.save();
-			wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			showPage(PageType.PAGE_INSERT_PROJECT);
+			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).startInsert();
 			nodeMenu.setEnabled(false);
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
@@ -348,11 +366,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		String pageName = wizard.getPage().getName();
 		if ("page.project".equals(pageName)) {
 			showPage(PageType.PAGE_NODE_MANAGER);
-			wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		} else if ("page.project.files".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
-			wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
-			wizard.setPreviousName((String) manageNodeAction.getValue(Action.NAME));
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECT_FILES);
 		}

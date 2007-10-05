@@ -55,6 +55,7 @@ import javax.swing.text.Document;
 
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TLabel;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -66,21 +67,27 @@ import de.todesbaum.util.swing.TWizardPage;
 public class NodeManagerPage extends TWizardPage implements ListSelectionListener, DocumentListener, ChangeListener {
 
 	private List<NodeManagerListener> nodeManagerListeners = new ArrayList<NodeManagerListener>();
-	private TWizard wizard;
 
-	private Action addNodeAction;
-	private Action deleteNodeAction;
+	protected Action addNodeAction;
+	protected Action deleteNodeAction;
 	private DefaultListModel nodeListModel;
 	private JList nodeList;
 	private JTextField nodeNameTextField;
 	private JTextField nodeHostnameTextField;
 	private JSpinner nodePortSpinner;
 
-	public NodeManagerPage() {
-		super();
+	public NodeManagerPage(final TWizard wizard) {
+		super(wizard);
 		pageInit();
 		setHeading(I18n.getMessage("jsite.node-manager.heading"));
 		setDescription(I18n.getMessage("jsite.node-manager.description"));
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				setHeading(I18n.getMessage("jsite.node-manager.heading"));
+				setDescription(I18n.getMessage("jsite.node-manager.description"));
+			}
+		});
 	}
 	
 	public void addNodeManagerListener(NodeManagerListener nodeManagerListener) {
@@ -112,6 +119,14 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 			}
 		};
 		deleteNodeAction.setEnabled(false);
+
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				addNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.node-manager.add-node"));
+				deleteNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.node-manager.delete-node"));
+			}
+		});
 	}
 
 	private void pageInit() {
@@ -147,17 +162,31 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		JPanel nodeInformationPanel = new JPanel(new GridBagLayout());
 		centerPanel.add(nodeInformationPanel, BorderLayout.PAGE_START);
 		nodeInformationPanel.add(buttonPanel, new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		nodeInformationPanel.add(new JLabel("<html><b>" + I18n.getMessage("jsite.node-manager.node-information") + "</b></html>"), new GridBagConstraints(0, 1, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 0, 0, 0), 0, 0));
-		nodeInformationPanel.add(new TLabel(I18n.getMessage("jsite.node-manager.name"), KeyEvent.VK_N, nodeNameTextField), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final JLabel nodeInformationLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.node-manager.node-information") + "</b></html>");
+		nodeInformationPanel.add(nodeInformationLabel, new GridBagConstraints(0, 1, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 0, 0, 0), 0, 0));
+		final TLabel nodeNameLabel = new TLabel(I18n.getMessage("jsite.node-manager.name") + ":", KeyEvent.VK_N, nodeNameTextField);
+		nodeInformationPanel.add(nodeNameLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		nodeInformationPanel.add(nodeNameTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		nodeInformationPanel.add(new TLabel(I18n.getMessage("jsite.node-manager.hostname"), KeyEvent.VK_H, nodeHostnameTextField), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel nodeHostnameLabel = new TLabel(I18n.getMessage("jsite.node-manager.hostname") + ":", KeyEvent.VK_H, nodeHostnameTextField);
+		nodeInformationPanel.add(nodeHostnameLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		nodeInformationPanel.add(nodeHostnameTextField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		nodeInformationPanel.add(new TLabel(I18n.getMessage("jsite.node-manager.port"), KeyEvent.VK_P, nodePortSpinner), new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		final TLabel nodePortLabel = new TLabel(I18n.getMessage("jsite.node-manager.port") + ":", KeyEvent.VK_P, nodePortSpinner);
+		nodeInformationPanel.add(nodePortLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		nodeInformationPanel.add(nodePortSpinner, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
 
 		setLayout(new BorderLayout(12, 12));
 		add(new JScrollPane(nodeList), BorderLayout.LINE_START);
 		add(centerPanel, BorderLayout.CENTER);
+
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				nodeInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.node-manager.node-information") + "</b></html>");
+				nodeNameLabel.setText(I18n.getMessage("jsite.node-manager.name") + ":");
+				nodeHostnameLabel.setText(I18n.getMessage("jsite.node-manager.hostname") + ":");
+				nodePortLabel.setText(I18n.getMessage("jsite.node-manager.port") + ":");
+			}
+		});
 	}
 	
 	/**
@@ -165,8 +194,10 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	 */
 	@Override
 	public void pageAdded(TWizard wizard) {
-		this.wizard = wizard;
-		wizard.setNextEnabled(nodeListModel.getSize() > 0);
+		this.wizard.setNextEnabled(nodeListModel.getSize() > 0);
+		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
+		this.wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
 	public void setNodes(Node[] nodes) {

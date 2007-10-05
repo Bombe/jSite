@@ -27,18 +27,21 @@ import javax.swing.JPanel;
  */
 public class TWizardPage extends JPanel {
 
+	protected final TWizard wizard;
 	protected String heading;
 	protected String description;
 
-	public TWizardPage() {
+	public TWizardPage(final TWizard wizard) {
+		this.wizard = wizard;
 	}
 
-	public TWizardPage(String heading) {
+	public TWizardPage(final TWizard wizard, String heading) {
+		this.wizard = wizard;
 		this.heading = heading;
 	}
 
-	public TWizardPage(String heading, String description) {
-		this(heading);
+	public TWizardPage(final TWizard wizard, String heading, String description) {
+		this(wizard, heading);
 		this.description = description;
 	}
 

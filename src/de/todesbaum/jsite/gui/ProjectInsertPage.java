@@ -51,6 +51,7 @@ import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
@@ -60,21 +61,27 @@ import de.todesbaum.util.swing.TWizardPage;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
 
-	protected TWizard wizard;
 	protected ProjectInserter projectInserter;
 
 	protected Action copyURIAction;
 	protected JTextField requestURITextField;
 	protected JLabel startTimeLabel;
 	protected JProgressBar progressBar;
-	protected long startTime;
+	protected long startTime = 0;
 
-	public ProjectInsertPage() {
-		super();
+	public ProjectInsertPage(final TWizard wizard) {
+		super(wizard);
 		createActions();
 		pageInit();
 		setHeading(I18n.getMessage("jsite.insert.heading"));
 		setDescription(I18n.getMessage("jsite.insert.description"));
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				setHeading(I18n.getMessage("jsite.insert.heading"));
+				setDescription(I18n.getMessage("jsite.insert.description"));
+			}
+		});
 		projectInserter = new ProjectInserter();
 		projectInserter.addInsertListener(this);
 	}
@@ -88,6 +95,14 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		copyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
 		copyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
 		copyURIAction.setEnabled(false);
+
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				copyURIAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.copy-uri"));
+				copyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
+			}
+		});
 	}
 
 	private void pageInit() {
@@ -107,14 +122,33 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		progressBar.setStringPainted(true);
 		progressBar.setValue(0);
 
-		projectInsertPanel.add(new JLabel("<html><b>" + I18n.getMessage("jsite.insert.project-information") + "</b></html>"), new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		projectInsertPanel.add(new JLabel(I18n.getMessage("jsite.insert.request-uri") + ":"), new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
+		final JLabel projectInformationLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.insert.project-information") + "</b></html>");
+		projectInsertPanel.add(projectInformationLabel, new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		final JLabel requestURILabel = new JLabel(I18n.getMessage("jsite.insert.request-uri") + ":");
+		projectInsertPanel.add(requestURILabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 		projectInsertPanel.add(requestURITextField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		projectInsertPanel.add(new JLabel(I18n.getMessage("jsite.insert.start-time") + ":"), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
+		final JLabel startTimeLeftLabel = new JLabel(I18n.getMessage("jsite.insert.start-time") + ":");
+		projectInsertPanel.add(startTimeLeftLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 		projectInsertPanel.add(startTimeLabel, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		projectInsertPanel.add(new JLabel(I18n.getMessage("jsite.insert.progress") + ":"), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
+		final JLabel progressLabel = new JLabel(I18n.getMessage("jsite.insert.progress") + ":");
+		projectInsertPanel.add(progressLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 		projectInsertPanel.add(progressBar, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 		projectInsertPanel.add(new JButton(copyURIAction), new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			public void run() {
+				projectInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.insert.project-information") + "</b></html>");
+				requestURILabel.setText(I18n.getMessage("jsite.insert.request-uri") + ":");
+				startTimeLeftLabel.setText(I18n.getMessage("jsite.insert.start-time") + ":");
+				if (startTime != 0) {
+					startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date(startTime)));
+				} else {
+					startTimeLabel.setText("");
+				}
+				progressLabel.setText(I18n.getMessage("jsite.insert.progress") + ":");
+			}
+		});
 
 		return projectInsertPanel;
 	}
@@ -124,10 +158,14 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	@Override
 	public void pageAdded(TWizard wizard) {
-		this.wizard = wizard;
-		wizard.setPreviousEnabled(false);
+		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
+		this.wizard.setPreviousEnabled(false);
+		this.wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
+	}
+
+	public void startInsert() {
 		wizard.setNextEnabled(false);
-		wizard.setQuitEnabled(false);
 		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
 		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
