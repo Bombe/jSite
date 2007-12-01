@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -81,6 +82,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	private JFileChooser pathChooser;
 	private SortedListModel projectListModel;
+	private JScrollPane projectScrollPane;
 	private JList projectList;
 	private JTextField projectNameTextField;
 	private JTextField projectDescriptionTextField;
@@ -115,7 +117,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectList.addListSelectionListener(this);
 		projectList.setPreferredSize(new Dimension(150, projectList.getPreferredSize().height));
 
-		add(new JScrollPane(projectList), BorderLayout.LINE_START);
+		add(projectScrollPane = new JScrollPane(projectList), BorderLayout.LINE_START);
 		add(createInformationPanel(), BorderLayout.CENTER);
 	}
 
@@ -397,8 +399,10 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		newProject.setName(I18n.getMessage("jsite.project.new-project.name"));
 		newProject.setInsertURI(keyPair[0]);
 		newProject.setRequestURI(keyPair[1]);
-		newProject.setEdition(1);
+		newProject.setEdition(0);
 		projectListModel.add(newProject);
+		projectScrollPane.revalidate();
+		projectScrollPane.repaint();
 		projectList.setSelectedIndex(projectListModel.size() - 1);
 	}
 
