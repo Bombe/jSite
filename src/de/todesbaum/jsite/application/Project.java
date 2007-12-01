@@ -241,7 +241,7 @@ public class Project implements Comparable {
 	 * @return Returns the fileOptions.
 	 */
 	public Map<String, FileOption> getFileOptions() {
-		return Collections.unmodifiableMap(new HashMap<String, FileOption>(fileOptions));
+		return Collections.unmodifiableMap(fileOptions);
 	}
 
 	/**
