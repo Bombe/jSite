@@ -31,8 +31,11 @@ import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -400,12 +403,16 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 					rebuildContainerComboBox();
 				}
 			});
+			Set<String> entriesToRemove = new HashSet<String>();
 			Iterator<String> filenames = project.getFileOptions().keySet().iterator();
 			while (filenames.hasNext()) {
 				String filename = filenames.next();
 				if (!files.contains(filename)) {
-					project.setFileOption(filename, null);
+					entriesToRemove.add(filename);
 				}
+			}
+			for (String filename: entriesToRemove) {
+				project.setFileOption(filename, null);
 			}
 		} else {
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.scan-error"), null, JOptionPane.ERROR_MESSAGE);
