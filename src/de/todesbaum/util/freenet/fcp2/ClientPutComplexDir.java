@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,7 @@ import de.todesbaum.util.io.Closer;
 /**
  * Implementation of the <code>ClientPutComplexDir</code> command. This
  * command can be used to insert directories that do not exist on disk.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -42,13 +42,13 @@ public class ClientPutComplexDir extends ClientPutDir {
 
 	/** The file entries of this directory. */
 	private List<FileEntry> fileEntries = new ArrayList<FileEntry>();
-	
+
 	/** Whether this request has payload. */
 	private boolean hasPayload = false;
-	
+
 	/** The input streams for the payload. */
 	private File payloadFile;
-	
+
 	/** The total number of bytes of the payload. */
 	private long payloadLength = 0;
 
@@ -66,31 +66,35 @@ public class ClientPutComplexDir extends ClientPutDir {
 	 * @param fileEntry The file entry to add to the directory
 	 */
 	public void addFileEntry(FileEntry fileEntry) {
-		if (payloadFile == null){
-			try {
-				payloadFile = File.createTempFile("payload", ".dat");
-				payloadFile.deleteOnExit();
-			} catch (IOException e) {
-			}
-		}
-		if (payloadFile != null) {
-			InputStream payloadInputStream = ((DirectFileEntry) fileEntry).getDataInputStream();
-			FileOutputStream payloadOutputStream = null;
-			try {
-				payloadOutputStream = new FileOutputStream(payloadFile, true);
-				byte[] buffer = new byte[65536];
-				int read = 0;
-				while ((read = payloadInputStream.read(buffer)) != -1) {
-					payloadOutputStream.write(buffer, 0, read);
+		if (fileEntry instanceof DirectFileEntry) {
+			if (payloadFile == null){
+				try {
+					payloadFile = File.createTempFile("payload", ".dat");
+					payloadFile.deleteOnExit();
+				} catch (IOException e) {
 				}
-				payloadOutputStream.flush();
-				fileEntries.add(fileEntry);
-			} catch (IOException ioe1) {
-				/* hmm, ignore? */
-			} finally {
-				Closer.close(payloadOutputStream);
-				Closer.close(payloadInputStream);
 			}
+			if (payloadFile != null) {
+				InputStream payloadInputStream = ((DirectFileEntry) fileEntry).getDataInputStream();
+				FileOutputStream payloadOutputStream = null;
+				try {
+					payloadOutputStream = new FileOutputStream(payloadFile, true);
+					byte[] buffer = new byte[65536];
+					int read = 0;
+					while ((read = payloadInputStream.read(buffer)) != -1) {
+						payloadOutputStream.write(buffer, 0, read);
+					}
+					payloadOutputStream.flush();
+					fileEntries.add(fileEntry);
+				} catch (IOException ioe1) {
+					/* hmm, ignore? */
+				} finally {
+					Closer.close(payloadOutputStream);
+					Closer.close(payloadInputStream);
+				}
+			}
+		} else {
+			fileEntries.add(fileEntry);
 		}
 	}
 
