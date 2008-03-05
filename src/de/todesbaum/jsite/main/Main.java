@@ -21,6 +21,7 @@ package de.todesbaum.jsite.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -318,6 +319,12 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			}
 			if (project.getIndexFile() == null) {
 				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.empty-index"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
+					return;
+				}
+			} else {
+				File indexFile = new File(project.getLocalPath(), project.getIndexFile());
+				if (!indexFile.exists()) {
+					JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.index-missing"), null, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
