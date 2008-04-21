@@ -85,7 +85,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter = new ProjectInserter();
 		projectInserter.addInsertListener(this);
 	}
-	
+
 	private void createActions() {
 		copyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -168,6 +168,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		wizard.setNextEnabled(false);
 		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
+		progressBar.setString(I18n.getMessage("jsite.insert.starting"));
 		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
 		projectInserter.start();
 	}
@@ -193,7 +194,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			}
 		});
 	}
-	
+
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		projectInserter.setFreenetInterface(freenetInterface);
 	}
@@ -214,7 +215,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			}
 		});
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -266,17 +267,17 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
-				progressBar.setString("Done");
+				progressBar.setString(I18n.getMessage("jsite.insert.done"));
 				wizard.setNextEnabled(true);
 				wizard.setQuitEnabled(true);
 			}
 		});
 	}
-	
+
 	//
 	// ACTIONS
 	//
-	
+
 	protected void actionCopyURI() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
@@ -285,7 +286,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	//
 	// INTERFACE ClipboardOwner
 	//
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

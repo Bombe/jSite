@@ -285,7 +285,7 @@ public class Project implements Comparable {
 	 * @return The final request URI
 	 */
 	public String getFinalRequestURI(int offset) {
-		return "freenet:USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
+		return "USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
 	}
 
 }
