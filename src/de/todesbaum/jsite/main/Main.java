@@ -86,7 +86,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private Main() {
 		this(null);
 	}
-	
+
 	private Main(String configFilename) {
 		if (configFilename != null) {
 			configuration = new Configuration(configFilename);
@@ -135,7 +135,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), Version.getVersion()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
 			}
 		};
-		
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 			public void run() {
 				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
@@ -172,7 +172,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		final JMenu helpMenu = new JMenu(I18n.getMessage("jsite.menu.help"));
 		menuBar.add(helpMenu);
 		helpMenu.add(aboutAction);
-		
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 			public void run() {
 				languageMenu.setText(I18n.getMessage("jsite.menu.languages"));
@@ -183,7 +183,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				}
 			}
 		});
-		
+
 		return menuBar;
 	}
 
@@ -467,5 +467,5 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		System.out.println("--debug\tenables some debug output");
 		System.out.println("--config-file <file>\tuse specified configuration file");
 	}
-	
+
 }

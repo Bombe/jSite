@@ -47,14 +47,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Project;
@@ -97,7 +99,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		dialogInit();
 		setHeading(I18n.getMessage("jsite.project.heading"));
 		setDescription(I18n.getMessage("jsite.project.description"));
-		
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			public void run() {
@@ -205,9 +207,10 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
 		projectGenerateKeyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
 		projectGenerateKeyAction.setEnabled(false);
-		
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				projectLocalPathBrowseAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.browse"));
 				projectLocalPathBrowseAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.browse.tooltip"));
@@ -221,6 +224,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
 				projectGenerateKeyAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.generate-new-key"));
 				projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
+				pathChooser.setApproveButtonText(I18n.getMessage("jsite.project.action.browse.choose"));
 			}
 		});
 	}
@@ -296,6 +300,24 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPathTextField = new JTextField();
 		projectPathTextField.getDocument().putProperty("name", "project.path");
 		projectPathTextField.getDocument().addDocumentListener(this);
+		((AbstractDocument) projectPathTextField.getDocument()).setDocumentFilter(new DocumentFilter() {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+				super.insertString(fb, offset, string.replaceAll("/", ""), attr);
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+				super.replace(fb, offset, length, text.replaceAll("/", ""), attrs);
+			}
+		});
 		projectPathTextField.setEnabled(false);
 
 		final TLabel projectPathLabel = new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField);
@@ -428,7 +450,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			projectList.setSelectedIndex(projectListModel.indexOf(newProject));
 		}
 	}
-	
+
 	protected void actionCopyURI() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
@@ -437,7 +459,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			clipboard.setContents(new StringSelection(selectedProject.getFinalRequestURI(0)), this);
 		}
 	}
-	
+
 	protected void actionGenerateNewKey() {
 		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.generate-new-key"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
 			return;
@@ -525,7 +547,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	public void changedUpdate(DocumentEvent documentEvent) {
 		setTextField(documentEvent);
 	}
-	
+
 	//
 	// INTERFACE ClipboardOwner
 	//

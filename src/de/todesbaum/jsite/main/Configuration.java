@@ -241,6 +241,9 @@ public class Configuration {
 					project.setLocalPath(projectNode.getNode("local-path").getValue());
 					project.setName(projectNode.getNode("name").getValue());
 					project.setPath(projectNode.getNode("path").getValue());
+					if (project.getPath().indexOf("/") != -1) {
+						project.setPath(project.getPath().replaceAll("/", ""));
+					}
 					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue()));
 					project.setInsertURI(projectNode.getNode("insert-uri").getValue());
 					project.setRequestURI(projectNode.getNode("request-uri").getValue());
