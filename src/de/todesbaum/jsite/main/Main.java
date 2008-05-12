@@ -74,7 +74,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		PAGE_NODE_MANAGER, PAGE_PROJECTS, PAGE_PROJECT_FILES, PAGE_INSERT_PROJECT
 	}
 
-	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH };
+	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN };
 	protected Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
 	protected Action manageNodeAction;
 	protected Action aboutAction;
@@ -328,12 +328,14 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 					return;
 				}
 			}
-			if (!project.getFileOption(project.getIndexFile()).getContainer().equals("")) {
+			String indexFile = project.getIndexFile();
+			boolean hasIndexFile = (indexFile != null);
+			if (hasIndexFile && !project.getFileOption(indexFile).getContainer().equals("")) {
 				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.container-index"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
 					return;
 				}
 			}
-			if (!project.getFileOption(project.getIndexFile()).getMimeType().equals("text/html")) {
+			if (hasIndexFile && !project.getFileOption(indexFile).getMimeType().equals("text/html")) {
 				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.index-not-html"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
 					return;
 				}
