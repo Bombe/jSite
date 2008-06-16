@@ -74,7 +74,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		PAGE_NODE_MANAGER, PAGE_PROJECTS, PAGE_PROJECT_FILES, PAGE_INSERT_PROJECT
 	}
 
-	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN };
+	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN, new Locale("pl") };
 	protected Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
 	protected Action manageNodeAction;
 	protected Action aboutAction;
@@ -115,7 +115,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	private void createActions() {
 		for (final Locale locale: SUPPORTED_LOCALES) {
-			languageActions.put(locale, new AbstractAction(I18n.getMessage("jsite.menu.language." + locale.getLanguage())) {
+			languageActions.put(locale, new AbstractAction(I18n.getMessage("jsite.menu.language." + locale.getLanguage()), IconLoader.loadIcon("/flag-" + locale.getLanguage() + ".png")) {
 
 				public void actionPerformed(ActionEvent actionEvent) {
 					switchLanguage(locale);

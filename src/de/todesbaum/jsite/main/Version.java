@@ -25,7 +25,7 @@ package de.todesbaum.jsite.main;
  */
 public class Version {
 
-	private static final String VERSION = "0.4.11.1";
+	private static final String VERSION = "0.4.12";
 
 	public static final String getVersion() {
 		return VERSION;
