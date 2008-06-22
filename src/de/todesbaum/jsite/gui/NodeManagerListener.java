@@ -23,12 +23,20 @@ import java.util.EventListener;
 
 import de.todesbaum.jsite.application.Node;
 
-
 /**
+ * Listener interface for objects that want to be notified if the node
+ * configuration changes.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public interface NodeManagerListener extends EventListener {
 
+	/**
+	 * Notifies a listener that the node configuration was changed.
+	 * 
+	 * @param nodes
+	 *            The new list of nodes
+	 */
 	public void nodesUpdated(Node[] nodes);
-	
+
 }
