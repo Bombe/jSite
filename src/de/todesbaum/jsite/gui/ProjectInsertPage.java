@@ -56,8 +56,7 @@ import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
 

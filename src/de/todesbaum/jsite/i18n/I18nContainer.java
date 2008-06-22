@@ -24,8 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class I18nContainer implements Iterable<Runnable> {
 

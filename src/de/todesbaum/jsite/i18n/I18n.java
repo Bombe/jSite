@@ -24,8 +24,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class I18n {
 

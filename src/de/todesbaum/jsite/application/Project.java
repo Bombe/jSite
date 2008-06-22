@@ -27,8 +27,7 @@ import java.util.Map;
 import de.todesbaum.util.mime.DefaultMIMETypes;
 
 /**
- * @author David Roden <dr@todesbaum.dyndns.org>
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Project implements Comparable<Project> {
 

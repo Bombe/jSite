@@ -20,12 +20,11 @@
 package de.todesbaum.jsite.main;
 
 /**
- * @author <a href="mailto:droden@gmail.com">David Roden </a>
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Version {
 
-	private static final String VERSION = "0.4.12";
+	private static final String VERSION = "0.4.12.2";
 
 	public static final String getVersion() {
 		return VERSION;

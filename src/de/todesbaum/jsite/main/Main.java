@@ -60,8 +60,7 @@ import de.todesbaum.util.swing.TWizardPage;
 import de.todesbaum.util.swing.WizardListener;
 
 /**
- * @author <a href="mailto:droden@gmail.com">David Roden </a>
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
 

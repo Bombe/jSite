@@ -28,8 +28,7 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class CLI implements InsertListener {
 

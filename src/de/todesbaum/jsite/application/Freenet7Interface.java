@@ -28,8 +28,7 @@ import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.Node;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Freenet7Interface {
 

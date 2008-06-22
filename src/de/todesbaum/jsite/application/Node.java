@@ -20,8 +20,7 @@
 package de.todesbaum.jsite.application;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 

@@ -25,8 +25,7 @@ import de.todesbaum.jsite.application.Node;
 
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public interface NodeManagerListener extends EventListener {
 

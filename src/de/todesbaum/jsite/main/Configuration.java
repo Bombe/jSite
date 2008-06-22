@@ -42,8 +42,7 @@ import de.todesbaum.util.xml.SimpleXML;
 import de.todesbaum.util.xml.XML;
 
 /**
- * @author David Roden &lt;droden@gmail.com&gt;
- * @version $Id$
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Configuration {
 
