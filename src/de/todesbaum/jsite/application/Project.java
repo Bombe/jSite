@@ -30,7 +30,7 @@ import de.todesbaum.util.mime.DefaultMIMETypes;
  * @author David Roden <dr@todesbaum.dyndns.org>
  * @version $Id$
  */
-public class Project implements Comparable {
+public class Project implements Comparable<Project> {
 
 	protected String name;
 	protected String description;
@@ -192,7 +192,7 @@ public class Project implements Comparable {
 	public String toString() {
 		return name;
 	}
-	
+
 	private String shortenURI(String uri) {
 		if (uri.startsWith("freenet:")) {
 			uri = uri.substring("freenet:".length());
@@ -252,12 +252,12 @@ public class Project implements Comparable {
 		this.fileOptions.clear();
 		this.fileOptions.putAll(fileOptions);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public int compareTo(Object o) {
-		return name.compareToIgnoreCase(((Project) o).name);
+	public int compareTo(Project project) {
+		return name.compareToIgnoreCase(project.name);
 	}
 
 	/**
