@@ -28,25 +28,52 @@ import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.Node;
 
 /**
+ * Interface for freenet-related operations.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Freenet7Interface {
 
+	/** Counter. */
 	private static int counter = 0;
 
+	/** The node to connect to. */
 	private Node node;
+
+	/** The connection to the node. */
 	private Connection connection;
 
+	/**
+	 * Sets the hostname of the node. The default port for FCP2 connections ({@link Node#DEFAULT_PORT})
+	 * is used.
+	 * 
+	 * @param hostname
+	 *            The hostname of the node
+	 */
 	public void setNodeAddress(String hostname) {
 		node = new Node(hostname);
 		connection = new Connection(node, "connection-" + counter++);
 	}
 
+	/**
+	 * Sets the hostname and the port of the node.
+	 * 
+	 * @param hostname
+	 *            The hostname of the node
+	 * @param port
+	 *            The port number of the node
+	 */
 	public void setNodeAddress(String hostname, int port) {
 		node = new Node(hostname, port);
 		connection = new Connection(node, "connection-" + counter++);
 	}
-	
+
+	/**
+	 * Sets hostname and port from the given node.
+	 * 
+	 * @param node
+	 *            The node to get the hostname and port from
+	 */
 	public void setNode(de.todesbaum.jsite.application.Node node) {
 		if (node != null) {
 			this.node = new Node(node.getHostname(), node.getPort());
@@ -56,26 +83,44 @@ public class Freenet7Interface {
 			connection = null;
 		}
 	}
-	
+
+	/**
+	 * Removes the current node from the interface.
+	 */
 	public void removeNode() {
 		node = null;
 		connection = null;
 	}
 
 	/**
-	 * @return Returns the node.
+	 * Returns the node this interface is connecting to.
+	 * 
+	 * @return The node
 	 */
 	public Node getNode() {
 		return node;
 	}
 
 	/**
-	 * @return Returns the connection.
+	 * Creates a new connection to the current node with the given identifier.
+	 * 
+	 * @param identifier
+	 *            The identifier of the connection
+	 * @return The connection to the node
 	 */
 	public Connection getConnection(String identifier) {
 		return new Connection(node, identifier);
 	}
 
+	/**
+	 * Checks whether the current node is connected. If the node is not
+	 * connected, a connection will be tried.
+	 * 
+	 * @return <code>true</code> if the node is connected, <code>false</code>
+	 *         otherwise
+	 * @throws IOException
+	 *             if an I/O error occurs communicating with the node
+	 */
 	public boolean isNodePresent() throws IOException {
 		if (!connection.isConnected()) {
 			return connection.connect();
@@ -83,6 +128,15 @@ public class Freenet7Interface {
 		return true;
 	}
 
+	/**
+	 * Generates an SSK key pair.
+	 * 
+	 * @return An array of strings, the first one being the generated private
+	 *         (insert) URI and the second one being the generated public
+	 *         (request) URI
+	 * @throws IOException
+	 *             if an I/O error occurs communicating with the node
+	 */
 	public String[] generateKeyPair() throws IOException {
 		if (!isNodePresent()) {
 			return null;
@@ -94,6 +148,8 @@ public class Freenet7Interface {
 	}
 
 	/**
+	 * Checks whether the interface has already been configured with a node.
+	 * 
 	 * @return <code>true</code> if this interface already has a node set,
 	 *         <code>false</code> otherwise
 	 */
