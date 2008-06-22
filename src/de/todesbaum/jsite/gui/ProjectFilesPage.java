@@ -73,38 +73,77 @@ import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
 /**
+ * Wizard page that lets the user manage the files of a project.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
 
+	/** The project. */
 	private Project project;
 
+	/** The “scan files” action. */
 	private Action scanAction;
-	private Action editContainerAction;
-	private Action addContainerAction;
-	private Action deleteContainerAction;
 
+	/** The “edit container” action. */
+	private Action editContainerAction;
+
+	/** The “add container” action. */
+	private Action addContainerAction;
+
+	/** The “delete container” action. */
+	protected Action deleteContainerAction;
+
+	/** The list of project files. */
 	private JList projectFileList;
+
+	/** The “default file” checkbox. */
 	private JCheckBox defaultFileCheckBox;
+
+	/** The “insert” checkbox. */
 	private JCheckBox fileOptionsInsertCheckBox;
+
+	/** The “custom key” textfield. */
 	private JTextField fileOptionsCustomKeyTextField;
+
+	/** The “mime type” combo box. */
 	private JComboBox fileOptionsMIMETypeComboBox;
+
+	/** The “mime type” combo box model. */
 	private DefaultComboBoxModel containerComboBoxModel;
+
+	/** The “container” combo box. */
 	private JComboBox fileOptionsContainerComboBox;
+
+	/** The “edition replacement range” spinner. */
 	private JSpinner replaceEditionRangeSpinner;
+
+	/** The “replacement” check box. */
 	private JCheckBox replacementCheckBox;
 
+	/**
+	 * Creates a new project file page.
+	 * 
+	 * @param wizard
+	 *            The wizard the page belongs to
+	 */
 	public ProjectFilesPage(final TWizard wizard) {
 		super(wizard);
 		pageInit();
 	}
 
+	/**
+	 * Initializes the page and all its actions and components.
+	 */
 	private void pageInit() {
 		createActions();
 		setLayout(new BorderLayout(12, 12));
 		add(createProjectFilesPanel(), BorderLayout.CENTER);
 	}
 
+	/**
+	 * Creates all actions.
+	 */
 	private void createActions() {
 		scanAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.rescan")) {
 
@@ -162,6 +201,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void pageAdded(TWizard wizard) {
 		actionScan();
@@ -170,6 +212,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
+	/**
+	 * Creates the panel contains the project file list and options.
+	 * 
+	 * @return The created panel
+	 */
 	private JComponent createProjectFilesPanel() {
 		JPanel projectFilesPanel = new JPanel(new BorderLayout(12, 12));
 
@@ -286,6 +333,12 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		return projectFilesPanel;
 	}
 
+	/**
+	 * Sets the project whose files to manage.
+	 * 
+	 * @param project
+	 *            The project whose files to manage
+	 */
 	public void setProject(final Project project) {
 		this.project = project;
 		setHeading(MessageFormat.format(I18n.getMessage("jsite.project-files.heading"), project.getName()));
@@ -299,6 +352,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		});
 	}
 
+	/**
+	 * Returns a list of all project files.
+	 * 
+	 * @return All project files
+	 */
 	private List<String> getProjectFiles() {
 		List<String> files = new ArrayList<String>();
 		for (int index = 0, size = projectFileList.getModel().getSize(); index < size; index++) {
@@ -307,6 +365,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		return files;
 	}
 
+	/**
+	 * Updates the container combo box model.
+	 */
 	private void rebuildContainerComboBox() {
 		/* scan files for containers */
 		List<String> files = getProjectFiles();
@@ -331,6 +392,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	// ACTIONS
 	//
 
+	/**
+	 * Rescans the project’s files.
+	 */
 	private void actionScan() {
 		projectFileList.clearSelection();
 		projectFileList.setListData(new Object[0]);
@@ -344,6 +408,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		new Thread(fileScanner).start();
 	}
 
+	/**
+	 * Adds a container.
+	 */
 	private void actionAddContainer() {
 		String containerName = JOptionPane.showInputDialog(wizard, I18n.getMessage("jsite.project-files.action.add-container.message") + ":", null, JOptionPane.INFORMATION_MESSAGE);
 		if (containerName == null) {
@@ -357,6 +424,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.setSelectedItem(containerName);
 	}
 
+	/**
+	 * Edits the container.
+	 */
 	private void actionEditContainer() {
 		String selectedFilename = (String) projectFileList.getSelectedValue();
 		FileOption fileOption = project.getFileOption(selectedFilename);
@@ -381,6 +451,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.setSelectedItem(containerName);
 	}
 
+	/**
+	 * Deletes the container.
+	 */
 	private void actionDeleteContainer() {
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.action.delete-container.message"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 			String containerName = (String) fileOptionsContainerComboBox.getSelectedItem();
@@ -395,6 +468,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Updates the file list.
+	 */
 	public void fileScannerFinished(FileScanner fileScanner) {
 		final boolean error = fileScanner.isError();
 		if (!error) {
@@ -529,6 +607,13 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	// INTERFACE DocumentListener
 	//
 
+	/**
+	 * Updates the options of the currently selected file with the changes made
+	 * in the “custom key” textfield.
+	 * 
+	 * @param documentEvent
+	 *            The document event to process
+	 */
 	private void processDocumentUpdate(DocumentEvent documentEvent) {
 		String filename = (String) projectFileList.getSelectedValue();
 		if (filename == null) {
@@ -540,6 +625,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			String text = document.getText(0, document.getLength());
 			fileOption.setCustomKey(text);
 		} catch (BadLocationException ble1) {
+			/* ignore. */
 		}
 	}
 
