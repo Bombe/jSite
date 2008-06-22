@@ -43,33 +43,71 @@ import de.todesbaum.util.xml.SimpleXML;
 import de.todesbaum.util.xml.XML;
 
 /**
+ * The configuration.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Configuration {
 
+	/** The name of the file the configuration is stored to. */
 	private String filename;
+
+	/** The name of the lock file. */
 	private String lockFilename;
+
+	/** The root node of the configuration. */
 	private SimpleXML rootNode;
 
+	/**
+	 * Creates a new configuration with the default name of the configuration
+	 * file.
+	 */
 	public Configuration() {
 		this(System.getProperty("user.home") + "/.jSite/config7");
 	}
-	
+
+	/**
+	 * Creates a new configuration that is read from the given file.
+	 * 
+	 * @param filename
+	 *            The name of the configuration file
+	 */
 	public Configuration(String filename) {
 		this(filename, filename + ".lock");
 	}
-	
+
+	/**
+	 * Creates a new configuration that is read from the given file and uses the
+	 * given lock file.
+	 * 
+	 * @param filename
+	 *            The name of the configuration file
+	 * @param lockFilename
+	 *            The name of the lock file
+	 */
 	public Configuration(String filename, String lockFilename) {
 		this.filename = filename;
 		this.lockFilename = lockFilename;
 		readConfiguration();
 	}
-	
+
+	/**
+	 * Creates the directory of the configuration file.
+	 * 
+	 * @return <code>true</code> if the directory exists, or if it could be
+	 *         created, <code>false</code> otherwise
+	 */
 	private boolean createConfigDirectory() {
 		File configDirectory = new File(filename).getAbsoluteFile().getParentFile();
 		return (configDirectory.exists() && configDirectory.isDirectory()) || configDirectory.mkdirs();
 	}
 
+	/**
+	 * Creates the lock file.
+	 * 
+	 * @return <code>true</code> if the lock file did not already exist and
+	 *         could be created, <code>false</code> otherwise
+	 */
 	public boolean createLockFile() {
 		if (!createConfigDirectory()) {
 			return false;
@@ -79,10 +117,14 @@ public class Configuration {
 		try {
 			return lockFile.createNewFile();
 		} catch (IOException e) {
+			/* ignore. */
 		}
 		return false;
 	}
 
+	/**
+	 * Reads the configuration from the file.
+	 */
 	private void readConfiguration() {
 		File configurationFile = new File(filename);
 		if (configurationFile.exists()) {
@@ -97,7 +139,9 @@ public class Configuration {
 				rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
 				return;
 			} catch (FileNotFoundException e) {
+				/* ignore. */
 			} catch (IOException e) {
+				/* ignore. */
 			} finally {
 				Closer.close(fileInputStream);
 				Closer.close(fileByteOutputStream);
@@ -106,6 +150,12 @@ public class Configuration {
 		rootNode = new SimpleXML("configuration");
 	}
 
+	/**
+	 * Saves the configuration.
+	 * 
+	 * @return <code>true</code> if the configuration could be saved,
+	 *         <code>false</code> otherwise
+	 */
 	public boolean save() {
 		File configurationFile = new File(filename);
 		if (!configurationFile.exists()) {
@@ -123,6 +173,7 @@ public class Configuration {
 			StreamCopier.copy(configurationInputStream, fileOutputStream, configurationBytes.length);
 			return true;
 		} catch (IOException ioe1) {
+			/* ignore. */
 		} finally {
 			Closer.close(configurationInputStream);
 			Closer.close(fileOutputStream);
@@ -130,6 +181,16 @@ public class Configuration {
 		return false;
 	}
 
+	/**
+	 * Returns the value of a node.
+	 * 
+	 * @param nodeNames
+	 *            The name of all nodes in the chain
+	 * @param defaultValue
+	 *            The default value to return if the node could not be found
+	 * @return The value of the node, or the default value if the node could not
+	 *         be found
+	 */
 	private String getNodeValue(String[] nodeNames, String defaultValue) {
 		SimpleXML node = rootNode;
 		int nodeIndex = 0;
@@ -142,14 +203,35 @@ public class Configuration {
 		return node.getValue();
 	}
 
+	/**
+	 * Returns the integer value of a node.
+	 * 
+	 * @param nodeNames
+	 *            The names of all nodes in the chain
+	 * @param defaultValue
+	 *            The default value to return if the node can not be found
+	 * @return The parsed integer value, or the default value if the node can
+	 *         not be found or the value can not be parsed into an integer
+	 */
 	private int getNodeIntValue(String[] nodeNames, int defaultValue) {
 		try {
 			return Integer.parseInt(getNodeValue(nodeNames, String.valueOf(defaultValue)));
 		} catch (NumberFormatException nfe1) {
+			/* ignore. */
 		}
 		return defaultValue;
 	}
 
+	/**
+	 * Returns the boolean value of a node.
+	 * 
+	 * @param nodeNames
+	 *            The names of all nodes in the chain
+	 * @param defaultValue
+	 *            The default value to return if the node can not be found
+	 * @return The parsed boolean value, or the default value if the node can
+	 *         not be found
+	 */
 	private boolean getNodeBooleanValue(String[] nodeNames, boolean defaultValue) {
 		String nodeValue = getNodeValue(nodeNames, null);
 		if (nodeValue == null) {
@@ -160,6 +242,7 @@ public class Configuration {
 
 	/**
 	 * Returns the hostname of the node.
+	 * 
 	 * @return The hostname of the node
 	 * @deprecated Use {@link #getSelectedNode()} instead
 	 */
@@ -170,7 +253,9 @@ public class Configuration {
 
 	/**
 	 * Sets the hostname of the node.
-	 * @param nodeAddress The hostname of the node
+	 * 
+	 * @param nodeAddress
+	 *            The hostname of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
 	 */
 	@Deprecated
@@ -180,8 +265,9 @@ public class Configuration {
 
 	/**
 	 * The port number of the node
+	 * 
 	 * @return The port number of the node
-	 * @deprecated Use {@link #getSelectedNode()} instead. 
+	 * @deprecated Use {@link #getSelectedNode()} instead.
 	 */
 	@Deprecated
 	public int getNodePort() {
@@ -190,7 +276,9 @@ public class Configuration {
 
 	/**
 	 * Sets the port number of the node.
-	 * @param nodePort The port number of the node
+	 * 
+	 * @param nodePort
+	 *            The port number of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
 	 */
 	@Deprecated
@@ -198,20 +286,38 @@ public class Configuration {
 		rootNode.replace("node-port", String.valueOf(nodePort));
 	}
 
+	/**
+	 * Returns whether the node configuration page should be skipped on startup.
+	 * 
+	 * @return <code>true</code> to skip the node configuration page on
+	 *         startup, <code>false</code> to show it
+	 */
 	public boolean isSkipNodePage() {
 		return getNodeBooleanValue(new String[] { "skip-node-page" }, false);
 	}
 
+	/**
+	 * Sets whether the node configuration page should be skipped on startup.
+	 * 
+	 * @param skipNodePage
+	 *            <code>true</code> to skip the node configuration page on
+	 *            startup, <code>false</code> to show it
+	 */
 	public void setSkipNodePage(boolean skipNodePage) {
 		rootNode.replace("skip-node-page", String.valueOf(skipNodePage));
 	}
 
+	/**
+	 * Returns all configured projects.
+	 * 
+	 * @return A list of all projects
+	 */
 	public Project[] getProjects() {
 		List<Project> projects = new ArrayList<Project>();
 		SimpleXML projectsNode = rootNode.getNode("project-list");
 		if (projectsNode != null) {
 			SimpleXML[] projectNodes = projectsNode.getNodes("project");
-			for (SimpleXML projectNode: projectNodes) {
+			for (SimpleXML projectNode : projectNodes) {
 				try {
 					Project project = new Project();
 					projects.add(project);
@@ -231,7 +337,7 @@ public class Configuration {
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					if (fileOptionsNode != null) {
 						SimpleXML[] fileOptionNodes = fileOptionsNode.getNodes("file-option");
-						for (SimpleXML fileOptionNode: fileOptionNodes) {
+						for (SimpleXML fileOptionNode : fileOptionNodes) {
 							String filename = fileOptionNode.getNode("filename").getValue();
 							FileOption fileOption = project.getFileOption(filename);
 							fileOption.setInsert(Boolean.parseBoolean(fileOptionNode.getNode("insert").getValue()));
@@ -254,9 +360,15 @@ public class Configuration {
 		return projects.toArray(new Project[projects.size()]);
 	}
 
+	/**
+	 * Sets the list of all projects.
+	 * 
+	 * @param projects
+	 *            The list of all projects
+	 */
 	public void setProjects(Project[] projects) {
 		SimpleXML projectsNode = new SimpleXML("project-list");
-		for (Project project: projects) {
+		for (Project project : projects) {
 			SimpleXML projectNode = projectsNode.append("project");
 			projectNode.append("edition", String.valueOf(project.getEdition()));
 			projectNode.append("description", project.getDescription());
@@ -287,6 +399,11 @@ public class Configuration {
 		rootNode.replace(projectsNode);
 	}
 
+	/**
+	 * Returns the stored locale.
+	 * 
+	 * @return The stored locale
+	 */
 	public Locale getLocale() {
 		String language = getNodeValue(new String[] { "i18n", "language" }, "en");
 		String country = getNodeValue(new String[] { "i18n", "country" }, null);
@@ -296,6 +413,12 @@ public class Configuration {
 		return new Locale(language);
 	}
 
+	/**
+	 * Sets the locale to store.
+	 * 
+	 * @param locale
+	 *            The locale to store
+	 */
 	public void setLocale(Locale locale) {
 		SimpleXML i18nNode = new SimpleXML("i18n");
 		if (locale.getCountry().length() != 0) {
@@ -305,7 +428,12 @@ public class Configuration {
 		rootNode.replace(i18nNode);
 		return;
 	}
-	
+
+	/**
+	 * Returns a list of configured nodes.
+	 * 
+	 * @return The list of the configured nodes
+	 */
 	public Node[] getNodes() {
 		SimpleXML nodesNode = rootNode.getNode("nodes");
 		if (nodesNode == null) {
@@ -320,7 +448,7 @@ public class Configuration {
 		SimpleXML[] nodeNodes = nodesNode.getNodes("node");
 		Node[] returnNodes = new Node[nodeNodes.length];
 		int nodeIndex = 0;
-		for (SimpleXML nodeNode: nodeNodes) {
+		for (SimpleXML nodeNode : nodeNodes) {
 			String name = nodeNode.getNode("name").getValue();
 			String hostname = nodeNode.getNode("hostname").getValue();
 			int port = Integer.parseInt(nodeNode.getNode("port").getValue());
@@ -329,10 +457,16 @@ public class Configuration {
 		}
 		return returnNodes;
 	}
-	
+
+	/**
+	 * Sets the list of configured nodes.
+	 * 
+	 * @param nodes
+	 *            The list of configured nodes
+	 */
 	public void setNodes(Node[] nodes) {
 		SimpleXML nodesNode = new SimpleXML("nodes");
-		for (Node node: nodes) {
+		for (Node node : nodes) {
 			SimpleXML nodeNode = nodesNode.append("node");
 			nodeNode.append("name", node.getName());
 			nodeNode.append("hostname", node.getHostname());
@@ -343,6 +477,12 @@ public class Configuration {
 		rootNode.remove("node-port");
 	}
 
+	/**
+	 * Sets the selected node.
+	 * 
+	 * @param selectedNode
+	 *            The selected node
+	 */
 	public void setSelectedNode(Node selectedNode) {
 		SimpleXML selectedNodeNode = new SimpleXML("selected-node");
 		selectedNodeNode.append("name", selectedNode.getName());
@@ -350,7 +490,12 @@ public class Configuration {
 		selectedNodeNode.append("port", String.valueOf(selectedNode.getPort()));
 		rootNode.replace(selectedNodeNode);
 	}
-	
+
+	/**
+	 * Returns the selected node.
+	 * 
+	 * @return The selected node
+	 */
 	public Node getSelectedNode() {
 		SimpleXML selectedNodeNode = rootNode.getNode("selected-node");
 		if (selectedNodeNode == null) {
@@ -367,5 +512,5 @@ public class Configuration {
 		int port = Integer.valueOf(selectedNodeNode.getNode("port").getValue());
 		return new Node(hostname, port, name);
 	}
-	
+
 }
