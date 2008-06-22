@@ -60,32 +60,82 @@ import de.todesbaum.util.swing.TWizardPage;
 import de.todesbaum.util.swing.WizardListener;
 
 /**
+ * The main class that ties together everything.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
 
+	/** Whether the debug mode is activated. */
 	private static boolean debug = false;
+
+	/** The configuration. */
 	private Configuration configuration;
+
+	/** The freenet interface. */
 	private Freenet7Interface freenetInterface = new Freenet7Interface();
+
+	/** The jSite icon. */
 	private Icon jSiteIcon;
 
+	/**
+	 * Enumeration for all possible pages.
+	 * 
+	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+	 */
 	private static enum PageType {
-		PAGE_NODE_MANAGER, PAGE_PROJECTS, PAGE_PROJECT_FILES, PAGE_INSERT_PROJECT
+
+		/** The node manager page. */
+		PAGE_NODE_MANAGER,
+
+		/** The project page. */
+		PAGE_PROJECTS,
+
+		/** The project files page. */
+		PAGE_PROJECT_FILES,
+
+		/** The project insert page. */
+		PAGE_INSERT_PROJECT
+
 	}
 
+	/** The supported locales. */
 	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN, new Locale("pl") };
+
+	/** The actions that switch the language. */
 	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
+
+	/** The “manage nodes” action. */
 	private Action manageNodeAction;
+
+	/** The “about jSite” action. */
 	private Action aboutAction;
+
+	/** The wizard. */
 	private TWizard wizard;
+
+	/** The node menu. */
 	private JMenu nodeMenu;
+
+	/** The currently selected node. */
 	private Node selectedNode;
+
+	/** Mapping from page type to page. */
 	private final Map<PageType, TWizardPage> pages = new HashMap<PageType, TWizardPage>();
 
+	/**
+	 * Creates a new core with the default configuration file.
+	 */
 	private Main() {
 		this(null);
 	}
 
+	/**
+	 * Creates a new core with the given configuration from the given file.
+	 * 
+	 * @param configFilename
+	 *            The name of the configuration file
+	 */
 	private Main(String configFilename) {
 		if (configFilename != null) {
 			configuration = new Configuration(configFilename);
@@ -112,6 +162,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		showPage(PageType.PAGE_PROJECTS);
 	}
 
+	/**
+	 * Creates all actions.
+	 */
 	private void createActions() {
 		for (final Locale locale : SUPPORTED_LOCALES) {
 			languageActions.put(locale, new AbstractAction(I18n.getMessage("jsite.menu.language." + locale.getLanguage()), IconLoader.loadIcon("/flag-" + locale.getLanguage() + ".png")) {
@@ -149,6 +202,11 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		});
 	}
 
+	/**
+	 * Creates the menu bar.
+	 * 
+	 * @return The menu bar
+	 */
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		final JMenu languageMenu = new JMenu(I18n.getMessage("jsite.menu.languages"));
@@ -194,6 +252,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		return menuBar;
 	}
 
+	/**
+	 * Initializes all pages.
+	 */
 	private void initPages() {
 		NodeManagerPage nodeManagerPage = new NodeManagerPage(wizard);
 		nodeManagerPage.setName("page.node-manager");
@@ -219,6 +280,12 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
 	}
 
+	/**
+	 * Shows the page with the given type.
+	 * 
+	 * @param pageType
+	 *            The page type to show
+	 */
 	private void showPage(PageType pageType) {
 		wizard.setPreviousEnabled(pageType.ordinal() > 0);
 		wizard.setNextEnabled(pageType.ordinal() < (pages.size() - 1));
@@ -226,6 +293,12 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		wizard.setTitle(pages.get(pageType).getHeading() + " - jSite");
 	}
 
+	/**
+	 * Saves the configuration.
+	 * 
+	 * @return <code>true</code> if the configuration could be saved,
+	 *         <code>false</code> otherwise
+	 */
 	private boolean saveConfiguration() {
 		NodeManagerPage nodeManagerPage = (NodeManagerPage) pages.get(PageType.PAGE_NODE_MANAGER);
 		configuration.setNodes(nodeManagerPage.getNodes());
@@ -239,6 +312,14 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		return configuration.save();
 	}
 
+	/**
+	 * Finds a supported locale for the given locale.
+	 * 
+	 * @param forLocale
+	 *            The locale to find a supported locale for
+	 * @return The supported locale that was found, or the default locale if no
+	 *         supported locale could be found
+	 */
 	private Locale findSupportedLocale(Locale forLocale) {
 		for (Locale locale : SUPPORTED_LOCALES) {
 			if (locale.equals(forLocale)) {
@@ -262,6 +343,12 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	// ACTIONS
 	//
 
+	/**
+	 * Switches the language of the interface to the given locale.
+	 * 
+	 * @param locale
+	 *            The locale to switch to
+	 */
 	private void switchLanguage(Locale locale) {
 		Locale supportedLocale = findSupportedLocale(locale);
 		Action languageAction = languageActions.get(supportedLocale);
@@ -360,6 +447,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			try {
 				nodeRunning = freenetInterface.isNodePresent();
 			} catch (IOException e) {
+				/* ignore. */
 			}
 			if (!nodeRunning) {
 				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-node-running"), null, JOptionPane.ERROR_MESSAGE);
@@ -447,6 +535,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	//
 	// MAIN METHOD
 	//
+
+	/**
+	 * Main method that is called by the VM.
+	 * 
+	 * @param args
+	 *            The command-line arguments
+	 */
 	public static void main(String[] args) {
 		String configFilename = null;
 		boolean nextIsConfigFilename = false;
@@ -471,6 +566,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		new Main(configFilename);
 	}
 
+	/**
+	 * Prints a small syntax help.
+	 */
 	private static void printHelp() {
 		System.out.println("--help\tshows this cruft");
 		System.out.println("--debug\tenables some debug output");
