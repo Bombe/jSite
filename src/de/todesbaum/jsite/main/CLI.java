@@ -28,19 +28,42 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 
 /**
+ * Command-line interface for jSite.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class CLI implements InsertListener {
 
+	/** Object used for synchronization. */
 	private Object lockObject = new Object();
+
+	/** Writer for the console. */
 	private PrintWriter outputWriter = new PrintWriter(System.out, true);
+
+	/** The freenet interface. */
 	private Freenet7Interface freenetInterface;
+
+	/** The project inserter. */
 	private ProjectInserter projectInserter = new ProjectInserter();
+
+	/** The list of nodes. */
 	private Node[] nodes;
+
+	/** The projects. */
 	private Project[] projects;
+
+	/** Whether the insert has finished. */
 	private boolean finished = false;
+
+	/** Whether the insert finished successfully. */
 	private boolean success;
 
+	/**
+	 * Creates a new command-line interface.
+	 * 
+	 * @param args
+	 *            The command-line arguments
+	 */
 	private CLI(String[] args) {
 
 		if ((args.length == 0) || args[0].equals("-h") || args[0].equals("--help")) {
@@ -73,7 +96,7 @@ public class CLI implements InsertListener {
 		projectInserter.setFreenetInterface(freenetInterface);
 
 		Project currentProject = null;
-		for (String argument: args) {
+		for (String argument : args) {
 			String value = argument.substring(argument.indexOf('=') + 1).trim();
 			if (argument.startsWith("--node=")) {
 				Node newNode = getNode(value);
@@ -132,8 +155,15 @@ public class CLI implements InsertListener {
 		configuration.save();
 	}
 
+	/**
+	 * Returns the project with the given name.
+	 * 
+	 * @param name
+	 *            The name of the project
+	 * @return The project, or <code>null</code> if no project could be found
+	 */
 	private Project getProject(String name) {
-		for (Project project: projects) {
+		for (Project project : projects) {
 			if (project.getName().equals(name)) {
 				return project;
 			}
@@ -141,8 +171,15 @@ public class CLI implements InsertListener {
 		return null;
 	}
 
+	/**
+	 * Returns the node with the given name.
+	 * 
+	 * @param name
+	 *            The name of the node
+	 * @return The node, or <code>null</code> if no node could be found
+	 */
 	private Node getNode(String name) {
-		for (Node node: nodes) {
+		for (Node node : nodes) {
 			if (node.getName().equals(name)) {
 				return node;
 			}
@@ -150,6 +187,14 @@ public class CLI implements InsertListener {
 		return null;
 	}
 
+	/**
+	 * Inserts the given project.
+	 * 
+	 * @param currentProject
+	 *            The project to insert
+	 * @return <code>true</code> if the insert finished successfully,
+	 *         <code>false</code> otherwise
+	 */
 	private boolean insertProject(Project currentProject) {
 		if (!freenetInterface.hasNode()) {
 			outputWriter.println("Node is not running!");
@@ -162,6 +207,7 @@ public class CLI implements InsertListener {
 				try {
 					lockObject.wait();
 				} catch (InterruptedException e) {
+					/* ignore, we're in a loop. */
 				}
 			}
 		}
@@ -179,6 +225,9 @@ public class CLI implements InsertListener {
 		outputWriter.println("Starting Insert of project \"" + project.getName() + "\".");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void projectURIGenerated(Project project, String uri) {
 		outputWriter.println("URI: " + uri);
 	}
@@ -206,6 +255,12 @@ public class CLI implements InsertListener {
 	// MAIN
 	//
 
+	/**
+	 * Creates a new command-line interface with the given arguments.
+	 * 
+	 * @param args
+	 *            The command-line arguments
+	 */
 	public static void main(String[] args) {
 		new CLI(args);
 	}
