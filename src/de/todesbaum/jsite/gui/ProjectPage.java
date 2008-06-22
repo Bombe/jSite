@@ -68,30 +68,69 @@ import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
 /**
+ * Wizard page that lets the user manage his projects and start inserts.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectPage extends TWizardPage implements ListSelectionListener, DocumentListener, ClipboardOwner {
 
+	/** The freenet interface. */
 	private Freenet7Interface freenetInterface;
 
+	/** The “browse” action. */
 	private Action projectLocalPathBrowseAction;
+
+	/** The “add project” action. */
 	private Action projectAddAction;
+
+	/** The “delete project” action. */
 	private Action projectDeleteAction;
+
+	/** The “clone project” action. */
 	private Action projectCloneAction;
+
+	/** The “copy URI” action. */
 	private Action projectCopyURIAction;
+
+	/** The “generate key” action. */
 	private Action projectGenerateKeyAction;
 
+	/** The file chooser. */
 	private JFileChooser pathChooser;
+
+	/** The project list model. */
 	private SortedListModel projectListModel;
+
+	/** The project list scroll pane. */
 	private JScrollPane projectScrollPane;
+
+	/** The project list. */
 	private JList projectList;
+
+	/** The project name textfield. */
 	private JTextField projectNameTextField;
+
+	/** The project description textfield. */
 	private JTextField projectDescriptionTextField;
+
+	/** The local path textfield. */
 	private JTextField projectLocalPathTextField;
+
+	/** The public key textfield. */
 	private JTextField projectPublicKeyTextField;
+
+	/** The private key textfield. */
 	private JTextField projectPrivateKeyTextField;
+
+	/** The project path textfield. */
 	private JTextField projectPathTextField;
 
+	/**
+	 * Creates a new project page.
+	 * 
+	 * @param wizard
+	 *            The wizard this page belongs to
+	 */
 	public ProjectPage(final TWizard wizard) {
 		super(wizard);
 		setLayout(new BorderLayout(12, 12));
@@ -108,7 +147,10 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		});
 	}
 
-	protected void dialogInit() {
+	/**
+	 * Initializes the page.
+	 */
+	private void dialogInit() {
 		createActions();
 
 		pathChooser = new JFileChooser();
@@ -136,17 +178,28 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	}
 
 	/**
+	 * Adds the given listener to the list of listeners.
+	 * 
+	 * @param listener
+	 *            The listener to add
 	 */
 	public void addListSelectionListener(ListSelectionListener listener) {
 		projectList.addListSelectionListener(listener);
 	}
 
 	/**
+	 * Removes the given listener from the list of listeners.
+	 * 
+	 * @param listener
+	 *            The listener to remove
 	 */
 	public void removeListSelectionListener(ListSelectionListener listener) {
 		projectList.removeListSelectionListener(listener);
 	}
 
+	/**
+	 * Creates all actions.
+	 */
 	private void createActions() {
 		projectLocalPathBrowseAction = new AbstractAction(I18n.getMessage("jsite.project.action.browse")) {
 
@@ -234,6 +287,11 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		});
 	}
 
+	/**
+	 * Creates the information panel.
+	 * 
+	 * @return The information panel
+	 */
 	private JComponent createInformationPanel() {
 		JPanel informationPanel = new JPanel(new BorderLayout(12, 12));
 
@@ -345,29 +403,54 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		return informationPanel;
 	}
 
+	/**
+	 * Sets the project list.
+	 * 
+	 * @param projects
+	 *            The list of projects
+	 */
 	public void setProjects(Project[] projects) {
 		projectListModel.clear();
-		for (Project project: projects) {
+		for (Project project : projects) {
 			projectListModel.add(project);
 		}
 	}
 
+	/**
+	 * Returns the list of projects.
+	 * 
+	 * @return The list of projects
+	 */
 	public Project[] getProjects() {
 		return (Project[]) projectListModel.toArray(new Project[projectListModel.size()]);
 	}
 
 	/**
+	 * Sets the freenet interface to use.
+	 * 
 	 * @param freenetInterface
-	 *            The freenetInterface to set.
+	 *            The freenetInterface to use
 	 */
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		this.freenetInterface = freenetInterface;
 	}
 
+	/**
+	 * Returns the currently selected project.
+	 * 
+	 * @return The currently selected project
+	 */
 	public Project getSelectedProject() {
 		return (Project) projectList.getSelectedValue();
 	}
 
+	/**
+	 * Updates the currently selected project with changed information from a
+	 * textfield.
+	 * 
+	 * @param documentEvent
+	 *            The document event to process
+	 */
 	private void setTextField(DocumentEvent documentEvent) {
 		Document document = documentEvent.getDocument();
 		String propertyName = (String) document.getProperty("name");
@@ -392,6 +475,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				project.setPath(text);
 			}
 		} catch (BadLocationException e) {
+			/* ignore. */
 		}
 	}
 
@@ -399,6 +483,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	// ACTIONS
 	//
 
+	/**
+	 * Lets the user choose a local path for a project.
+	 */
 	private void actionLocalPathBrowse() {
 		Project project = (Project) projectList.getSelectedValue();
 		if (project == null) {
@@ -410,6 +497,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
+	/**
+	 * Adds a new project.
+	 */
 	private void actionAdd() {
 		String[] keyPair = null;
 		if (!freenetInterface.hasNode()) {
@@ -433,6 +523,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectList.setSelectedIndex(projectListModel.size() - 1);
 	}
 
+	/**
+	 * Deletes the currently selected project.
+	 */
 	private void actionDelete() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
@@ -446,6 +539,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
+	/**
+	 * Clones the currently selected project.
+	 */
 	private void actionClone() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
@@ -456,6 +552,10 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
+	/**
+	 * Copies the request URI of the currently selected project to the
+	 * clipboard.
+	 */
 	private void actionCopyURI() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
@@ -465,6 +565,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
+	/**
+	 * Generates a new key for the currently selected project.
+	 */
 	private void actionGenerateNewKey() {
 		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.generate-new-key"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
 			return;
@@ -561,6 +664,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	 * {@inheritDoc}
 	 */
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		/* ignore. */
 	}
 
 }
