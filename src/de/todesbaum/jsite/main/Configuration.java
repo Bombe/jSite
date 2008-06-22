@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.xml.SimpleXML;
 import de.todesbaum.util.xml.XML;
@@ -98,18 +99,8 @@ public class Configuration {
 			} catch (FileNotFoundException e) {
 			} catch (IOException e) {
 			} finally {
-				if (fileInputStream != null) {
-					try {
-						fileInputStream.close();
-					} catch (IOException ioe1) {
-					}
-				}
-				if (fileByteOutputStream != null) {
-					try {
-						fileByteOutputStream.close();
-					} catch (IOException ioe1) {
-					}
-				}
+				Closer.close(fileInputStream);
+				Closer.close(fileByteOutputStream);
 			}
 		}
 		rootNode = new SimpleXML("configuration");
@@ -133,18 +124,8 @@ public class Configuration {
 			return true;
 		} catch (IOException ioe1) {
 		} finally {
-			if (configurationInputStream != null) {
-				try {
-					configurationInputStream.close();
-				} catch (IOException ioe1) {
-				}
-			}
-			if (fileOutputStream != null) {
-				try {
-					fileOutputStream.close();
-				} catch (IOException ioe1) {
-				}
-			}
+			Closer.close(configurationInputStream);
+			Closer.close(fileOutputStream);
 		}
 		return false;
 	}
