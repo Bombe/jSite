@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -79,19 +78,19 @@ import de.todesbaum.util.swing.TWizardPage;
  */
 public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
 
-	protected Project project;
+	private Project project;
 
-	protected Action scanAction;
-	protected Action editContainerAction;
-	protected Action addContainerAction;
-	protected Action deleteContainerAction;
+	private Action scanAction;
+	private Action editContainerAction;
+	private Action addContainerAction;
+	private Action deleteContainerAction;
 
-	protected JList projectFileList;
+	private JList projectFileList;
 	private JCheckBox defaultFileCheckBox;
 	private JCheckBox fileOptionsInsertCheckBox;
 	private JTextField fileOptionsCustomKeyTextField;
 	private JComboBox fileOptionsMIMETypeComboBox;
-	protected DefaultComboBoxModel containerComboBoxModel;
+	private DefaultComboBoxModel containerComboBoxModel;
 	private JComboBox fileOptionsContainerComboBox;
 	private JSpinner replaceEditionRangeSpinner;
 	private JCheckBox replacementCheckBox;
@@ -110,6 +109,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	private void createActions() {
 		scanAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.rescan")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionScan();
 			}
@@ -119,6 +119,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		addContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.add-container")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionAddContainer();
 			}
@@ -128,6 +129,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		editContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.edit-container")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionEditContainer();
 			}
@@ -137,6 +139,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		deleteContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.delete-container")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionDeleteContainer();
 			}
@@ -146,6 +149,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				scanAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.rescan"));
 				scanAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.rescan.tooltip"));
@@ -260,6 +264,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				fileOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>");
 				defaultFileCheckBox.setText(I18n.getMessage("jsite.project-files.default"));
@@ -303,14 +308,14 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		return files;
 	}
 
-	protected void rebuildContainerComboBox() {
+	private void rebuildContainerComboBox() {
 		/* scan files for containers */
 		List<String> files = getProjectFiles();
 		List<String> containers = new ArrayList<String>(); // ComboBoxModel
 		// sucks. No
 		// contains()!
 		containers.add("");
-		for (String filename: files) {
+		for (String filename : files) {
 			String container = project.getFileOption(filename).getContainer();
 			if (!containers.contains(container)) {
 				containers.add(container);
@@ -318,7 +323,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		}
 		Collections.sort(containers);
 		containerComboBoxModel.removeAllElements();
-		for (String container: containers) {
+		for (String container : containers) {
 			containerComboBoxModel.addElement(container);
 		}
 	}
@@ -327,7 +332,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	// ACTIONS
 	//
 
-	protected void actionScan() {
+	private void actionScan() {
 		projectFileList.clearSelection();
 		projectFileList.setListData(new Object[0]);
 
@@ -340,7 +345,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		new Thread(fileScanner).start();
 	}
 
-	protected void actionAddContainer() {
+	private void actionAddContainer() {
 		String containerName = JOptionPane.showInputDialog(wizard, I18n.getMessage("jsite.project-files.action.add-container.message") + ":", null, JOptionPane.INFORMATION_MESSAGE);
 		if (containerName == null) {
 			return;
@@ -353,7 +358,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.setSelectedItem(containerName);
 	}
 
-	protected void actionEditContainer() {
+	private void actionEditContainer() {
 		String selectedFilename = (String) projectFileList.getSelectedValue();
 		FileOption fileOption = project.getFileOption(selectedFilename);
 		String oldContainerName = fileOption.getContainer();
@@ -367,7 +372,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			return;
 		}
 		List<String> files = getProjectFiles();
-		for (String filename: files) {
+		for (String filename : files) {
 			fileOption = project.getFileOption(filename);
 			if (fileOption.getContainer().equals(oldContainerName)) {
 				fileOption.setContainer(containerName);
@@ -377,11 +382,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.setSelectedItem(containerName);
 	}
 
-	protected void actionDeleteContainer() {
+	private void actionDeleteContainer() {
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.action.delete-container.message"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 			String containerName = (String) fileOptionsContainerComboBox.getSelectedItem();
 			List<String> files = getProjectFiles();
-			for (String filename: files) {
+			for (String filename : files) {
 				FileOption fileOption = project.getFileOption(filename);
 				if (fileOption.getContainer().equals(containerName)) {
 					fileOption.setContainer("");
@@ -397,6 +402,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			final List<String> files = fileScanner.getFiles();
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@SuppressWarnings("synthetic-access")
 				public void run() {
 					projectFileList.setListData(files.toArray(new String[files.size()]));
 					projectFileList.clearSelection();
@@ -411,7 +417,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 					entriesToRemove.add(filename);
 				}
 			}
-			for (String filename: entriesToRemove) {
+			for (String filename : entriesToRemove) {
 				project.setFileOption(filename, null);
 			}
 		} else {
@@ -419,6 +425,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				wizard.setPreviousEnabled(true);
 				wizard.setNextEnabled(!error);
