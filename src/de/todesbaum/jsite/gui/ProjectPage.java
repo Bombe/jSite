@@ -74,12 +74,12 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	private Freenet7Interface freenetInterface;
 
-	protected Action projectLocalPathBrowseAction;
-	protected Action projectAddAction;
-	protected Action projectDeleteAction;
-	protected Action projectCloneAction;
-	protected Action projectCopyURIAction;
-	protected Action projectGenerateKeyAction;
+	private Action projectLocalPathBrowseAction;
+	private Action projectAddAction;
+	private Action projectDeleteAction;
+	private Action projectCloneAction;
+	private Action projectCopyURIAction;
+	private Action projectGenerateKeyAction;
 
 	private JFileChooser pathChooser;
 	private SortedListModel projectListModel;
@@ -150,6 +150,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	private void createActions() {
 		projectLocalPathBrowseAction = new AbstractAction(I18n.getMessage("jsite.project.action.browse")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionLocalPathBrowse();
 			}
@@ -160,6 +161,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectAddAction = new AbstractAction(I18n.getMessage("jsite.project.action.add-project")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionAdd();
 			}
@@ -169,6 +171,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectDeleteAction = new AbstractAction(I18n.getMessage("jsite.project.action.delete-project")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionDelete();
 			}
@@ -179,6 +182,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectCloneAction = new AbstractAction(I18n.getMessage("jsite.project.action.clone-project")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionClone();
 			}
@@ -189,6 +193,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectCopyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCopyURI();
 			}
@@ -199,6 +204,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectGenerateKeyAction = new AbstractAction(I18n.getMessage("jsite.project.action.generate-new-key")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionGenerateNewKey();
 			}
@@ -393,7 +399,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	// ACTIONS
 	//
 
-	protected void actionLocalPathBrowse() {
+	private void actionLocalPathBrowse() {
 		Project project = (Project) projectList.getSelectedValue();
 		if (project == null) {
 			return;
@@ -404,7 +410,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
-	protected void actionAdd() {
+	private void actionAdd() {
 		String[] keyPair = null;
 		if (!freenetInterface.hasNode()) {
 			JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.project-files.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
@@ -427,7 +433,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectList.setSelectedIndex(projectListModel.size() - 1);
 	}
 
-	protected void actionDelete() {
+	private void actionDelete() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
 			if (JOptionPane.showConfirmDialog(this, MessageFormat.format(I18n.getMessage("jsite.project.action.delete-project.confirm"), ((Project) projectList.getSelectedValue()).getName()), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
@@ -440,7 +446,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
-	protected void actionClone() {
+	private void actionClone() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
 			Project newProject = new Project((Project) projectList.getSelectedValue());
@@ -450,7 +456,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
-	protected void actionCopyURI() {
+	private void actionCopyURI() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
 			Project selectedProject = (Project) projectList.getSelectedValue();
@@ -459,7 +465,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
-	protected void actionGenerateNewKey() {
+	private void actionGenerateNewKey() {
 		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.generate-new-key"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
 			return;
 		}
