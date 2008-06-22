@@ -29,31 +29,75 @@ import java.util.List;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
 
+/**
+ * Scans the local path of a project anychronously and returns the list of found
+ * files as an event.
+ * 
+ * @see Project#getLocalPath()
+ * @see FileScannerListener#fileScannerFinished(FileScanner)
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+ */
 public class FileScanner implements Runnable {
 
+	/** The list of listeners. */
 	private final List<FileScannerListener> fileScannerListeners = new ArrayList<FileScannerListener>();
+
+	/** The project to scan. */
 	private final Project project;
+
+	/** The list of found files. */
 	private List<String> files;
+
+	/** Wether there was an error. */
 	private boolean error = false;
 
+	/**
+	 * Creates a new file scanner for the given project.
+	 * 
+	 * @param project
+	 *            The project whose files to scan
+	 */
 	public FileScanner(Project project) {
 		this.project = project;
 	}
 
+	/**
+	 * Adds the given listener to the list of listeners.
+	 * 
+	 * @param fileScannerListener
+	 *            The listener to add
+	 */
 	public void addFileScannerListener(FileScannerListener fileScannerListener) {
 		fileScannerListeners.add(fileScannerListener);
 	}
 
+	/**
+	 * Removes the given listener from the list of listeners.
+	 * 
+	 * @param fileScannerListener
+	 *            The listener to remove
+	 */
 	public void removeFileScannerListener(FileScannerListener fileScannerListener) {
 		fileScannerListeners.remove(fileScannerListener);
 	}
 
+	/**
+	 * Notifies all listeners that the file scan finished.
+	 */
 	protected void fireFileScannerFinished() {
-		for (FileScannerListener fileScannerListener: new ArrayList<FileScannerListener>(fileScannerListeners)) {
+		for (FileScannerListener fileScannerListener : new ArrayList<FileScannerListener>(fileScannerListeners)) {
 			fileScannerListener.fileScannerFinished(this);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Scans all available files in the project’s local path and emits an event
+	 * when finished.
+	 * 
+	 * @see FileScannerListener#fileScannerFinished(FileScanner)
+	 */
 	public void run() {
 		files = new ArrayList<String>();
 		error = false;
@@ -66,14 +110,35 @@ public class FileScanner implements Runnable {
 		fireFileScannerFinished();
 	}
 
+	/**
+	 * Returns whether there was an error scanning for files.
+	 * 
+	 * @return <code>true</code> if there was an error, <code>false</code>
+	 *         otherwise
+	 */
 	public boolean isError() {
 		return error;
 	}
 
+	/**
+	 * Returns the list of found files.
+	 * 
+	 * @return The list of found files
+	 */
 	public List<String> getFiles() {
 		return files;
 	}
 
+	/**
+	 * Recursively scans a directory and adds all found files to the given list.
+	 * 
+	 * @param rootDir
+	 *            The directory to scan
+	 * @param fileList
+	 *            The list to which to add the found files
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	private void scanFiles(File rootDir, List<String> fileList) throws IOException {
 		File[] files = rootDir.listFiles(new FileFilter() {
 
@@ -84,7 +149,7 @@ public class FileScanner implements Runnable {
 		if (files == null) {
 			throw new IOException(I18n.getMessage("jsite.file-scanner.can-not-read-directory"));
 		}
-		for (File file: files) {
+		for (File file : files) {
 			if (file.isDirectory()) {
 				scanFiles(file, fileList);
 				continue;
