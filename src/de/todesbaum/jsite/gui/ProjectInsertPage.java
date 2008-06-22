@@ -60,13 +60,13 @@ import de.todesbaum.util.swing.TWizardPage;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
 
-	protected ProjectInserter projectInserter;
+	private ProjectInserter projectInserter;
 
-	protected Action copyURIAction;
-	protected JTextField requestURITextField;
-	protected JLabel startTimeLabel;
-	protected JProgressBar progressBar;
-	protected long startTime = 0;
+	private Action copyURIAction;
+	private JTextField requestURITextField;
+	private JLabel startTimeLabel;
+	private JProgressBar progressBar;
+	private long startTime = 0;
 
 	public ProjectInsertPage(final TWizard wizard) {
 		super(wizard);
@@ -87,6 +87,8 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	private void createActions() {
 		copyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
+
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCopyURI();
 			}
@@ -97,6 +99,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				copyURIAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.copy-uri"));
 				copyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
@@ -136,6 +139,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				projectInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.insert.project-information") + "</b></html>");
 				requestURILabel.setText(I18n.getMessage("jsite.insert.request-uri") + ":");
@@ -188,6 +192,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter.setProject(project);
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				requestURITextField.setText(project.getFinalRequestURI(1));
 			}
@@ -209,6 +214,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		startTime = System.currentTimeMillis();
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date(startTime)));
 			}
@@ -220,6 +226,8 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void projectURIGenerated(Project project, final String uri) {
 		SwingUtilities.invokeLater(new Runnable() {
+
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				copyURIAction.setEnabled(true);
 				requestURITextField.setText(uri);
@@ -233,6 +241,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	public void projectInsertProgress(Project project, final int succeeded, final int failed, final int fatal, final int total, final boolean finalized) {
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				progressBar.setMaximum(total);
 				progressBar.setValue(succeeded + failed + fatal);
@@ -264,6 +273,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
 				progressBar.setString(I18n.getMessage("jsite.insert.done"));
@@ -277,7 +287,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	// ACTIONS
 	//
 
-	protected void actionCopyURI() {
+	private void actionCopyURI() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
 	}
