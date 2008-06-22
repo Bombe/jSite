@@ -19,22 +19,55 @@
 
 package de.todesbaum.jsite.application;
 
+/**
+ * Container for various file options.
+ * 
+ * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+ */
 public class FileOption {
 
+	/** The default for the insert state. */
 	private static final boolean DEFAULT_INSERT = true;
+
+	/** The default for the custom key. */
 	private static final String DEFAULT_CUSTOM_KEY = "CHK@";
+
+	/** The default container. */
 	private static final String DEFAULT_CONTAINER = "";
+
+	/** The default edition range. */
 	private static final int DEFAULT_EDITION_RANGE = 3;
+
+	/** The default for the replace edition state. */
 	private static final boolean DEFAULT_REPLACE_EDITION = false;
 
+	/** The insert state. */
 	private boolean insert;
+
+	/** The custom key. */
 	private String customKey;
+
+	/** The default MIME type. */
 	private final String defaultMimeType;
+
+	/** The current MIME type. */
 	private String mimeType;
+
+	/** The container. */
 	private String container;
+
+	/** The edition range. */
 	private int editionRange;
+
+	/** The replace edition state. */
 	private boolean replaceEdition;
 
+	/**
+	 * Creates new file options.
+	 * 
+	 * @param defaultMimeType
+	 *            The default MIME type of the file
+	 */
 	public FileOption(String defaultMimeType) {
 		insert = DEFAULT_INSERT;
 		customKey = DEFAULT_CUSTOM_KEY;
@@ -46,15 +79,21 @@ public class FileOption {
 	}
 
 	/**
-	 * @return Returns the customKey.
+	 * Returns the custom key. The custom key is only used when
+	 * {@link #isInsert()} returns <code>true</code>.
+	 * 
+	 * @return The custom key
 	 */
 	public String getCustomKey() {
 		return customKey;
 	}
 
 	/**
+	 * Sets the custom key. The custom key is only used when {@link #isInsert()}
+	 * returns <code>true</code>.
+	 * 
 	 * @param customKey
-	 *            The customKey to set.
+	 *            The custom key
 	 */
 	public void setCustomKey(String customKey) {
 		if (customKey == null) {
@@ -64,20 +103,36 @@ public class FileOption {
 	}
 
 	/**
-	 * @return Returns the insert.
+	 * Returns whether the file should be inserted. If a file is not inserted, a
+	 * custom key has to be specified for it.
+	 * 
+	 * @see #setCustomKey(String)
+	 * @return <code>true</code> if the file should be inserted,
+	 *         <code>false</code> otherwise
 	 */
 	public boolean isInsert() {
 		return insert;
 	}
 
 	/**
+	 * Sets whether the file should be inserted. If a file is not inserted, a
+	 * custom key has to be specified for it.
+	 * 
 	 * @param insert
-	 *            The insert to set.
+	 *            <code>true</code> if the file should be inserted,
+	 *            <code>false</code> otherwise
 	 */
 	public void setInsert(boolean insert) {
 		this.insert = insert;
 	}
 
+	/**
+	 * Sets the MIME type of the file. Setting the MIME type to
+	 * <code>null</code> will set the MIME type to the default MIME type.
+	 * 
+	 * @param mimeType
+	 *            The MIME type of the file
+	 */
 	public void setMimeType(String mimeType) {
 		if (mimeType == null) {
 			mimeType = defaultMimeType;
@@ -85,20 +140,30 @@ public class FileOption {
 		this.mimeType = mimeType;
 	}
 
+	/**
+	 * Returns the MIME type of the file. If no custom MIME type has been set,
+	 * the default MIME type is returned.
+	 * 
+	 * @return The MIME type of the file
+	 */
 	public String getMimeType() {
 		return mimeType;
 	}
 
 	/**
-	 * @return Returns the container.
+	 * Returns the name of the container this file should be put in.
+	 * 
+	 * @return The name of the container
 	 */
 	public String getContainer() {
 		return container;
 	}
 
 	/**
+	 * Sets the name of the container this file should be put in.
+	 * 
 	 * @param container
-	 *            The container to set.
+	 *            The name of the container
 	 */
 	public void setContainer(String container) {
 		if (container == null) {
@@ -107,22 +172,54 @@ public class FileOption {
 		this.container = container;
 	}
 
+	/**
+	 * Sets whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
+	 * 
+	 * @param replaceEdition
+	 *            <code>true</code> to replace tags, <code>false</code> not
+	 *            to replace
+	 */
 	public void setReplaceEdition(boolean replaceEdition) {
 		this.replaceEdition = replaceEdition;
 	}
 
+	/**
+	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags
+	 * replaced.
+	 * 
+	 * @return <code>true</code> if tags should be replaced,
+	 *         <code>false</code> otherwise
+	 */
 	public boolean getReplaceEdition() {
 		return replaceEdition;
 	}
 
+	/**
+	 * Sets the range of editions that should be replaced.
+	 * 
+	 * @param editionRange
+	 *            The range editions to replace
+	 */
 	public void setEditionRange(int editionRange) {
 		this.editionRange = editionRange;
 	}
 
+	/**
+	 * Returns the range of editions that should be replaced.
+	 * 
+	 * @return The range of editions to replace
+	 */
 	public int getEditionRange() {
 		return editionRange;
 	}
 
+	/**
+	 * Returns whether the options for this file have been modified, i.e. are
+	 * not at their default values.
+	 * 
+	 * @return <code>true</code> if the options have been modified,
+	 *         <code>false</code> if they are at default values
+	 */
 	public boolean isCustom() {
 		if (insert != DEFAULT_INSERT) {
 			return true;
