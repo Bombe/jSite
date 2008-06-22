@@ -67,18 +67,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static boolean debug = false;
 	private Configuration configuration;
 	private Freenet7Interface freenetInterface = new Freenet7Interface();
-	protected Icon jSiteIcon;
+	private Icon jSiteIcon;
 
 	private static enum PageType {
 		PAGE_NODE_MANAGER, PAGE_PROJECTS, PAGE_PROJECT_FILES, PAGE_INSERT_PROJECT
 	}
 
 	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN, new Locale("pl") };
-	protected Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
-	protected Action manageNodeAction;
-	protected Action aboutAction;
-	protected TWizard wizard;
-	protected JMenu nodeMenu;
+	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
+	private Action manageNodeAction;
+	private Action aboutAction;
+	private TWizard wizard;
+	private JMenu nodeMenu;
 	private Node selectedNode;
 	private final Map<PageType, TWizardPage> pages = new HashMap<PageType, TWizardPage>();
 
@@ -113,15 +113,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	private void createActions() {
-		for (final Locale locale: SUPPORTED_LOCALES) {
+		for (final Locale locale : SUPPORTED_LOCALES) {
 			languageActions.put(locale, new AbstractAction(I18n.getMessage("jsite.menu.language." + locale.getLanguage()), IconLoader.loadIcon("/flag-" + locale.getLanguage() + ".png")) {
 
+				@SuppressWarnings("synthetic-access")
 				public void actionPerformed(ActionEvent actionEvent) {
 					switchLanguage(locale);
 				}
 			});
 		}
 		manageNodeAction = new AbstractAction(I18n.getMessage("jsite.menu.nodes.manage-nodes")) {
+
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				showPage(PageType.PAGE_NODE_MANAGER);
 				wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
@@ -130,12 +133,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), Version.getVersion()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
 			}
 		};
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
 				aboutAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.about"));
@@ -148,7 +154,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		final JMenu languageMenu = new JMenu(I18n.getMessage("jsite.menu.languages"));
 		menuBar.add(languageMenu);
 		ButtonGroup languageButtonGroup = new ButtonGroup();
-		for (Locale locale: SUPPORTED_LOCALES) {
+		for (Locale locale : SUPPORTED_LOCALES) {
 			Action languageAction = languageActions.get(locale);
 			JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(languageActions.get(locale));
 			if (locale.equals(Locale.getDefault())) {
@@ -173,11 +179,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		helpMenu.add(aboutAction);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			@SuppressWarnings("synthetic-access")
 			public void run() {
 				languageMenu.setText(I18n.getMessage("jsite.menu.languages"));
 				nodeMenu.setText(I18n.getMessage("jsite.menu.nodes"));
 				helpMenu.setText(I18n.getMessage("jsite.menu.help"));
-				for (Map.Entry<Locale, Action> languageActionEntry: languageActions.entrySet()) {
+				for (Map.Entry<Locale, Action> languageActionEntry : languageActions.entrySet()) {
 					languageActionEntry.getValue().putValue(Action.NAME, I18n.getMessage("jsite.menu.language." + languageActionEntry.getKey().getLanguage()));
 				}
 			}
@@ -211,7 +219,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
 	}
 
-	protected void showPage(PageType pageType) {
+	private void showPage(PageType pageType) {
 		wizard.setPreviousEnabled(pageType.ordinal() > 0);
 		wizard.setNextEnabled(pageType.ordinal() < (pages.size() - 1));
 		wizard.setPage(pages.get(pageType));
@@ -232,17 +240,17 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	private Locale findSupportedLocale(Locale forLocale) {
-		for (Locale locale: SUPPORTED_LOCALES) {
+		for (Locale locale : SUPPORTED_LOCALES) {
 			if (locale.equals(forLocale)) {
 				return locale;
 			}
 		}
-		for (Locale locale: SUPPORTED_LOCALES) {
+		for (Locale locale : SUPPORTED_LOCALES) {
 			if (locale.getCountry().equals(forLocale.getCountry()) && locale.getLanguage().equals(forLocale.getLanguage())) {
 				return locale;
 			}
 		}
-		for (Locale locale: SUPPORTED_LOCALES) {
+		for (Locale locale : SUPPORTED_LOCALES) {
 			if (locale.getLanguage().equals(forLocale.getLanguage())) {
 				return locale;
 			}
@@ -254,13 +262,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	// ACTIONS
 	//
 
-	protected void switchLanguage(Locale locale) {
+	private void switchLanguage(Locale locale) {
 		Locale supportedLocale = findSupportedLocale(locale);
 		Action languageAction = languageActions.get(supportedLocale);
 		JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) languageAction.getValue("menuItem");
 		menuItem.setSelected(true);
 		I18n.setLocale(supportedLocale);
-		for (Runnable i18nRunnable: I18nContainer.getInstance()) {
+		for (Runnable i18nRunnable : I18nContainer.getInstance()) {
 			try {
 				i18nRunnable.run();
 			} catch (Throwable t) {
@@ -341,7 +349,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			}
 			Map<String, FileOption> fileOptions = project.getFileOptions();
 			Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
-			for (Entry<String, FileOption> fileOptionEntry: fileOptionEntries) {
+			for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 				FileOption fileOption = fileOptionEntry.getValue();
 				if (!fileOption.isInsert() && ((fileOption.getCustomKey().length() == 0) || "CHK@".equals(fileOption.getCustomKey()))) {
 					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.project-files.no-custom-key"), fileOptionEntry.getKey()), null, JOptionPane.ERROR_MESSAGE);
@@ -406,7 +414,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		nodeMenu.removeAll();
 		ButtonGroup nodeButtonGroup = new ButtonGroup();
 		Node newSelectedNode = null;
-		for (Node node: nodes) {
+		for (Node node : nodes) {
 			JRadioButtonMenuItem nodeMenuItem = new JRadioButtonMenuItem(node.getName());
 			nodeMenuItem.putClientProperty("Node", node);
 			nodeMenuItem.addActionListener(this);
@@ -442,7 +450,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	public static void main(String[] args) {
 		String configFilename = null;
 		boolean nextIsConfigFilename = false;
-		for (String argument: args) {
+		for (String argument : args) {
 			if (nextIsConfigFilename) {
 				configFilename = argument;
 				nextIsConfigFilename = false;
