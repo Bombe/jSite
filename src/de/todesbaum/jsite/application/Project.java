@@ -27,32 +27,54 @@ import java.util.Map;
 import de.todesbaum.util.mime.DefaultMIMETypes;
 
 /**
+ * Container for project information.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Project implements Comparable<Project> {
 
+	/** The name of the project. */
 	protected String name;
+
+	/** The description of the project. */
 	protected String description;
 
+	/** The insert URI of the project. */
 	protected String insertURI;
+
+	/** The request URI of the project. */
 	protected String requestURI;
 
+	/** The index file of the project. */
 	protected String indexFile;
+
+	/** The local path of the project. */
 	protected String localPath;
+
+	/** The remote path of the URI. */
 	protected String path;
+
+	/** The time of the last insertion. */
 	protected long lastInsertionTime;
+
 	/** The edition to insert to. */
 	protected int edition;
 
+	/** Options for files. */
 	protected Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 
+	/**
+	 * Empty constructor.
+	 */
 	public Project() {
+		/* do nothing. */
 	}
 
 	/**
-	 * Clone-constructor.
+	 * Creates a new project from an existing one.
 	 * 
 	 * @param project
+	 *            The project to clone
 	 */
 	public Project(Project project) {
 		name = project.name;
@@ -68,130 +90,180 @@ public class Project implements Comparable<Project> {
 	}
 
 	/**
-	 * @return Returns the title.
+	 * Returns the name of the project.
+	 * 
+	 * @return The name of the project
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param title
-	 *            The title to set.
+	 * Sets the name of the project.
+	 * 
+	 * @param name
+	 *            The name of the project
 	 */
-	public void setName(String title) {
-		name = title;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * @return Returns the description.
+	 * Returns the description of the project.
+	 * 
+	 * @return The description of the project
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
+	 * Sets the description of the project.
+	 * 
 	 * @param description
-	 *            The description to set.
+	 *            The description of the project
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return Returns the localPath.
+	 * Returns the local path of the project.
+	 * 
+	 * @return The local path of the project
 	 */
 	public String getLocalPath() {
 		return localPath;
 	}
 
 	/**
+	 * Sets the local path of the project.
+	 * 
 	 * @param localPath
-	 *            The localPath to set.
+	 *            The local path of the project
 	 */
 	public void setLocalPath(String localPath) {
 		this.localPath = localPath;
 	}
 
 	/**
-	 * @return Returns the indexFile.
+	 * Returns the name of the index file of the project, relative to the
+	 * project’s local path.
+	 * 
+	 * @return The name of the index file of the project
 	 */
 	public String getIndexFile() {
 		return indexFile;
 	}
 
 	/**
+	 * Sets the name of the index file of the project, relative to the project’s
+	 * local path.
+	 * 
 	 * @param indexFile
-	 *            The indexFile to set.
+	 *            The name of the index file of the project
 	 */
 	public void setIndexFile(String indexFile) {
 		this.indexFile = indexFile;
 	}
 
 	/**
-	 * @return Returns the lastInserted.
+	 * Returns the time the project was last inserted, in milliseconds since the
+	 * epoch.
+	 * 
+	 * @return The time of the last insertion
 	 */
 	public long getLastInsertionTime() {
 		return lastInsertionTime;
 	}
 
 	/**
+	 * Sets the time the project was last inserted, in milliseconds since the
+	 * last epoch.
+	 * 
 	 * @param lastInserted
-	 *            The lastInserted to set.
+	 *            The time of the last insertion
 	 */
 	public void setLastInsertionTime(long lastInserted) {
 		lastInsertionTime = lastInserted;
 	}
 
 	/**
-	 * @return Returns the name.
+	 * Returns the remote path of the project. The remote path is the path that
+	 * directly follows the request URI of the project.
+	 * 
+	 * @return The remote path of the project
 	 */
 	public String getPath() {
 		return path;
 	}
 
 	/**
-	 * @param name
-	 *            The name to set.
+	 * Sets the remote path of the project. The remote path is the path that
+	 * directly follows the request URI of the project.
+	 * 
+	 * @param path
+	 *            The remote path of the project
 	 */
-	public void setPath(String name) {
-		path = name;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	/**
-	 * @return Returns the insertURI.
+	 * Returns the insert URI of the project.
+	 * 
+	 * @return The insert URI of the project
 	 */
 	public String getInsertURI() {
 		return insertURI;
 	}
 
 	/**
+	 * Sets the insert URI of the project.
+	 * 
 	 * @param insertURI
-	 *            The insertURI to set.
+	 *            The insert URI of the project
 	 */
 	public void setInsertURI(String insertURI) {
 		this.insertURI = shortenURI(insertURI);
 	}
 
 	/**
-	 * @return Returns the requestURI.
+	 * Returns the request URI of the project.
+	 * 
+	 * @return The request URI of the project
 	 */
 	public String getRequestURI() {
 		return requestURI;
 	}
 
 	/**
+	 * Sets the request URI of the project.
+	 * 
 	 * @param requestURI
-	 *            The requestURI to set.
+	 *            The request URI of the project
 	 */
 	public void setRequestURI(String requestURI) {
 		this.requestURI = shortenURI(requestURI);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This method returns the name of the project.
+	 */
 	@Override
 	public String toString() {
 		return name;
 	}
 
+	/**
+	 * Shortens the given URI by removing scheme and key-type prefixes.
+	 * 
+	 * @param uri
+	 *            The URI to shorten
+	 * @return The shortened URI
+	 */
 	private String shortenURI(String uri) {
 		if (uri.startsWith("freenet:")) {
 			uri = uri.substring("freenet:".length());
@@ -208,6 +280,14 @@ public class Project implements Comparable<Project> {
 		return uri;
 	}
 
+	/**
+	 * Shortens the name of the given file by removing the local path of the
+	 * project and leading file separators.
+	 * 
+	 * @param file
+	 *            The file whose name should be shortened
+	 * @return The shortened name of the file
+	 */
 	public String shortenFilename(File file) {
 		String filename = file.getPath();
 		if (filename.startsWith(localPath)) {
@@ -219,6 +299,15 @@ public class Project implements Comparable<Project> {
 		return filename;
 	}
 
+	/**
+	 * Returns the options for the file with the given name. If the file does
+	 * not yet have any options, a new set of default options is created and
+	 * returned.
+	 * 
+	 * @param filename
+	 *            The name of the file, relative to the project root
+	 * @return The options for the file
+	 */
 	public FileOption getFileOption(String filename) {
 		FileOption fileOption = fileOptions.get(filename);
 		if (fileOption == null) {
@@ -228,6 +317,16 @@ public class Project implements Comparable<Project> {
 		return fileOption;
 	}
 
+	/**
+	 * Sets options for a file.
+	 * 
+	 * @param filename
+	 *            The filename to set the options for, relative to the project
+	 *            root
+	 * @param fileOption
+	 *            The options to set for the file, or <code>null</code> to
+	 *            remove the options for the file
+	 */
 	public void setFileOption(String filename, FileOption fileOption) {
 		if (fileOption != null) {
 			fileOptions.put(filename, fileOption);
@@ -237,15 +336,19 @@ public class Project implements Comparable<Project> {
 	}
 
 	/**
-	 * @return Returns the fileOptions.
+	 * Returns all file options.
+	 * 
+	 * @return All file options
 	 */
 	public Map<String, FileOption> getFileOptions() {
 		return Collections.unmodifiableMap(fileOptions);
 	}
 
 	/**
+	 * Sets all file options.
+	 * 
 	 * @param fileOptions
-	 *            The fileOptions to set.
+	 *            The file options
 	 */
 	public void setFileOptions(Map<String, FileOption> fileOptions) {
 		this.fileOptions.clear();
@@ -254,6 +357,8 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * {@inheritDoc}
+	 * <p>
+	 * Projects are compared by their name only.
 	 */
 	public int compareTo(Project project) {
 		return name.compareToIgnoreCase(project.name);
@@ -281,6 +386,8 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Constructs the final request URI including the edition number.
 	 * 
+	 * @param offset
+	 *            The offset for the edition number
 	 * @return The final request URI
 	 */
 	public String getFinalRequestURI(int offset) {
