@@ -107,6 +107,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void createActions() {
 		addNodeAction = new AbstractAction(I18n.getMessage("jsite.node-manager.add-node")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				addNode();
 			}
@@ -114,6 +115,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 		deleteNodeAction = new AbstractAction(I18n.getMessage("jsite.node-manager.delete-node")) {
 
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				deleteNode();
 			}
@@ -251,14 +253,14 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	// ACTIONS
 	//
 
-	protected void addNode() {
+	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
 		wizard.setNextEnabled(true);
 		fireNodesUpdated(getNodes());
 	}
 
-	protected void deleteNode() {
+	private void deleteNode() {
 		Node node = getSelectedNode();
 		if (node == null) {
 			return;
