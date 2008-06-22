@@ -48,80 +48,174 @@ import de.todesbaum.util.io.ReplacingOutputStream;
 import de.todesbaum.util.io.StreamCopier;
 
 /**
+ * Manages project inserts.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
 
+	/** Counter for FCP connection identifier. */
 	private static int counter = 0;
+
+	/** Whether debug mode is set. */
 	private boolean debug = false;
+
+	/** The list of insert listeners. */
 	private List<InsertListener> insertListeners = new ArrayList<InsertListener>();
+
+	/** The freenet interface. */
 	protected Freenet7Interface freenetInterface;
+
+	/** The project to insert. */
 	protected Project project;
+
+	/** The file scanner. */
 	private FileScanner fileScanner;
+
+	/** Object used for synchronization. */
 	protected final Object lockObject = new Object();
 
+	/**
+	 * Adds a listener to the list of registered listeners.
+	 * 
+	 * @param insertListener
+	 *            The listener to add
+	 */
 	public void addInsertListener(InsertListener insertListener) {
 		insertListeners.add(insertListener);
 	}
 
+	/**
+	 * Removes a listener from the list of registered listeners.
+	 * 
+	 * @param insertListener
+	 *            The listener to remove
+	 */
 	public void removeInsertListener(InsertListener insertListener) {
 		insertListeners.remove(insertListener);
 	}
 
+	/**
+	 * Notifies all listeners that the project insert has started.
+	 * 
+	 * @see InsertListener#projectInsertStarted(Project)
+	 */
 	protected void fireProjectInsertStarted() {
-		for (InsertListener insertListener: insertListeners) {
+		for (InsertListener insertListener : insertListeners) {
 			insertListener.projectInsertStarted(project);
 		}
 	}
-	
+
+	/**
+	 * Notifies all listeners that the insert has generated a URI.
+	 * 
+	 * @see InsertListener#projectURIGenerated(Project, String)
+	 * @param uri
+	 *            The generated URI
+	 */
 	protected void fireProjectURIGenerated(String uri) {
-		for (InsertListener insertListener: insertListeners) {
+		for (InsertListener insertListener : insertListeners) {
 			insertListener.projectURIGenerated(project, uri);
 		}
 	}
 
+	/**
+	 * Notifies all listeners that the insert has made some progress.
+	 * 
+	 * @see InsertListener#projectInsertProgress(Project, int, int, int, int,
+	 *      boolean)
+	 * @param succeeded
+	 *            The number of succeeded blocks
+	 * @param failed
+	 *            The number of failed blocks
+	 * @param fatal
+	 *            The number of fatally failed blocks
+	 * @param total
+	 *            The total number of blocks
+	 * @param finalized
+	 *            <code>true</code> if the total number of blocks has already
+	 *            been finalized, <code>false</code> otherwise
+	 */
 	protected void fireProjectInsertProgress(int succeeded, int failed, int fatal, int total, boolean finalized) {
-		for (InsertListener insertListener: insertListeners) {
+		for (InsertListener insertListener : insertListeners) {
 			insertListener.projectInsertProgress(project, succeeded, failed, fatal, total, finalized);
 		}
 	}
 
+	/**
+	 * Notifies all listeners the project insert has finished.
+	 * 
+	 * @see InsertListener#projectInsertFinished(Project, boolean, Throwable)
+	 * @param success
+	 *            <code>true</code> if the project was inserted successfully,
+	 *            <code>false</code> if it failed
+	 * @param cause
+	 *            The cause of the failure, if any
+	 */
 	protected void fireProjectInsertFinished(boolean success, Throwable cause) {
-		for (InsertListener insertListener: insertListeners) {
+		for (InsertListener insertListener : insertListeners) {
 			insertListener.projectInsertFinished(project, success, cause);
 		}
 	}
 
 	/**
+	 * Sets the debug mode.
+	 * 
 	 * @param debug
-	 *            The debug to set.
+	 *            <code>true</code> to activate debug mode, <code>false</code>
+	 *            to deactivate
 	 */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
 	/**
+	 * Sets the project to insert.
+	 * 
 	 * @param project
-	 *            The project to set.
+	 *            The project to insert
 	 */
 	public void setProject(Project project) {
 		this.project = project;
 	}
 
 	/**
+	 * Sets the freenet interface to use.
+	 * 
 	 * @param freenetInterface
-	 *            The freenetInterface to set.
+	 *            The freenet interface to use
 	 */
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		this.freenetInterface = freenetInterface;
 	}
 
+	/**
+	 * Starts the insert.
+	 */
 	public void start() {
 		fileScanner = new FileScanner(project);
 		fileScanner.addFileScannerListener(this);
 		new Thread(fileScanner).start();
 	}
 
+	/**
+	 * Creates an input stream that delivers the given file, replacing edition
+	 * tokens in the file’s content, if necessary.
+	 * 
+	 * @param filename
+	 *            The name of the file
+	 * @param fileOption
+	 *            The file options
+	 * @param edition
+	 *            The current edition
+	 * @param length
+	 *            An array containing a single long which is used to
+	 *            <em>return</em> the final length of the file, after all
+	 *            replacements
+	 * @return The input stream for the file
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	private InputStream createFileInputStream(String filename, FileOption fileOption, int edition, long[] length) throws IOException {
 		File file = new File(project.getLocalPath(), filename);
 		length[0] = file.length();
@@ -149,13 +243,30 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		return new ByteArrayInputStream(filteredBytes);
 	}
 
+	/**
+	 * Creates an input stream for a container.
+	 * 
+	 * @param containerFiles
+	 *            All container definitions
+	 * @param containerName
+	 *            The name of the container to create
+	 * @param edition
+	 *            The current edition
+	 * @param containerLength
+	 *            An array containing a single long which is used to
+	 *            <em>return</em> the final length of the container stream,
+	 *            after all replacements
+	 * @return The input stream for the container
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
 	private InputStream createContainerInputStream(Map<String, List<String>> containerFiles, String containerName, int edition, long[] containerLength) throws IOException {
 		File tempFile = File.createTempFile("jsite", ".zip");
 		tempFile.deleteOnExit();
 		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
 		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 		try {
-			for (String filename: containerFiles.get(containerName)) {
+			for (String filename : containerFiles.get(containerName)) {
 				File dataFile = new File(project.getLocalPath(), filename);
 				if (dataFile.exists()) {
 					ZipEntry zipEntry = new ZipEntry(filename);
@@ -170,7 +281,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 					}
 				}
 			}
-		} finally {	
+		} finally {
 			zipOutputStream.closeEntry();
 			Closer.close(zipOutputStream);
 			Closer.close(fileOutputStream);
@@ -180,6 +291,18 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		return new FileInputStream(tempFile);
 	}
 
+	/**
+	 * Creates a file entry suitable for handing in to
+	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
+	 * 
+	 * @param filename
+	 *            The name of the file to insert
+	 * @param edition
+	 *            The current edition
+	 * @param containerFiles
+	 *            The container definitions
+	 * @return A file entry for the given file
+	 */
 	private FileEntry createFileEntry(String filename, int edition, Map<String, List<String>> containerFiles) {
 		FileEntry fileEntry = null;
 		FileOption fileOption = project.getFileOption(filename);
@@ -190,6 +313,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				InputStream containerInputStream = createContainerInputStream(containerFiles, containerName, edition, containerLength);
 				fileEntry = new DirectFileEntry(containerName + ".zip", "application/zip", containerInputStream, containerLength[0]);
 			} catch (IOException ioe1) {
+				/* ignore, null is returned. */
 			}
 		} else {
 			if (fileOption.isInsert()) {
@@ -198,6 +322,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 					InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
 					fileEntry = new DirectFileEntry(filename, project.getFileOption(filename).getMimeType(), fileEntryInputStream, fileLength[0]);
 				} catch (IOException ioe1) {
+					/* ignore, null is returned. */
 				}
 			} else {
 				fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
@@ -206,8 +331,18 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		return fileEntry;
 	}
 
+	/**
+	 * Creates container definitions.
+	 * 
+	 * @param files
+	 *            The list of all files
+	 * @param containers
+	 *            The list of all containers
+	 * @param containerFiles
+	 *            Empty map that will be filled with container definitions
+	 */
 	private void createContainers(List<String> files, List<String> containers, Map<String, List<String>> containerFiles) {
-		for (String filename: new ArrayList<String>(files)) {
+		for (String filename : new ArrayList<String>(files)) {
 			FileOption fileOption = project.getFileOption(filename);
 			String containerName = fileOption.getContainer();
 			if (!containerName.equals("")) {
@@ -239,12 +374,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		} catch (IOException e1) {
 			cause = e1;
 		}
-		
+
 		if (!connected) {
 			fireProjectInsertFinished(false, cause);
 			return;
 		}
-		
+
 		Client client = new Client(connection);
 
 		/* create containers */
@@ -259,7 +394,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setDefaultName(project.getIndexFile());
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
-		for (String filename: files) {
+		for (String filename : files) {
 			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
 			if (fileEntry != null) {
 				putDir.addFileEntry(fileEntry);
