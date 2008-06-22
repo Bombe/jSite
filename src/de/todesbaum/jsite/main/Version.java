@@ -20,12 +20,20 @@
 package de.todesbaum.jsite.main;
 
 /**
+ * Container for version information.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Version {
 
+	/** The version. */
 	private static final String VERSION = "0.4.12.2";
 
+	/**
+	 * Returns the version.
+	 * 
+	 * @return The version
+	 */
 	public static final String getVersion() {
 		return VERSION;
 	}
