@@ -61,20 +61,42 @@ import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
 /**
+ * Wizard page that lets the user edit his nodes.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class NodeManagerPage extends TWizardPage implements ListSelectionListener, DocumentListener, ChangeListener {
 
+	/** List of node manager listeners. */
 	private List<NodeManagerListener> nodeManagerListeners = new ArrayList<NodeManagerListener>();
 
+	/** The “add node” action. */
 	protected Action addNodeAction;
+
+	/** The “delete node” action. */
 	protected Action deleteNodeAction;
+
+	/** The node list model. */
 	private DefaultListModel nodeListModel;
+
+	/** The node list. */
 	private JList nodeList;
+
+	/** The node name textfield. */
 	private JTextField nodeNameTextField;
+
+	/** The node hostname textfield. */
 	private JTextField nodeHostnameTextField;
+
+	/** The spinner for the node port. */
 	private JSpinner nodePortSpinner;
 
+	/**
+	 * Creates a new node manager wizard page.
+	 * 
+	 * @param wizard
+	 *            The wizard this page belongs to
+	 */
 	public NodeManagerPage(final TWizard wizard) {
 		super(wizard);
 		pageInit();
@@ -88,21 +110,42 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 			}
 		});
 	}
-	
+
+	/**
+	 * Adds a listener for node manager events.
+	 * 
+	 * @param nodeManagerListener
+	 *            The listener to add
+	 */
 	public void addNodeManagerListener(NodeManagerListener nodeManagerListener) {
 		nodeManagerListeners.add(nodeManagerListener);
 	}
-	
+
+	/**
+	 * Removes a listener for node manager events.
+	 * 
+	 * @param nodeManagerListener
+	 *            The listener to remove
+	 */
 	public void removeNodeManagerListener(NodeManagerListener nodeManagerListener) {
 		nodeManagerListeners.remove(nodeManagerListener);
 	}
-	
+
+	/**
+	 * Notifies all listeners that the node configuration has changed.
+	 * 
+	 * @param nodes
+	 *            The new list of nodes
+	 */
 	protected void fireNodesUpdated(Node[] nodes) {
-		for (NodeManagerListener nodeManagerListener: nodeManagerListeners) {
+		for (NodeManagerListener nodeManagerListener : nodeManagerListeners) {
 			nodeManagerListener.nodesUpdated(nodes);
 		}
 	}
 
+	/**
+	 * Creates all actions.
+	 */
 	private void createActions() {
 		addNodeAction = new AbstractAction(I18n.getMessage("jsite.node-manager.add-node")) {
 
@@ -130,6 +173,9 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		});
 	}
 
+	/**
+	 * Initializes the page and all components in it.
+	 */
 	private void pageInit() {
 		createActions();
 		nodeListModel = new DefaultListModel();
@@ -143,7 +189,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeNameTextField.getDocument().putProperty("Name", "node-name");
 		nodeNameTextField.getDocument().addDocumentListener(this);
 		nodeNameTextField.setEnabled(false);
-		
+
 		nodeHostnameTextField = new JTextField("localhost");
 		nodeHostnameTextField.getDocument().putProperty("Name", "node-hostname");
 		nodeHostnameTextField.getDocument().addDocumentListener(this);
@@ -189,7 +235,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 			}
 		});
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -201,15 +247,26 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
+	/**
+	 * Sets the node list.
+	 * 
+	 * @param nodes
+	 *            The list of nodes
+	 */
 	public void setNodes(Node[] nodes) {
 		nodeListModel.clear();
-		for (Node node: nodes) {
+		for (Node node : nodes) {
 			nodeListModel.addElement(node);
 		}
 		nodeList.repaint();
 		fireNodesUpdated(nodes);
 	}
 
+	/**
+	 * Returns the node list.
+	 * 
+	 * @return The list of nodes
+	 */
 	public Node[] getNodes() {
 		Node[] returnNodes = new Node[nodeListModel.getSize()];
 		for (int nodeIndex = 0, nodeCount = nodeListModel.getSize(); nodeIndex < nodeCount; nodeIndex++) {
@@ -218,10 +275,25 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		return returnNodes;
 	}
 
+	/**
+	 * Returns the currently selected node.
+	 * 
+	 * @return The selected node, or <code>null</code> if no node is selected
+	 */
 	private Node getSelectedNode() {
 		return (Node) nodeList.getSelectedValue();
 	}
-	
+
+	/**
+	 * Updates node name or hostname when the user types into the textfields.
+	 * 
+	 * @see #insertUpdate(DocumentEvent)
+	 * @see #removeUpdate(DocumentEvent)
+	 * @see #changedUpdate(DocumentEvent)
+	 * @see DocumentListener
+	 * @param documentEvent
+	 *            The document event
+	 */
 	private void updateTextField(DocumentEvent documentEvent) {
 		Node node = getSelectedNode();
 		if (node == null) {
@@ -232,6 +304,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		try {
 			documentText = document.getText(0, document.getLength());
 		} catch (BadLocationException ble1) {
+			/* ignore. */
 		}
 		if (documentText == null) {
 			return;
@@ -252,6 +325,9 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	// ACTIONS
 	//
 
+	/**
+	 * Adds a new node to the list of nodes.
+	 */
 	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
@@ -259,6 +335,9 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		fireNodesUpdated(getNodes());
 	}
 
+	/**
+	 * Deletes the currently selected node from the list of nodes.
+	 */
 	private void deleteNode() {
 		Node node = getSelectedNode();
 		if (node == null) {
