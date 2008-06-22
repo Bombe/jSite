@@ -56,18 +56,36 @@ import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
 /**
+ * Wizard page that shows the progress of an insert.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
 
+	/** The project inserter. */
 	private ProjectInserter projectInserter;
 
+	/** The “copy URI” action. */
 	private Action copyURIAction;
+
+	/** The “request URI” textfield. */
 	private JTextField requestURITextField;
+
+	/** The “start time” label. */
 	private JLabel startTimeLabel;
+
+	/** The progress bar. */
 	private JProgressBar progressBar;
+
+	/** The start time of the insert. */
 	private long startTime = 0;
 
+	/**
+	 * Creates a new progress insert wizard page.
+	 * 
+	 * @param wizard
+	 *            The wizard this page belongs to
+	 */
 	public ProjectInsertPage(final TWizard wizard) {
 		super(wizard);
 		createActions();
@@ -85,6 +103,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter.addInsertListener(this);
 	}
 
+	/**
+	 * Creates all used actions.
+	 */
 	private void createActions() {
 		copyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
 
@@ -107,11 +128,19 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		});
 	}
 
+	/**
+	 * Initializes the page.
+	 */
 	private void pageInit() {
 		setLayout(new BorderLayout(12, 12));
 		add(createProjectInsertPanel(), BorderLayout.CENTER);
 	}
 
+	/**
+	 * Creates the main panel.
+	 * 
+	 * @return The main panel
+	 */
 	private JComponent createProjectInsertPanel() {
 		JComponent projectInsertPanel = new JPanel(new GridBagLayout());
 
@@ -167,6 +196,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
+	/**
+	 * Starts the insert.
+	 */
 	public void startInsert() {
 		wizard.setNextEnabled(false);
 		copyURIAction.setEnabled(false);
@@ -177,16 +209,21 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	}
 
 	/**
+	 * Sets whether to activate the debug mode.
+	 * 
 	 * @param debug
-	 *            The debug to set.
+	 *            <code>true</code> to activate the debug mode,
+	 *            <code>false</code> to deactivate.
 	 */
 	public void setDebug(boolean debug) {
 		projectInserter.setDebug(debug);
 	}
 
 	/**
+	 * Sets the project to insert.
+	 * 
 	 * @param project
-	 *            The project to set.
+	 *            The project to insert
 	 */
 	public void setProject(final Project project) {
 		projectInserter.setProject(project);
@@ -199,6 +236,12 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		});
 	}
 
+	/**
+	 * Sets the freenet interface to use.
+	 * 
+	 * @param freenetInterface
+	 *            The freenet interface to use
+	 */
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		projectInserter.setFreenetInterface(freenetInterface);
 	}
@@ -287,6 +330,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	// ACTIONS
 	//
 
+	/**
+	 * Copies the request URI of the project to the clipboard.
+	 */
 	private void actionCopyURI() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
@@ -300,6 +346,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * {@inheritDoc}
 	 */
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		/* ignore. */
 	}
 
 }
