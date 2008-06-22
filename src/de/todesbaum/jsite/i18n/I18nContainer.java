@@ -24,26 +24,62 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Container that collects {@link Runnable}s that change the texts of GUI
+ * components when the current locale has changed.
+ * 
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class I18nContainer implements Iterable<Runnable> {
 
+	/** The container singleton. */
 	private static final I18nContainer singleton = new I18nContainer();
+
+	/** The list of runnables that change texts. */
 	private final List<Runnable> i18nRunnables = Collections.synchronizedList(new ArrayList<Runnable>());
+
+	/**
+	 * The list of runnables that change texts and run after
+	 * {@link #i18nRunnables}.
+	 */
 	private final List<Runnable> i18nPostRunnables = Collections.synchronizedList(new ArrayList<Runnable>());
 
+	/**
+	 * Returns the singleton instance.
+	 * 
+	 * @return The singleton instance
+	 */
 	public static I18nContainer getInstance() {
 		return singleton;
 	}
 
+	/**
+	 * Registers an i18n runnable that is run when the current locale has
+	 * changed.
+	 * 
+	 * @param i18nRunnable
+	 *            The runnable to register
+	 */
 	public void registerRunnable(Runnable i18nRunnable) {
 		i18nRunnables.add(i18nRunnable);
 	}
 
+	/**
+	 * Registers a {@link Runnable} that changes texts when the current locale
+	 * has changed and runs after {@link #i18nRunnables} have run.
+	 * 
+	 * @param i18nPostRunnable
+	 *            The runnable to register
+	 */
 	public void registerPostRunnable(Runnable i18nPostRunnable) {
 		i18nPostRunnables.add(i18nPostRunnable);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Returns a combined list of {@link #i18nRunnables} and
+	 * {@link #i18nPostRunnables}, in that order.
+	 */
 	public Iterator<Runnable> iterator() {
 		List<Runnable> allRunnables = new ArrayList<Runnable>();
 		allRunnables.addAll(i18nRunnables);
