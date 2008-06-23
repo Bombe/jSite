@@ -74,7 +74,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * Wizard page that lets the user manage the files of a project.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
@@ -123,7 +123,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	/**
 	 * Creates a new project file page.
-	 * 
+	 *
 	 * @param wizard
 	 *            The wizard the page belongs to
 	 */
@@ -214,7 +214,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	/**
 	 * Creates the panel contains the project file list and options.
-	 * 
+	 *
 	 * @return The created panel
 	 */
 	private JComponent createProjectFilesPanel() {
@@ -267,6 +267,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 		fileOptionsMIMETypeComboBox.setName("project-files.mime-type");
 		fileOptionsMIMETypeComboBox.addActionListener(this);
+		fileOptionsMIMETypeComboBox.setEditable(true);
 		fileOptionsMIMETypeComboBox.setEnabled(false);
 
 		final TLabel mimeTypeLabel = new TLabel(I18n.getMessage("jsite.project-files.mime-type") + ":", KeyEvent.VK_M, fileOptionsMIMETypeComboBox);
@@ -335,7 +336,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	/**
 	 * Sets the project whose files to manage.
-	 * 
+	 *
 	 * @param project
 	 *            The project whose files to manage
 	 */
@@ -354,7 +355,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	/**
 	 * Returns a list of all project files.
-	 * 
+	 *
 	 * @return All project files
 	 */
 	private List<String> getProjectFiles() {
@@ -610,7 +611,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * Updates the options of the currently selected file with the changes made
 	 * in the “custom key” textfield.
-	 * 
+	 *
 	 * @param documentEvent
 	 *            The document event to process
 	 */
