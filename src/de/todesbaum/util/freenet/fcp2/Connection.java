@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ import de.todesbaum.util.io.TempFileInputStream;
 
 /**
  * A physical connection to a Freenet node.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -73,7 +73,7 @@ public class Connection {
 
 	/**
 	 * Creates a new connection to the specified node with the specified name.
-	 * 
+	 *
 	 * @param node
 	 *            The node to connect to
 	 * @param name
@@ -86,7 +86,7 @@ public class Connection {
 
 	/**
 	 * Adds a listener that gets notified on connection events.
-	 * 
+	 *
 	 * @param connectionListener
 	 *            The listener to add
 	 */
@@ -97,7 +97,7 @@ public class Connection {
 	/**
 	 * Removes a listener from the list of registered listeners. Only the first
 	 * matching listener is removed.
-	 * 
+	 *
 	 * @param connectionListener
 	 *            The listener to remove
 	 * @see List#remove(java.lang.Object)
@@ -108,7 +108,7 @@ public class Connection {
 
 	/**
 	 * Notifies listeners about a received message.
-	 * 
+	 *
 	 * @param message
 	 *            The received message
 	 */
@@ -129,7 +129,7 @@ public class Connection {
 
 	/**
 	 * Returns the name of the connection.
-	 * 
+	 *
 	 * @return The name of the connection
 	 */
 	public String getName() {
@@ -138,7 +138,7 @@ public class Connection {
 
 	/**
 	 * Connects to the node.
-	 * 
+	 *
 	 * @return <code>true</code> if the connection succeeded and the node
 	 *         returned a NodeHello message
 	 * @throws IOException
@@ -180,7 +180,7 @@ public class Connection {
 
 	/**
 	 * Returns whether this connection is still connected to the node.
-	 * 
+	 *
 	 * @return <code>true</code> if this connection is still valid,
 	 *         <code>false</code> otherwise
 	 */
@@ -190,7 +190,7 @@ public class Connection {
 
 	/**
 	 * Returns the NodeHello message the node sent on connection.
-	 * 
+	 *
 	 * @return The NodeHello message of the node
 	 */
 	public Message getNodeHello() {
@@ -237,7 +237,7 @@ public class Connection {
 
 	/**
 	 * Executes the specified command.
-	 * 
+	 *
 	 * @param command
 	 *            The command to execute
 	 * @throws IllegalStateException
@@ -269,7 +269,7 @@ public class Connection {
 	 * The reader thread for this connection. This is essentially a thread that
 	 * reads lines from the node, creates messages from them and notifies
 	 * listeners about the messages.
-	 * 
+	 *
 	 * @author David Roden &lt;droden@gmail.com&gt;
 	 * @version $Id$
 	 */
@@ -281,7 +281,7 @@ public class Connection {
 
 		/**
 		 * Creates a new reader that reads from the specified input stream.
-		 * 
+		 *
 		 * @param nodeInputStream
 		 *            The input stream to read from
 		 */

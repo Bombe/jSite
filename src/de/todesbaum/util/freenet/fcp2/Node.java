@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@ package de.todesbaum.util.freenet.fcp2;
 
 /**
  * Contains the hostname and port number of the Freenet node.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -39,7 +39,7 @@ public class Node {
 	/**
 	 * Creates a new node with the specified hostname and the default port
 	 * number.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the node
 	 * @see #DEFAULT_PORT
@@ -50,7 +50,7 @@ public class Node {
 
 	/**
 	 * Creates a new node with the specified hostname and port number.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the node
 	 * @param port
@@ -63,7 +63,7 @@ public class Node {
 
 	/**
 	 * Returns the hostname of the node.
-	 * 
+	 *
 	 * @return The hostname of the node
 	 */
 	public String getHostname() {
@@ -72,7 +72,7 @@ public class Node {
 
 	/**
 	 * Returns the port number of the node.
-	 * 
+	 *
 	 * @return The port number of the node
 	 */
 	public int getPort() {

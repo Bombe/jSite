@@ -1,5 +1,5 @@
 /*
- * jSite - 
+ * jSite -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import de.todesbaum.jsite.application.ProjectInserter;
 
 /**
  * Command-line interface for jSite.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class CLI implements InsertListener {
@@ -60,7 +60,7 @@ public class CLI implements InsertListener {
 
 	/**
 	 * Creates a new command-line interface.
-	 * 
+	 *
 	 * @param args
 	 *            The command-line arguments
 	 */
@@ -157,7 +157,7 @@ public class CLI implements InsertListener {
 
 	/**
 	 * Returns the project with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the project
 	 * @return The project, or <code>null</code> if no project could be found
@@ -173,7 +173,7 @@ public class CLI implements InsertListener {
 
 	/**
 	 * Returns the node with the given name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the node
 	 * @return The node, or <code>null</code> if no node could be found
@@ -189,7 +189,7 @@ public class CLI implements InsertListener {
 
 	/**
 	 * Inserts the given project.
-	 * 
+	 *
 	 * @param currentProject
 	 *            The project to insert
 	 * @return <code>true</code> if the insert finished successfully,
@@ -257,7 +257,7 @@ public class CLI implements InsertListener {
 
 	/**
 	 * Creates a new command-line interface with the given arguments.
-	 * 
+	 *
 	 * @param args
 	 *            The command-line arguments
 	 */

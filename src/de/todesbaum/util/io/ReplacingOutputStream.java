@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@ public class ReplacingOutputStream extends FilterOutputStream {
 
 	private Map<String, String> replacements = new HashMap<String, String>();
 	private StringBuffer ringBuffer = new StringBuffer();
-	
+
 	/**
 	 * @param out
 	 */
@@ -79,5 +79,5 @@ public class ReplacingOutputStream extends FilterOutputStream {
 			}
 		}
 	}
-	
+
 }

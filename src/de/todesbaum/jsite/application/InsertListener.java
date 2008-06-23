@@ -23,14 +23,14 @@ import java.util.EventListener;
 
 /**
  * Interface for objects that want to be notified abount insert events.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public interface InsertListener extends EventListener {
 
 	/**
 	 * Enumeration for the different error situations.
-	 * 
+	 *
 	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
 	 */
 	public static enum ErrorType {
@@ -53,7 +53,7 @@ public interface InsertListener extends EventListener {
 
 	/**
 	 * Notifies a listener that an insert has started.
-	 * 
+	 *
 	 * @param project
 	 *            The project that is now being inserted
 	 */
@@ -61,7 +61,7 @@ public interface InsertListener extends EventListener {
 
 	/**
 	 * Notifies a listener that a project insert has generated a URI.
-	 * 
+	 *
 	 * @param project
 	 *            The project being inserted
 	 * @param uri
@@ -71,7 +71,7 @@ public interface InsertListener extends EventListener {
 
 	/**
 	 * Notifies a listener that an insert has made some progress.
-	 * 
+	 *
 	 * @param project
 	 *            The project being inserted
 	 * @param succeeded
@@ -90,7 +90,7 @@ public interface InsertListener extends EventListener {
 
 	/**
 	 * Notifies a listener that a project insert has finished.
-	 * 
+	 *
 	 * @param project
 	 *            The project being inserted
 	 * @param success

@@ -21,7 +21,7 @@ package de.todesbaum.jsite.application;
 
 /**
  * Container for various file options.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class FileOption {
@@ -64,7 +64,7 @@ public class FileOption {
 
 	/**
 	 * Creates new file options.
-	 * 
+	 *
 	 * @param defaultMimeType
 	 *            The default MIME type of the file
 	 */
@@ -81,7 +81,7 @@ public class FileOption {
 	/**
 	 * Returns the custom key. The custom key is only used when
 	 * {@link #isInsert()} returns <code>true</code>.
-	 * 
+	 *
 	 * @return The custom key
 	 */
 	public String getCustomKey() {
@@ -91,7 +91,7 @@ public class FileOption {
 	/**
 	 * Sets the custom key. The custom key is only used when {@link #isInsert()}
 	 * returns <code>true</code>.
-	 * 
+	 *
 	 * @param customKey
 	 *            The custom key
 	 */
@@ -105,7 +105,7 @@ public class FileOption {
 	/**
 	 * Returns whether the file should be inserted. If a file is not inserted, a
 	 * custom key has to be specified for it.
-	 * 
+	 *
 	 * @see #setCustomKey(String)
 	 * @return <code>true</code> if the file should be inserted,
 	 *         <code>false</code> otherwise
@@ -117,7 +117,7 @@ public class FileOption {
 	/**
 	 * Sets whether the file should be inserted. If a file is not inserted, a
 	 * custom key has to be specified for it.
-	 * 
+	 *
 	 * @param insert
 	 *            <code>true</code> if the file should be inserted,
 	 *            <code>false</code> otherwise
@@ -129,7 +129,7 @@ public class FileOption {
 	/**
 	 * Sets the MIME type of the file. Setting the MIME type to
 	 * <code>null</code> will set the MIME type to the default MIME type.
-	 * 
+	 *
 	 * @param mimeType
 	 *            The MIME type of the file
 	 */
@@ -143,7 +143,7 @@ public class FileOption {
 	/**
 	 * Returns the MIME type of the file. If no custom MIME type has been set,
 	 * the default MIME type is returned.
-	 * 
+	 *
 	 * @return The MIME type of the file
 	 */
 	public String getMimeType() {
@@ -152,7 +152,7 @@ public class FileOption {
 
 	/**
 	 * Returns the name of the container this file should be put in.
-	 * 
+	 *
 	 * @return The name of the container
 	 */
 	public String getContainer() {
@@ -161,7 +161,7 @@ public class FileOption {
 
 	/**
 	 * Sets the name of the container this file should be put in.
-	 * 
+	 *
 	 * @param container
 	 *            The name of the container
 	 */
@@ -174,7 +174,7 @@ public class FileOption {
 
 	/**
 	 * Sets whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
-	 * 
+	 *
 	 * @param replaceEdition
 	 *            <code>true</code> to replace tags, <code>false</code> not
 	 *            to replace
@@ -186,7 +186,7 @@ public class FileOption {
 	/**
 	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags
 	 * replaced.
-	 * 
+	 *
 	 * @return <code>true</code> if tags should be replaced,
 	 *         <code>false</code> otherwise
 	 */
@@ -196,7 +196,7 @@ public class FileOption {
 
 	/**
 	 * Sets the range of editions that should be replaced.
-	 * 
+	 *
 	 * @param editionRange
 	 *            The range editions to replace
 	 */
@@ -206,7 +206,7 @@ public class FileOption {
 
 	/**
 	 * Returns the range of editions that should be replaced.
-	 * 
+	 *
 	 * @return The range of editions to replace
 	 */
 	public int getEditionRange() {
@@ -216,7 +216,7 @@ public class FileOption {
 	/**
 	 * Returns whether the options for this file have been modified, i.e. are
 	 * not at their default values.
-	 * 
+	 *
 	 * @return <code>true</code> if the options have been modified,
 	 *         <code>false</code> if they are at default values
 	 */

@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,5 +31,5 @@ public interface WizardListener extends EventListener {
 	public void wizardNextPressed(TWizard wizard);
 	public void wizardPreviousPressed(TWizard wizard);
 	public void wizardQuitPressed(TWizard wizard);
-	
+
 }

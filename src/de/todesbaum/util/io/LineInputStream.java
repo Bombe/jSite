@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import java.io.InputStream;
  * @version $Id$
  */
 public class LineInputStream extends FilterInputStream {
-	
+
 	private boolean skipLinefeed = false;
 	private StringBuffer lineBuffer = new StringBuffer();
 
@@ -60,5 +60,5 @@ public class LineInputStream extends FilterInputStream {
 		}
 		return lineBuffer.toString();
 	}
-	
+
 }

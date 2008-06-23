@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ public class TLabel extends JLabel {
 	public TLabel(Icon image) {
 		super(image);
 	}
-	
+
 	public TLabel(Icon image, int mnemonic, Component labelFor) {
 		super(image);
 		setDisplayedMnemonic(mnemonic);

@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import java.io.Writer;
  * takes care of that) and must not be sent afterwards.
  * <p>
  * The node can answer with the following messages: <code>NodeHello</code>.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -51,7 +51,7 @@ public class ClientHello extends Command {
 	 * Returns the value of the <code>ExpectedVersion</code> parameter of this
 	 * command. At the moment this value is not used by the node but in the
 	 * future this may be used to enforce certain node versions.
-	 * 
+	 *
 	 * @return The expected version
 	 */
 	public String getExpectedVersion() {
@@ -62,7 +62,7 @@ public class ClientHello extends Command {
 	 * Sets the value of the <code>ExpectedVersion</code> parameter of this
 	 * command. At the moment this value is not used by the node but in the
 	 * future this may be used to enforce certain node versions.
-	 * 
+	 *
 	 * @param expectedVersion
 	 *            The expected version
 	 */
@@ -72,7 +72,7 @@ public class ClientHello extends Command {
 
 	/**
 	 * Returns the name of the client that is connecting.
-	 * 
+	 *
 	 * @return The name of the client
 	 */
 	public String getName() {
@@ -81,7 +81,7 @@ public class ClientHello extends Command {
 
 	/**
 	 * Sets the name of the client that is connecting.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the client
 	 */

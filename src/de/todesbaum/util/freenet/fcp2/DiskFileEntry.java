@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@ package de.todesbaum.util.freenet.fcp2;
 
 /**
  * A {@link FileEntry} that reads the content from a file on the disk.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -33,7 +33,7 @@ public class DiskFileEntry extends FileEntry {
 	/**
 	 * Creates a new {@link FileEntry} with the specified name and content type
 	 * that is read from the file specified by <code>localFilename</code>.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file
 	 * @param contentType
@@ -57,7 +57,7 @@ public class DiskFileEntry extends FileEntry {
 
 	/**
 	 * Returns the name of the local file that holds the content for this file.
-	 * 
+	 *
 	 * @return The name of the local file
 	 */
 	public String getLocalFilename() {

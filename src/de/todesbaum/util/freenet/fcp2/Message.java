@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import java.util.Map.Entry;
  * most of the messages also have an identifier which binds it to a specific
  * command. Exceptions are among others <code>NodeHello</code>,
  * <code>SSKKeypair</code>, and <code>EndListPersistentRequests</code>.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  * @see de.todesbaum.util.freenet.fcp2.Client
@@ -51,7 +51,7 @@ public class Message {
 
 	/**
 	 * Creates a new message with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of this message
 	 */
@@ -61,7 +61,7 @@ public class Message {
 
 	/**
 	 * Returns the identifier of this message.
-	 * 
+	 *
 	 * @return The identifier
 	 */
 	public String getIdentifier() {
@@ -70,7 +70,7 @@ public class Message {
 
 	/**
 	 * Sets the identifier of this message.
-	 * 
+	 *
 	 * @param identifier
 	 *            The identifier of this message
 	 */
@@ -80,7 +80,7 @@ public class Message {
 
 	/**
 	 * Returns the name of this message.
-	 * 
+	 *
 	 * @return The name of this message
 	 */
 	public String getName() {
@@ -90,7 +90,7 @@ public class Message {
 	/**
 	 * Tests whether this message contains the parameter with the specified key.
 	 * Key names are compared ignoring case.
-	 * 
+	 *
 	 * @param key
 	 *            The name of the parameter
 	 * @return <code>true</code> if this parameter exists in this message,
@@ -104,7 +104,7 @@ public class Message {
 	 * Returns all parameters of this message. The keys of the entries are all
 	 * lower case so if you want to match the parameter names you have to watch
 	 * out.
-	 * 
+	 *
 	 * @return All parameters of this message
 	 */
 	public Set<Entry<String, String>> entrySet() {
@@ -114,7 +114,7 @@ public class Message {
 	/**
 	 * Returns the value of the parameter with the name specified by
 	 * <code>key</code>.
-	 * 
+	 *
 	 * @param key
 	 *            The name of the parameter
 	 * @return The value of the parameter
@@ -126,7 +126,7 @@ public class Message {
 	/**
 	 * Stores the specified value as parameter with the name specified by
 	 * <code>key</code>.
-	 * 
+	 *
 	 * @param key
 	 *            The name of the parameter
 	 * @param value
@@ -140,7 +140,7 @@ public class Message {
 
 	/**
 	 * Returns the number of parameters in this message.
-	 * 
+	 *
 	 * @return The number of parameters
 	 */
 	public int size() {
@@ -165,7 +165,7 @@ public class Message {
 	/**
 	 * Returns a textual representation of this message, containing its name,
 	 * the identifier, and the parameters.
-	 * 
+	 *
 	 * @return A textual representation of this message
 	 */
 	public String toString() {

@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 
 /**
  * Maps i18n keys to translated texts, depending on a current locale.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class I18n {
@@ -38,7 +38,7 @@ public class I18n {
 
 	/**
 	 * Returns the currently set locale.
-	 * 
+	 *
 	 * @return The current locale
 	 */
 	public static Locale getLocale() {
@@ -50,7 +50,7 @@ public class I18n {
 
 	/**
 	 * Sets the current locale.
-	 * 
+	 *
 	 * @param locale
 	 *            The new current locale
 	 */
@@ -61,7 +61,7 @@ public class I18n {
 
 	/**
 	 * Returns the resource bundle for the current locale.
-	 * 
+	 *
 	 * @return The resource bundle for the current locale
 	 */
 	public static ResourceBundle getResourceBundle() {
@@ -70,7 +70,7 @@ public class I18n {
 
 	/**
 	 * Returns the resource bundle for the given locale.
-	 * 
+	 *
 	 * @param locale
 	 *            The locale to get the resource bundle for
 	 * @return The resource bundle for the given locale
@@ -83,7 +83,7 @@ public class I18n {
 	 * Retrieves a translated text for the given i18n key. If the resource
 	 * bundle for the current locale does not have a translation for the given
 	 * key, the default locale is tried. If that fails, the key is returned.
-	 * 
+	 *
 	 * @param key
 	 *            The key to get the translation for
 	 * @return The translated value, or the key itself if not translation can be

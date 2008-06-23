@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import java.io.Writer;
 /**
  * Abstract base class for all put requests. It contains all parameters that put
  * requests have in common.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -33,7 +33,7 @@ public abstract class ClientPut extends Command {
 
 	/** The URI of this request. */
 	protected final String uri;
-	
+
 	/** The client token of this request. */
 	protected String clientToken = null;
 
@@ -60,7 +60,7 @@ public abstract class ClientPut extends Command {
 
 	/**
 	 * Creates a new put request with the specified name, identifier and URI.
-	 * 
+	 *
 	 * @param name
 	 *            The name of this request
 	 * @param identifier
@@ -75,7 +75,7 @@ public abstract class ClientPut extends Command {
 
 	/**
 	 * Returns whether the node should not try to compress the data.
-	 * 
+	 *
 	 * @return <code>true</code> if the node should <strong>not</strong> try
 	 *         to compress the data
 	 */
@@ -90,7 +90,7 @@ public abstract class ClientPut extends Command {
 	 * archives like ZIP files. Otherwise the node will try to compress the file
 	 * which -- depending on the size of the data -- might take a lot of time
 	 * and memory.
-	 * 
+	 *
 	 * @param dontCompress
 	 *            <code>true</code> if the node should <strong>not</strong>
 	 *            try to compress the data

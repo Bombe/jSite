@@ -24,7 +24,7 @@ import java.util.EventListener;
 /**
  * Listener interface for objects that want to be notified when scanning a
  * project’s local path has finished.
- * 
+ *
  * @see FileScanner
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
@@ -32,7 +32,7 @@ public interface FileScannerListener extends EventListener {
 
 	/**
 	 * Notifies a listener that scanning a project’s local path has finished.
-	 * 
+	 *
 	 * @param fileScanner
 	 *            The file scanner that finished
 	 */

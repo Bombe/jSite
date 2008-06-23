@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * A Client executes {@link Command}s over a {@link Connection} to a
  * {@link Node} and delivers resulting {@link Message}s.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -49,7 +49,7 @@ public class Client implements ConnectionListener {
 
 	/**
 	 * Creates a new client that operates on the specified connection.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection to operate on
 	 */
@@ -61,7 +61,7 @@ public class Client implements ConnectionListener {
 	/**
 	 * Creates a new client that operates on the specified connection and
 	 * immediately executes the specified command.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection to operate on
 	 * @param command
@@ -78,7 +78,7 @@ public class Client implements ConnectionListener {
 	/**
 	 * Returns whether this client catches all messages going over the
 	 * connection.
-	 * 
+	 *
 	 * @return <code>true</code> if the client catches all messages,
 	 *         <code>false</code> otherwise
 	 */
@@ -88,7 +88,7 @@ public class Client implements ConnectionListener {
 
 	/**
 	 * Sets whether this client catches all messages going over the connection.
-	 * 
+	 *
 	 * @param catchAll
 	 *            <code>true</code> if the client should catch all messages,
 	 *            <code>false</code> otherwise
@@ -101,7 +101,7 @@ public class Client implements ConnectionListener {
 	 * Executes the specified command. This will also clear the queue of
 	 * messages, discarding all messages that resulted from the previous command
 	 * and have not yet been read.
-	 * 
+	 *
 	 * @param command
 	 *            The command to execute
 	 * @throws IOException
@@ -115,7 +115,7 @@ public class Client implements ConnectionListener {
 	/**
 	 * Executes the specified command and optionally clears the list of
 	 * identifiers this clients listens to before starting the command.
-	 * 
+	 *
 	 * @param command
 	 *            The command to execute
 	 * @param removeExistingIdentifiers
@@ -139,7 +139,7 @@ public class Client implements ConnectionListener {
 	 * Returns the next message, waiting endlessly for it, if need be. If you
 	 * are not sure whether a message will arrive, better use
 	 * {@link #readMessage(long)} to only wait for a specific time.
-	 * 
+	 *
 	 * @return The next message that resulted from the execution of the last
 	 *         command
 	 * @see #readMessage(long)
@@ -153,7 +153,7 @@ public class Client implements ConnectionListener {
 	 * Returns the next message. If the message queue is currently empty, at
 	 * least <code>maxWaitTime</code> milliseconds will be waited for a
 	 * message to arrive.
-	 * 
+	 *
 	 * @param maxWaitTime
 	 *            The minimum time to wait for a message, in milliseconds
 	 * @return The message, or <code>null</code> if no message arrived in time
@@ -181,7 +181,7 @@ public class Client implements ConnectionListener {
 
 	/**
 	 * Returns whether the client is currently disconnected.
-	 * 
+	 *
 	 * @return <code>true</code> if the client is disconnected,
 	 *         <code>false</code> otherwise
 	 */

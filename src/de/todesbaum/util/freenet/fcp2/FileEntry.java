@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@ package de.todesbaum.util.freenet.fcp2;
  * Abstract base class of file entries that are used in the
  * {@link de.todesbaum.util.freenet.fcp2.ClientPutComplexDir} command to define
  * the files of an insert.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -39,7 +39,7 @@ public abstract class FileEntry {
 	 * Creates a new file entry with the specified name and content type. The
 	 * content type should be a standard MIME type with an additional charset
 	 * specification for text-based types.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file
 	 * @param contentType
@@ -57,14 +57,14 @@ public abstract class FileEntry {
 	 * <code>disk</code>, or <code>redirect</code>. This method is
 	 * implemented by the subclasses {@link DirectFileEntry},
 	 * {@link DiskFileEntry}, and {@link RedirectFileEntry}, respectively.
-	 * 
+	 *
 	 * @return The name of this entry's type
 	 */
 	public abstract String getName();
 
 	/**
 	 * Returns the content type of this file.
-	 * 
+	 *
 	 * @return The content type of this file
 	 */
 	public String getContentType() {
@@ -73,7 +73,7 @@ public abstract class FileEntry {
 
 	/**
 	 * Returns the name of this file.
-	 * 
+	 *
 	 * @return The name of this file
 	 */
 	public String getFilename() {

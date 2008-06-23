@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -42,7 +42,7 @@ import org.w3c.dom.Document;
 
 /**
  * Contains method to transform DOM XML trees to byte arrays and vice versa.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id:XML.java 221 2006-03-06 14:46:49Z bombe $
  */
@@ -63,7 +63,7 @@ public class XML {
 
 	/**
 	 * Returns a document builder factory. If possible the cached instance will be returned.
-	 * 
+	 *
 	 * @return A document builder factory
 	 */
 	private static DocumentBuilderFactory getDocumentBuilderFactory() {
@@ -76,7 +76,7 @@ public class XML {
 
 	/**
 	 * Returns a document builder. If possible the cached instance will be returned.
-	 * 
+	 *
 	 * @return A document builder
 	 */
 	private static DocumentBuilder getDocumentBuilder() {
@@ -92,7 +92,7 @@ public class XML {
 
 	/**
 	 * Returns a transformer factory. If possible the cached instance will be returned.
-	 * 
+	 *
 	 * @return A transformer factory
 	 */
 	private static TransformerFactory getTransformerFactory() {
@@ -105,7 +105,7 @@ public class XML {
 
 	/**
 	 * Creates a new XML document.
-	 * 
+	 *
 	 * @return A new XML document
 	 */
 	public static Document createDocument() {
@@ -114,7 +114,7 @@ public class XML {
 
 	/**
 	 * Transforms the DOM XML document into a byte array.
-	 * 
+	 *
 	 * @param document
 	 *            The document to transform
 	 * @return The byte array containing the XML representation
@@ -143,7 +143,7 @@ public class XML {
 
 	/**
 	 * Transforms the byte array into a DOM XML document.
-	 * 
+	 *
 	 * @param data
 	 *            The byte array to parse
 	 * @return The DOM XML document

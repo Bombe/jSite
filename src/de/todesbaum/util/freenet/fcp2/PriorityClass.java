@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ package de.todesbaum.util.freenet.fcp2;
  * immediate mode large file downloads, not to disk), <code>updatable</code>
  * (updatable site checks), <code>bulk</code> (large file downloads to disk),
  * <code>prefetch</code>, <code>minimum</code>.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -61,7 +61,7 @@ public final class PriorityClass {
 
 	/**
 	 * Creates a new priority class with the specified name and value.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the priority class
 	 * @param value
@@ -74,7 +74,7 @@ public final class PriorityClass {
 
 	/**
 	 * Returns the name of this priority class.
-	 * 
+	 *
 	 * @return The name of this priority class
 	 */
 	public String getName() {
@@ -83,7 +83,7 @@ public final class PriorityClass {
 
 	/**
 	 * Returns the value of this priority class.
-	 * 
+	 *
 	 * @return The value of this priority class
 	 */
 	public int getValue() {

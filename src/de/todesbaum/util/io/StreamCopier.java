@@ -3,12 +3,12 @@
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -23,7 +23,7 @@ import java.io.OutputStream;
 
 /**
  * Copies input from an {@link InputStream} to an {@link OutputStream}.
- * 
+ *
  * @author <a href="mailto:droden@gmail.com">David Roden</a>
  * @version $Id$
  */
@@ -57,7 +57,7 @@ public class StreamCopier {
 	/**
 	 * Creates a new StreamCopier with the specified parameters and the default
 	 * buffer size.
-	 * 
+	 *
 	 * @param inputStream
 	 *            The {@link InputStream} to read from
 	 * @param outputStream
@@ -72,7 +72,7 @@ public class StreamCopier {
 	/**
 	 * Creates a new StreamCopier with the specified parameters and the default
 	 * buffer size.
-	 * 
+	 *
 	 * @param inputStream
 	 *            The {@link InputStream} to read from
 	 * @param outputStream
@@ -93,7 +93,7 @@ public class StreamCopier {
 	 * Copies the stream data. If the input stream is depleted before the
 	 * requested number of bytes have been read an {@link EOFException} is
 	 * thrown.
-	 * 
+	 *
 	 * @throws EOFException
 	 *             if the input stream is depleted before the requested number
 	 *             of bytes has been read
@@ -107,7 +107,7 @@ public class StreamCopier {
 	/**
 	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
 	 * the <code>outputStream</code>.
-	 * 
+	 *
 	 * @param inputStream
 	 *            The input stream to read from
 	 * @param outputStream
@@ -124,7 +124,7 @@ public class StreamCopier {
 	/**
 	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
 	 * the <code>outputStream</code> using a buffer with the specified size
-	 * 
+	 *
 	 * @param inputStream
 	 *            The input stream to read from
 	 * @param outputStream

@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@ import java.io.InputStream;
 /**
  * A {@link FileEntry} that sends its payload directly to the node, using the
  * existing FCP connection.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -40,7 +40,7 @@ public class DirectFileEntry extends FileEntry {
 	/**
 	 * Creates a new FileEntry with the specified name and content type that
 	 * gets its data from the specified byte array.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file
 	 * @param contentType
@@ -55,7 +55,7 @@ public class DirectFileEntry extends FileEntry {
 	/**
 	 * Creates a new FileEntry with the specified name and content type that
 	 * gets its data from the specified input stream.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file
 	 * @param contentType
@@ -81,7 +81,7 @@ public class DirectFileEntry extends FileEntry {
 
 	/**
 	 * Returns the input stream for the file's content.
-	 * 
+	 *
 	 * @return The input stream for the file's content
 	 */
 	public InputStream getDataInputStream() {
@@ -90,7 +90,7 @@ public class DirectFileEntry extends FileEntry {
 
 	/**
 	 * Returns the length of this file's content.
-	 * 
+	 *
 	 * @return The length of this file's content
 	 */
 	public long getDataLength() {

@@ -32,7 +32,7 @@ import de.todesbaum.jsite.i18n.I18n;
 /**
  * Scans the local path of a project anychronously and returns the list of found
  * files as an event.
- * 
+ *
  * @see Project#getLocalPath()
  * @see FileScannerListener#fileScannerFinished(FileScanner)
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
@@ -53,7 +53,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Creates a new file scanner for the given project.
-	 * 
+	 *
 	 * @param project
 	 *            The project whose files to scan
 	 */
@@ -63,7 +63,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Adds the given listener to the list of listeners.
-	 * 
+	 *
 	 * @param fileScannerListener
 	 *            The listener to add
 	 */
@@ -73,7 +73,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Removes the given listener from the list of listeners.
-	 * 
+	 *
 	 * @param fileScannerListener
 	 *            The listener to remove
 	 */
@@ -95,7 +95,7 @@ public class FileScanner implements Runnable {
 	 * <p>
 	 * Scans all available files in the project’s local path and emits an event
 	 * when finished.
-	 * 
+	 *
 	 * @see FileScannerListener#fileScannerFinished(FileScanner)
 	 */
 	public void run() {
@@ -112,7 +112,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Returns whether there was an error scanning for files.
-	 * 
+	 *
 	 * @return <code>true</code> if there was an error, <code>false</code>
 	 *         otherwise
 	 */
@@ -122,7 +122,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Returns the list of found files.
-	 * 
+	 *
 	 * @return The list of found files
 	 */
 	public List<String> getFiles() {
@@ -131,7 +131,7 @@ public class FileScanner implements Runnable {
 
 	/**
 	 * Recursively scans a directory and adds all found files to the given list.
-	 * 
+	 *
 	 * @param rootDir
 	 *            The directory to scan
 	 * @param fileList

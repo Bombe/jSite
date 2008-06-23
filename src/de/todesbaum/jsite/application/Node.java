@@ -1,5 +1,5 @@
 /*
- * jSite-0.7 - 
+ * jSite-0.7 -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@ package de.todesbaum.jsite.application;
 
 /**
  * Container for node information.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Node extends de.todesbaum.util.freenet.fcp2.Node {
@@ -31,7 +31,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Creates a new node with the given hostname and the default port.
-	 * 
+	 *
 	 * @see de.todesbaum.util.freenet.fcp2.Node#DEFAULT_PORT
 	 * @param hostname
 	 *            The hostname of the new node
@@ -42,7 +42,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Creates a new node with the given hostname and port.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the new node
 	 * @param port
@@ -54,7 +54,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Creates a new node with the given hostname, port, and name.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the new node
 	 * @param port
@@ -69,7 +69,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Creates a new node that gets its settings from the given node.
-	 * 
+	 *
 	 * @param node
 	 *            The node to copy
 	 */
@@ -79,7 +79,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Creates a new node from the given node, overwriting the name.
-	 * 
+	 *
 	 * @param node
 	 *            The node to copy from
 	 * @param name
@@ -91,7 +91,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Sets the name of the node.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the node
 	 */
@@ -101,7 +101,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Returns the name of the node.
-	 * 
+	 *
 	 * @return The name of the node
 	 */
 	public String getName() {
@@ -110,7 +110,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Sets the hostname of the node.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the node
 	 */
@@ -120,7 +120,7 @@ public class Node extends de.todesbaum.util.freenet.fcp2.Node {
 
 	/**
 	 * Sets the port of the node.
-	 * 
+	 *
 	 * @param port
 	 *            The port of the node
 	 */

@@ -1,5 +1,5 @@
 /*
- * jSite-0.7 - 
+ * jSite-0.7 -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,14 +26,14 @@ import de.todesbaum.jsite.application.Node;
 /**
  * Listener interface for objects that want to be notified if the node
  * configuration changes.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public interface NodeManagerListener extends EventListener {
 
 	/**
 	 * Notifies a listener that the node configuration was changed.
-	 * 
+	 *
 	 * @param nodes
 	 *            The new list of nodes
 	 */

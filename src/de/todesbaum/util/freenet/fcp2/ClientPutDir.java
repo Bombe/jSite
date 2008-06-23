@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import java.io.Writer;
 
 /**
  * Abstract base class for all put requests that insert a directory.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -35,7 +35,7 @@ public class ClientPutDir extends ClientPut {
 
 	/**
 	 * Creates a new request with the specified name, identifier, and URI.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the request
 	 * @param identifier
@@ -49,7 +49,7 @@ public class ClientPutDir extends ClientPut {
 
 	/**
 	 * Returns the default name of the directory.
-	 * 
+	 *
 	 * @return The default name of the directory
 	 */
 	public String getDefaultName() {
@@ -62,7 +62,7 @@ public class ClientPutDir extends ClientPut {
 	 * requested without a filename. It's about the same as the
 	 * <code>index.html</code> file that gets delivered if you only request a
 	 * directory from a webserver.
-	 * 
+	 *
 	 * @param defaultName
 	 *            The default name of the directory
 	 */

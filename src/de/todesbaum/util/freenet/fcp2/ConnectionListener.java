@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import java.util.EventListener;
 
 /**
  * Interface for clients that want to be notified when a message was received.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -31,7 +31,7 @@ public interface ConnectionListener extends EventListener {
 
 	/**
 	 * Notifies a client that a message was received.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection the message was received on
 	 * @param message
@@ -41,7 +41,7 @@ public interface ConnectionListener extends EventListener {
 
 	/**
 	 * Notifies a client that the connection to the node has been lost.
-	 * 
+	 *
 	 * @param connection
 	 *            The connection that was lost
 	 */

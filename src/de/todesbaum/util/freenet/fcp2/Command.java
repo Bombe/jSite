@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import java.io.Writer;
  * name of the {@link de.todesbaum.util.freenet.fcp2.Connection} connects). So
  * when receiving messages from the node you should always be prepared for
  * something you did not expect.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
@@ -56,7 +56,7 @@ public abstract class Command {
 
 	/**
 	 * Creates a new command with the specified name and identifier.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the command
 	 * @param identifier
@@ -69,7 +69,7 @@ public abstract class Command {
 
 	/**
 	 * Returns the name of this command.
-	 * 
+	 *
 	 * @return The name of this command
 	 */
 	public String getCommandName() {
@@ -78,7 +78,7 @@ public abstract class Command {
 
 	/**
 	 * Return the identifier of this command.
-	 * 
+	 *
 	 * @return The identifier of this command
 	 */
 	public String getIdentifier() {
@@ -91,7 +91,7 @@ public abstract class Command {
 	 * <strong>NOTE:</strong> Subclasses of Command <strong>must</strong> call
 	 * <code>super.write(writer)</code> before or after writing their own
 	 * parameters!
-	 * 
+	 *
 	 * @param writer
 	 *            The stream to write the parameters to
 	 * @throws IOException
@@ -106,7 +106,7 @@ public abstract class Command {
 	 * Returns whether this command has payload to send after the message.
 	 * Subclasses need to return <code>true</code> here if they need to send
 	 * payload after the message.
-	 * 
+	 *
 	 * @return <code>true</code> if this command has payload to send,
 	 *         <code>false</code> otherwise
 	 */
@@ -118,7 +118,7 @@ public abstract class Command {
 	 * Returns the payload of this command as an {@link InputStream}. This
 	 * method is never called if {@link #hasPayload()} returns
 	 * <code>false</code>.
-	 * 
+	 *
 	 * @return The payload of this command
 	 */
 	protected InputStream getPayload() {
@@ -128,7 +128,7 @@ public abstract class Command {
 	/**
 	 * Returns the length of the payload. This method is never called if
 	 * {@link #hasPayload()} returns <code>false</code>.
-	 * 
+	 *
 	 * @return The length of the payload
 	 */
 	protected long getPayloadLength() {

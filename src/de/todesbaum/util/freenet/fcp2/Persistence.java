@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ package de.todesbaum.util.freenet.fcp2;
  * is remembered as long as the node is running but not after restarts.
  * <code>forever</code> finally means that a request persists until it is
  * explicitely deleted.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  * @see de.todesbaum.util.freenet.fcp2.ModifyPersistentRequest
@@ -57,7 +57,7 @@ public final class Persistence {
 	/**
 	 * Private constructor that creates a persistence option with the specified
 	 * name.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the persistence option.
 	 */
@@ -67,7 +67,7 @@ public final class Persistence {
 
 	/**
 	 * Returns the name of this persistence option.
-	 * 
+	 *
 	 * @return The name of this persistence option
 	 */
 	public String getName() {
@@ -77,7 +77,7 @@ public final class Persistence {
 	/**
 	 * Returns a textual representation of this persistence option. The result
 	 * is identical to calling {@link #getName()}.
-	 * 
+	 *
 	 * @return The name of this persistence option
 	 */
 	public String toString() {

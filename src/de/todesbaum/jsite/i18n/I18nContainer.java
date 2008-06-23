@@ -1,16 +1,16 @@
 /*
  * jSite-remote - I18nContainer.java Copyright © 2007 David Roden
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Container that collects {@link Runnable}s that change the texts of GUI
  * components when the current locale has changed.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class I18nContainer implements Iterable<Runnable> {
@@ -45,7 +45,7 @@ public class I18nContainer implements Iterable<Runnable> {
 
 	/**
 	 * Returns the singleton instance.
-	 * 
+	 *
 	 * @return The singleton instance
 	 */
 	public static I18nContainer getInstance() {
@@ -55,7 +55,7 @@ public class I18nContainer implements Iterable<Runnable> {
 	/**
 	 * Registers an i18n runnable that is run when the current locale has
 	 * changed.
-	 * 
+	 *
 	 * @param i18nRunnable
 	 *            The runnable to register
 	 */
@@ -66,7 +66,7 @@ public class I18nContainer implements Iterable<Runnable> {
 	/**
 	 * Registers a {@link Runnable} that changes texts when the current locale
 	 * has changed and runs after {@link #i18nRunnables} have run.
-	 * 
+	 *
 	 * @param i18nPostRunnable
 	 *            The runnable to register
 	 */

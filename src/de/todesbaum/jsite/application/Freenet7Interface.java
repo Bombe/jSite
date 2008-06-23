@@ -47,8 +47,8 @@ public class Freenet7Interface {
 	private Connection connection;
 
 	/**
-	 * Sets the hostname of the node. The default port for FCP2 connections (
-	 * {@link Node#DEFAULT_PORT}) is used.
+	 * Sets the hostname of the node. The default port for FCP2 connections ({@link Node#DEFAULT_PORT})
+	 * is used.
 	 *
 	 * @param hostname
 	 *            The hostname of the node

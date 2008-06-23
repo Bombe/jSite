@@ -1,5 +1,5 @@
 /*
- * todesbaum-lib - 
+ * todesbaum-lib -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@ package de.todesbaum.util.freenet.fcp2;
  * Implementation of the <code>GenerateSSK</code> command.
  * <p>
  * The node can answer with the following messages: <code>SSKKeypair</code>.
- * 
+ *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
