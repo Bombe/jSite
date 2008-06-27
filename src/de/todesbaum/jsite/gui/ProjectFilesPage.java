@@ -280,13 +280,21 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsContainerComboBox.setName("project-files.container");
 		fileOptionsContainerComboBox.addActionListener(this);
 		fileOptionsContainerComboBox.setEnabled(false);
+		fileOptionsContainerComboBox.setVisible(false);
 
 		final TLabel containerLabel = new TLabel(I18n.getMessage("jsite.project-files.container") + ":", KeyEvent.VK_C, fileOptionsContainerComboBox);
+		containerLabel.setVisible(false);
+		JButton addContainerButton = new JButton(addContainerAction);
+		addContainerButton.setVisible(false);
+		JButton editContainerButton = new JButton(editContainerAction);
+		editContainerButton.setVisible(false);
+		JButton deleteContainerButton = new JButton(deleteContainerAction);
+		deleteContainerButton.setVisible(false);
 		fileOptionsPanel.add(containerLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsContainerComboBox, new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(new JButton(addContainerAction), new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(new JButton(editContainerAction), new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(new JButton(deleteContainerAction), new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(addContainerButton, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(editContainerButton, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(deleteContainerButton, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		JPanel fileOptionsReplacementPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 6, 6));
 		fileOptionsReplacementPanel.setBorder(new EmptyBorder(-6, -6, -6, -6));
