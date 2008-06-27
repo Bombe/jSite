@@ -304,6 +304,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		replacementCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.replacement.tooltip"));
 		replacementCheckBox.addActionListener(this);
 		replacementCheckBox.setEnabled(false);
+		replacementCheckBox.setVisible(false);
 		fileOptionsReplacementPanel.add(replacementCheckBox);
 
 		replaceEditionRangeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
@@ -311,7 +312,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		replaceEditionRangeSpinner.setToolTipText(I18n.getMessage("jsite.project-files.replacement.edition-range.tooltip"));
 		replaceEditionRangeSpinner.addChangeListener(this);
 		replaceEditionRangeSpinner.setEnabled(false);
+		replaceEditionRangeSpinner.setVisible(false);
 		final JLabel editionRangeLabel = new JLabel(I18n.getMessage("jsite.project-files.replacement.edition-range"));
+		editionRangeLabel.setVisible(false);
 		fileOptionsReplacementPanel.add(editionRangeLabel);
 		fileOptionsReplacementPanel.add(replaceEditionRangeSpinner);
 
