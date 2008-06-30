@@ -19,6 +19,7 @@
 
 package de.todesbaum.jsite.main;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,11 +35,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -253,6 +257,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		final JMenu helpMenu = new JMenu(I18n.getMessage("jsite.menu.help"));
 		menuBar.add(helpMenu);
+		helpMenu.add(checkForUpdatesAction);
 		helpMenu.add(aboutAction);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
@@ -389,7 +394,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * Checks for updates of jSite.
 	 */
 	private void checkForUpdates() {
-
+		System.out.println("checkForUpdates()");
+		/* construct a small panel for the dialog. */
+		JPanel waitingDialogPanel = new JPanel(new BorderLayout(12, 12));
+		waitingDialogPanel.add(new JLabel(I18n.getMessage("")), BorderLayout.PAGE_START);
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setIndeterminate(true);
+		waitingDialogPanel.add(progressBar, BorderLayout.PAGE_END);
+		JOptionPane waitingDialog = new JOptionPane(waitingDialogPanel, JOptionPane.INFORMATION_MESSAGE, 0, null, new Object[] { "Cancel" });
+		JDialog dialog = new JDialog(wizard, true);
+		dialog.getContentPane().add(waitingDialog, BorderLayout.CENTER);
+		dialog.pack();
+		dialog.setVisible(true);
 	}
 
 	//
