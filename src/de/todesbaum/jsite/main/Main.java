@@ -19,7 +19,6 @@
 
 package de.todesbaum.jsite.main;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -35,14 +34,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -56,6 +52,7 @@ import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.ProjectFilesPage;
 import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
+import de.todesbaum.jsite.gui.UpdateChecker;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.image.IconLoader;
@@ -73,14 +70,14 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/** Whether the debug mode is activated. */
 	private static boolean debug = false;
 
-	/** The URL for update checks. */
-	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/0/currentVersion.txt";
-
 	/** The configuration. */
 	private Configuration configuration;
 
 	/** The freenet interface. */
 	private Freenet7Interface freenetInterface = new Freenet7Interface();
+
+	/** The update checker. */
+	private final UpdateChecker updateChecker;
 
 	/** The jSite icon. */
 	private Icon jSiteIcon;
@@ -171,6 +168,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		jSiteIcon = IconLoader.loadIcon("/jsite-icon.png");
 		wizard.setIcon(jSiteIcon);
 
+		updateChecker = new UpdateChecker(wizard, freenetInterface);
+
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
 	}
@@ -204,7 +203,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			 */
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
-				checkForUpdates();
+				updateChecker.checkForUpdates();
 			}
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
@@ -388,24 +387,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		wizard.setPage(wizard.getPage());
 		configuration.setLocale(supportedLocale);
-	}
-
-	/**
-	 * Checks for updates of jSite.
-	 */
-	private void checkForUpdates() {
-		System.out.println("checkForUpdates()");
-		/* construct a small panel for the dialog. */
-		JPanel waitingDialogPanel = new JPanel(new BorderLayout(12, 12));
-		waitingDialogPanel.add(new JLabel(I18n.getMessage("")), BorderLayout.PAGE_START);
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setIndeterminate(true);
-		waitingDialogPanel.add(progressBar, BorderLayout.PAGE_END);
-		JOptionPane waitingDialog = new JOptionPane(waitingDialogPanel, JOptionPane.INFORMATION_MESSAGE, 0, null, new Object[] { "Cancel" });
-		JDialog dialog = new JDialog(wizard, true);
-		dialog.getContentPane().add(waitingDialog, BorderLayout.CENTER);
-		dialog.pack();
-		dialog.setVisible(true);
 	}
 
 	//
