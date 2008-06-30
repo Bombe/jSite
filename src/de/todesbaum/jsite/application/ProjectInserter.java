@@ -424,6 +424,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				System.out.println(message);
 			}
 			if (!finished) {
+				@SuppressWarnings("null")
 				String messageName = message.getName();
 				if ("URIGenerated".equals(messageName)) {
 					finalURI = message.get("URI");
@@ -445,6 +446,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/* post-insert work */
 		fireProjectInsertFinished(success, disconnected ? new IOException("Connection terminated") : null);
 		if (success) {
+			@SuppressWarnings("null")
 			String editionPart = finalURI.substring(finalURI.lastIndexOf('/') + 1);
 			int newEdition = Integer.parseInt(editionPart);
 			project.setEdition(newEdition);

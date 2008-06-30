@@ -1,20 +1,20 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - a tool for uploading websites into Freenet Copyright (C) 2006 David
+ * Roden
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 package de.todesbaum.jsite.application;
@@ -28,7 +28,7 @@ import de.todesbaum.util.mime.DefaultMIMETypes;
 
 /**
  * Container for project information.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Project implements Comparable<Project> {
@@ -72,7 +72,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Creates a new project from an existing one.
-	 * 
+	 *
 	 * @param project
 	 *            The project to clone
 	 */
@@ -91,7 +91,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the name of the project.
-	 * 
+	 *
 	 * @return The name of the project
 	 */
 	public String getName() {
@@ -100,7 +100,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the name of the project.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the project
 	 */
@@ -110,7 +110,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the description of the project.
-	 * 
+	 *
 	 * @return The description of the project
 	 */
 	public String getDescription() {
@@ -119,7 +119,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the description of the project.
-	 * 
+	 *
 	 * @param description
 	 *            The description of the project
 	 */
@@ -129,7 +129,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the local path of the project.
-	 * 
+	 *
 	 * @return The local path of the project
 	 */
 	public String getLocalPath() {
@@ -138,7 +138,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the local path of the project.
-	 * 
+	 *
 	 * @param localPath
 	 *            The local path of the project
 	 */
@@ -149,7 +149,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Returns the name of the index file of the project, relative to the
 	 * project’s local path.
-	 * 
+	 *
 	 * @return The name of the index file of the project
 	 */
 	public String getIndexFile() {
@@ -159,7 +159,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Sets the name of the index file of the project, relative to the project’s
 	 * local path.
-	 * 
+	 *
 	 * @param indexFile
 	 *            The name of the index file of the project
 	 */
@@ -170,7 +170,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Returns the time the project was last inserted, in milliseconds since the
 	 * epoch.
-	 * 
+	 *
 	 * @return The time of the last insertion
 	 */
 	public long getLastInsertionTime() {
@@ -180,7 +180,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Sets the time the project was last inserted, in milliseconds since the
 	 * last epoch.
-	 * 
+	 *
 	 * @param lastInserted
 	 *            The time of the last insertion
 	 */
@@ -191,7 +191,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Returns the remote path of the project. The remote path is the path that
 	 * directly follows the request URI of the project.
-	 * 
+	 *
 	 * @return The remote path of the project
 	 */
 	public String getPath() {
@@ -201,7 +201,7 @@ public class Project implements Comparable<Project> {
 	/**
 	 * Sets the remote path of the project. The remote path is the path that
 	 * directly follows the request URI of the project.
-	 * 
+	 *
 	 * @param path
 	 *            The remote path of the project
 	 */
@@ -211,7 +211,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the insert URI of the project.
-	 * 
+	 *
 	 * @return The insert URI of the project
 	 */
 	public String getInsertURI() {
@@ -220,7 +220,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the insert URI of the project.
-	 * 
+	 *
 	 * @param insertURI
 	 *            The insert URI of the project
 	 */
@@ -230,7 +230,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the request URI of the project.
-	 * 
+	 *
 	 * @return The request URI of the project
 	 */
 	public String getRequestURI() {
@@ -239,7 +239,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the request URI of the project.
-	 * 
+	 *
 	 * @param requestURI
 	 *            The request URI of the project
 	 */
@@ -259,31 +259,32 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Shortens the given URI by removing scheme and key-type prefixes.
-	 * 
+	 *
 	 * @param uri
 	 *            The URI to shorten
 	 * @return The shortened URI
 	 */
 	private String shortenURI(String uri) {
-		if (uri.startsWith("freenet:")) {
-			uri = uri.substring("freenet:".length());
+		String shortUri = uri;
+		if (shortUri.startsWith("freenet:")) {
+			shortUri = shortUri.substring("freenet:".length());
 		}
-		if (uri.startsWith("SSK@")) {
-			uri = uri.substring("SSK@".length());
+		if (shortUri.startsWith("SSK@")) {
+			shortUri = shortUri.substring("SSK@".length());
 		}
-		if (uri.startsWith("USK@")) {
-			uri = uri.substring("USK@".length());
+		if (shortUri.startsWith("USK@")) {
+			shortUri = shortUri.substring("USK@".length());
 		}
-		if (uri.endsWith("/")) {
-			uri = uri.substring(0, uri.length() - 1);
+		if (shortUri.endsWith("/")) {
+			shortUri = shortUri.substring(0, shortUri.length() - 1);
 		}
-		return uri;
+		return shortUri;
 	}
 
 	/**
 	 * Shortens the name of the given file by removing the local path of the
 	 * project and leading file separators.
-	 * 
+	 *
 	 * @param file
 	 *            The file whose name should be shortened
 	 * @return The shortened name of the file
@@ -303,7 +304,7 @@ public class Project implements Comparable<Project> {
 	 * Returns the options for the file with the given name. If the file does
 	 * not yet have any options, a new set of default options is created and
 	 * returned.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file, relative to the project root
 	 * @return The options for the file
@@ -319,7 +320,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets options for a file.
-	 * 
+	 *
 	 * @param filename
 	 *            The filename to set the options for, relative to the project
 	 *            root
@@ -337,7 +338,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns all file options.
-	 * 
+	 *
 	 * @return All file options
 	 */
 	public Map<String, FileOption> getFileOptions() {
@@ -346,7 +347,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets all file options.
-	 * 
+	 *
 	 * @param fileOptions
 	 *            The file options
 	 */
@@ -366,7 +367,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Returns the edition of the project.
-	 * 
+	 *
 	 * @return The edition of the project
 	 */
 	public int getEdition() {
@@ -375,7 +376,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Sets the edition of the project.
-	 * 
+	 *
 	 * @param edition
 	 *            The edition to set
 	 */
@@ -385,7 +386,7 @@ public class Project implements Comparable<Project> {
 
 	/**
 	 * Constructs the final request URI including the edition number.
-	 * 
+	 *
 	 * @param offset
 	 *            The offset for the edition number
 	 * @return The final request URI

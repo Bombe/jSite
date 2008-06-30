@@ -1,20 +1,20 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - a tool for uploading websites into Freenet Copyright (C) 2006 David
+ * Roden
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 package de.todesbaum.jsite.application;
@@ -97,9 +97,10 @@ public class FileOption {
 	 */
 	public void setCustomKey(String customKey) {
 		if (customKey == null) {
-			customKey = "";
+			this.customKey = "";
+		} else {
+			this.customKey = customKey;
 		}
-		this.customKey = customKey;
 	}
 
 	/**
@@ -135,9 +136,10 @@ public class FileOption {
 	 */
 	public void setMimeType(String mimeType) {
 		if (mimeType == null) {
-			mimeType = defaultMimeType;
+			this.mimeType = defaultMimeType;
+		} else {
+			this.mimeType = mimeType;
 		}
-		this.mimeType = mimeType;
 	}
 
 	/**
@@ -167,28 +169,28 @@ public class FileOption {
 	 */
 	public void setContainer(String container) {
 		if (container == null) {
-			container = DEFAULT_CONTAINER;
+			this.container = DEFAULT_CONTAINER;
+		} else {
+			this.container = container;
 		}
-		this.container = container;
 	}
 
 	/**
 	 * Sets whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
 	 *
 	 * @param replaceEdition
-	 *            <code>true</code> to replace tags, <code>false</code> not
-	 *            to replace
+	 *            <code>true</code> to replace tags, <code>false</code> not to
+	 *            replace
 	 */
 	public void setReplaceEdition(boolean replaceEdition) {
 		this.replaceEdition = replaceEdition;
 	}
 
 	/**
-	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags
-	 * replaced.
+	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
 	 *
-	 * @return <code>true</code> if tags should be replaced,
-	 *         <code>false</code> otherwise
+	 * @return <code>true</code> if tags should be replaced, <code>false</code>
+	 *         otherwise
 	 */
 	public boolean getReplaceEdition() {
 		return replaceEdition;
