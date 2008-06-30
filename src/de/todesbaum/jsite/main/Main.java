@@ -69,6 +69,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/** Whether the debug mode is activated. */
 	private static boolean debug = false;
 
+	/** The URL for update checks. */
+	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/0/currentVersion.txt";
+
 	/** The configuration. */
 	private Configuration configuration;
 
@@ -107,6 +110,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/** The “manage nodes” action. */
 	private Action manageNodeAction;
+
+	/** The “check for updates” action. */
+	private Action checkForUpdatesAction;
 
 	/** The “about jSite” action. */
 	private Action aboutAction;
@@ -185,6 +191,16 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				showPage(PageType.PAGE_NODE_MANAGER);
 				wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 				wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+			}
+		};
+		checkForUpdatesAction = new AbstractAction(I18n.getMessage("jsite.menu.help.check-for-updates")) {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				checkForUpdates();
 			}
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
@@ -367,6 +383,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		wizard.setPage(wizard.getPage());
 		configuration.setLocale(supportedLocale);
+	}
+
+	/**
+	 * Checks for updates of jSite.
+	 */
+	private void checkForUpdates() {
+
 	}
 
 	//
