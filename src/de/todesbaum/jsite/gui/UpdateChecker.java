@@ -21,10 +21,13 @@ package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.text.MessageFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,6 +37,7 @@ import javax.swing.JProgressBar;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.util.freenet.fcp2.Connection;
 
 /**
  * Checks for newer versions of jSite.
@@ -46,17 +50,20 @@ public class UpdateChecker {
 	@SuppressWarnings("unused")
 	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/0/currentVersion.txt";
 
+	/** Object used for synchronization. */
+	private final Object syncObject = new Object();
+
 	/** The parent of the dialog. */
-	@SuppressWarnings("unused")
 	private final JFrame parent;
 
 	/** The freenet interface. */
-	@SuppressWarnings("unused")
 	private final Freenet7Interface freenetInterface;
 
 	/** The cancel action. */
-	@SuppressWarnings("unused")
 	private Action cancelAction;
+
+	/** Whether the busy dialog has been cancelled. */
+	private boolean cancelled;
 
 	/**
 	 * Creates a new update checker that uses the given frame as its parent and
@@ -70,6 +77,7 @@ public class UpdateChecker {
 	public UpdateChecker(JFrame parent, Freenet7Interface freenetInterface) {
 		this.parent = parent;
 		this.freenetInterface = freenetInterface;
+		cancelled = false;
 		initActions();
 	}
 
@@ -81,7 +89,20 @@ public class UpdateChecker {
 	 * Checks for updates, showing a dialog with an indeterminate progress bar.
 	 */
 	public void checkForUpdates() {
-		showBusyDialog();
+		JDialog busyDialog = showBusyDialog();
+		Connection connection = freenetInterface.getConnection("jSite-update-check");
+		try {
+			if (!connection.connect()) {
+				busyDialog.setVisible(false);
+				JOptionPane.showMessageDialog(parent, I18n.getMessage(""), I18n.getMessage(""), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		} catch (IOException ioe1) {
+			busyDialog.setVisible(false);
+			JOptionPane.showMessageDialog(parent, MessageFormat.format(I18n.getMessage(""), ioe1.getMessage()), I18n.getMessage(""), JOptionPane.ERROR_MESSAGE);
+		} finally {
+			connection.disconnect();
+		}
 	}
 
 	//
@@ -97,25 +118,35 @@ public class UpdateChecker {
 			/**
 			 * {@inheritDoc}
 			 */
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
-				/* TODO */
+				synchronized (syncObject) {
+					cancelled = true;
+				}
 			}
 		};
 	}
 
 	/**
 	 * Shows a “please wait” dialog.
+	 *
+	 * @return The dialog
 	 */
-	private void showBusyDialog() {
+	private JDialog showBusyDialog() {
+		BusyPanel busyPanel = new BusyPanel();
+		JButton cancelButton = new JButton(cancelAction);
+		JOptionPane optionPane = new JOptionPane(busyPanel, JOptionPane.INFORMATION_MESSAGE, 0, null, new Object[] { cancelButton });
+		final JDialog busyDialog = optionPane.createDialog(parent, I18n.getMessage(""));
 		new Thread(new Runnable() {
 
-			@SuppressWarnings("synthetic-access")
+			/**
+			 * {@inheritDoc}
+			 */
 			public void run() {
-				BusyPanel busyPanel = new BusyPanel();
-				JButton cancelButton = new JButton(cancelAction);
-				JOptionPane.showOptionDialog(parent, busyPanel, I18n.getMessage(""), 0, JOptionPane.INFORMATION_MESSAGE, null, new Object[] { cancelButton }, cancelButton);
+				busyDialog.setVisible(true);
 			}
 		}).start();
+		return busyDialog;
 	}
 
 	/**
