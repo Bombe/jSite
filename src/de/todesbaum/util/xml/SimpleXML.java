@@ -98,6 +98,7 @@ public class SimpleXML {
 	 * tree pretty fast.
 	 *
 	 * <pre>
+	 *
 	 * SimpleXML deepNode = topNode.getNodes(new String[] { &quot;person&quot;, &quot;address&quot;, &quot;number&quot; });
 	 * </pre>
 	 *
@@ -107,7 +108,7 @@ public class SimpleXML {
 	 */
 	public SimpleXML getNode(String[] nodeNames) {
 		SimpleXML node = this;
-		for (String nodeName: nodeNames) {
+		for (String nodeName : nodeNames) {
 			node = node.getNode(nodeName);
 		}
 		return node;
@@ -133,7 +134,7 @@ public class SimpleXML {
 	 */
 	public SimpleXML[] getNodes(String nodeName) {
 		List<SimpleXML> resultList = new ArrayList<SimpleXML>();
-		for (SimpleXML child: children) {
+		for (SimpleXML child : children) {
 			if ((nodeName == null) || child.name.equals(nodeName)) {
 				resultList.add(child);
 			}
@@ -146,6 +147,7 @@ public class SimpleXML {
 	 * With this method you can create deep structures very fast.
 	 *
 	 * <pre>
+	 *
 	 * SimpleXML mouseNode = topNode.append(&quot;computer&quot;).append(&quot;bus&quot;).append(&quot;usb&quot;).append(&quot;mouse&quot;);
 	 * </pre>
 	 *
@@ -279,7 +281,7 @@ public class SimpleXML {
 	 *            The element to attach this node's children to
 	 */
 	private void addChildren(Element rootElement) {
-		for (SimpleXML child: children) {
+		for (SimpleXML child : children) {
 			Element childElement = rootElement.getOwnerDocument().createElement(child.name);
 			rootElement.appendChild(childElement);
 			if (child.value != null) {
