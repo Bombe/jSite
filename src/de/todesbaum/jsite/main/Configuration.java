@@ -331,18 +331,18 @@ public class Configuration {
 				try {
 					Project project = new Project();
 					projects.add(project);
-					project.setDescription(projectNode.getNode("description").getValue());
-					project.setIndexFile(projectNode.getNode("index-file").getValue());
-					project.setLastInsertionTime(Long.parseLong(projectNode.getNode("last-insertion-time").getValue()));
-					project.setLocalPath(projectNode.getNode("local-path").getValue());
-					project.setName(projectNode.getNode("name").getValue());
-					project.setPath(projectNode.getNode("path").getValue());
+					project.setDescription(projectNode.getNode("description").getValue(""));
+					project.setIndexFile(projectNode.getNode("index-file").getValue(""));
+					project.setLastInsertionTime(Long.parseLong(projectNode.getNode("last-insertion-time").getValue("0")));
+					project.setLocalPath(projectNode.getNode("local-path").getValue(""));
+					project.setName(projectNode.getNode("name").getValue(""));
+					project.setPath(projectNode.getNode("path").getValue(""));
 					if ((project.getPath() != null) && (project.getPath().indexOf("/") != -1)) {
 						project.setPath(project.getPath().replaceAll("/", ""));
 					}
-					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue()));
-					project.setInsertURI(projectNode.getNode("insert-uri").getValue());
-					project.setRequestURI(projectNode.getNode("request-uri").getValue());
+					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue("0")));
+					project.setInsertURI(projectNode.getNode("insert-uri").getValue(""));
+					project.setRequestURI(projectNode.getNode("request-uri").getValue(""));
 					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					if (fileOptionsNode != null) {
@@ -351,8 +351,8 @@ public class Configuration {
 							String filename = fileOptionNode.getNode("filename").getValue();
 							FileOption fileOption = project.getFileOption(filename);
 							fileOption.setInsert(Boolean.parseBoolean(fileOptionNode.getNode("insert").getValue()));
-							fileOption.setCustomKey(fileOptionNode.getNode("custom-key").getValue());
-							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue());
+							fileOption.setCustomKey(fileOptionNode.getNode("custom-key").getValue(""));
+							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
 							fileOption.setContainer(fileOptionNode.getNode("container").getValue());
 							if (fileOptionNode.getNode("replace-edition") != null) {
 								fileOption.setReplaceEdition(Boolean.parseBoolean(fileOptionNode.getNode("replace-edition").getValue()));
