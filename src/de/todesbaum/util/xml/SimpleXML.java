@@ -30,8 +30,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * SimpleXML is a helper class to construct XML trees in a fast and simple way. Construct a new XML tree by calling {@link #SimpleXML(String)} and
- * append new nodes by calling {@link #append(String)}.
+ * SimpleXML is a helper class to construct XML trees in a fast and simple way.
+ * Construct a new XML tree by calling {@link #SimpleXML(String)} and append new
+ * nodes by calling {@link #append(String)}.
  *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id:SimpleXML.java 221 2006-03-06 14:46:49Z bombe $
@@ -71,12 +72,14 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Returns the child node of this node with the specified name. If there are several child nodes with the specified name only the first node is
+	 * Returns the child node of this node with the specified name. If there are
+	 * several child nodes with the specified name only the first node is
 	 * returned.
 	 *
 	 * @param nodeName
 	 *            The name of the child node
-	 * @return The child node, or <code>null</code> if there is no child node with the specified name
+	 * @return The child node, or <code>null</code> if there is no child node
+	 *         with the specified name
 	 */
 	public SimpleXML getNode(String nodeName) {
 		for (int index = 0, count = children.size(); index < count; index++) {
@@ -88,16 +91,19 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Returns the child node that is specified by the names. The first element of <code>nodeNames</code> is the name of the child node of this
-	 * node, the second element of <code>nodeNames</code> is the name of a child node's child node, and so on. By using this method you can descend
-	 * into an XML tree pretty fast.
+	 * Returns the child node that is specified by the names. The first element
+	 * of <code>nodeNames</code> is the name of the child node of this node, the
+	 * second element of <code>nodeNames</code> is the name of a child node's
+	 * child node, and so on. By using this method you can descend into an XML
+	 * tree pretty fast.
 	 *
 	 * <pre>
 	 * SimpleXML deepNode = topNode.getNodes(new String[] { &quot;person&quot;, &quot;address&quot;, &quot;number&quot; });
 	 * </pre>
 	 *
 	 * @param nodeNames
-	 * @return A node that is a deep child of this node, or <code>null</code> if the specified node does not eixst
+	 * @return A node that is a deep child of this node, or <code>null</code> if
+	 *         the specified node does not eixst
 	 */
 	public SimpleXML getNode(String[] nodeNames) {
 		SimpleXML node = this;
@@ -117,10 +123,12 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Returns all child nodes of this node with the specified name. If there are no child nodes with the specified name an empty array is returned.
+	 * Returns all child nodes of this node with the specified name. If there
+	 * are no child nodes with the specified name an empty array is returned.
 	 *
 	 * @param nodeName
-	 *            The name of the nodes to retrieve, or <code>null</code> to retrieve all nodes
+	 *            The name of the nodes to retrieve, or <code>null</code> to
+	 *            retrieve all nodes
 	 * @return All child nodes with the specified name
 	 */
 	public SimpleXML[] getNodes(String nodeName) {
@@ -134,7 +142,8 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Appends a new XML node with the specified name and returns the new node. With this method you can create deep structures very fast.
+	 * Appends a new XML node with the specified name and returns the new node.
+	 * With this method you can create deep structures very fast.
 	 *
 	 * <pre>
 	 * SimpleXML mouseNode = topNode.append(&quot;computer&quot;).append(&quot;bus&quot;).append(&quot;usb&quot;).append(&quot;mouse&quot;);
@@ -149,7 +158,8 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Appends a new XML node with the specified name and value and returns the new node.
+	 * Appends a new XML node with the specified name and value and returns the
+	 * new node.
 	 *
 	 * @param nodeName
 	 *            The name of the node to append
@@ -162,7 +172,8 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Appends the node with all its child nodes to this node and returns the child node.
+	 * Appends the node with all its child nodes to this node and returns the
+	 * child node.
 	 *
 	 * @param newChild
 	 *            The node to append as a child
@@ -260,8 +271,9 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Appends all children of this node to the specified {@link Element}. If a node has a value that is not <code>null</code> the value is
-	 * appended as a text node.
+	 * Appends all children of this node to the specified {@link Element}. If a
+	 * node has a value that is not <code>null</code> the value is appended as a
+	 * text node.
 	 *
 	 * @param rootElement
 	 *            The element to attach this node's children to
@@ -280,7 +292,8 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Creates a SimpleXML node from the specified {@link Document}. The SimpleXML node of the document's top-level node is returned.
+	 * Creates a SimpleXML node from the specified {@link Document}. The
+	 * SimpleXML node of the document's top-level node is returned.
 	 *
 	 * @param document
 	 *            The {@link Document} to create a SimpleXML node from
@@ -293,7 +306,8 @@ public class SimpleXML {
 	}
 
 	/**
-	 * Appends the child nodes of the specified {@link Document} to this node. Text nodes are converted into a node's value.
+	 * Appends the child nodes of the specified {@link Document} to this node.
+	 * Text nodes are converted into a node's value.
 	 *
 	 * @param xmlDocument
 	 *            The SimpleXML node to append the child nodes to
