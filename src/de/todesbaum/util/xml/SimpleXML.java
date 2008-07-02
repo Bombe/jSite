@@ -321,7 +321,7 @@ public class SimpleXML {
 		NodeList childNodes = document.getChildNodes();
 		for (int childIndex = 0, childCount = childNodes.getLength(); childIndex < childCount; childIndex++) {
 			Node childNode = childNodes.item(childIndex);
-			if ((childNode.getChildNodes().getLength() == 1) && (childNode.getFirstChild().getNodeName().equals("#text")) /*&& (childNode.getFirstChild().getNodeValue().trim().length() != 0)*/) {
+			if ((childNode.getChildNodes().getLength() == 1) && (childNode.getFirstChild().getNodeName().equals("#text"))) {
 				xmlDocument.append(childNode.getNodeName(), childNode.getFirstChild().getNodeValue());
 			} else {
 				if (!childNode.getNodeName().equals("#text") || (childNode.getChildNodes().getLength() != 0)) {
