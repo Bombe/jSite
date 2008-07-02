@@ -229,6 +229,18 @@ public class SimpleXML {
 	}
 
 	/**
+	 * Returns the value of this node. If the node does not have a value, the
+	 * given default value is returned.
+	 *
+	 *@param defaultValue
+	 *            The default value to return if the node does not have a value
+	 * @return The value of this node
+	 */
+	public String getValue(String defaultValue) {
+		return (value == null) ? defaultValue : value;
+	}
+
+	/**
 	 * Creates a {@link Document} from this node and all its child nodes.
 	 *
 	 * @return The {@link Document} created from this node
