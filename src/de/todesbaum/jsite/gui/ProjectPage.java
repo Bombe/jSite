@@ -516,11 +516,12 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		newProject.setName(I18n.getMessage("jsite.project.new-project.name"));
 		newProject.setInsertURI(keyPair[0]);
 		newProject.setRequestURI(keyPair[1]);
-		newProject.setEdition(0);
+		newProject.setEdition(-1);
+		newProject.setPath("");
 		projectListModel.add(newProject);
 		projectScrollPane.revalidate();
 		projectScrollPane.repaint();
-		projectList.setSelectedIndex(projectListModel.size() - 1);
+		projectList.setSelectedIndex(projectListModel.indexOf(newProject));
 	}
 
 	/**
