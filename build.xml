@@ -69,7 +69,7 @@
 	</target>
 
 	<target name="jar" depends="compile, prepare-dist" description="creates jSite jar file">
-		<jar destfile="${dist.dir}/${ant.project.name}.jar">
+		<jar destfile="${dist.dir}/${ant.project.name}-${version}.jar">
 			<fileset dir="${bin.dir}" />
 			<manifest>
 				<attribute name="Main-Class" value="de.todesbaum.jsite.main.Main"/>
@@ -80,7 +80,7 @@
 	<target name="dist-bin-zip" depends="jar" description="create binary distribution zip">
 		<zip destfile="${dist.dir}/${ant.project.name}-${version}-bin.zip">
 			<fileset dir="${dist.dir}">
-				<include name="${ant.project.name}.jar" />
+				<include name="${ant.project.name}-${version}.jar" />
 			</fileset>
 			<fileset dir="${basedir}">
 				<include name="COPYING" />
@@ -91,7 +91,7 @@
 	<target name="dist-bin-tbz2" depends="jar" description="create binary distribution tar.bz2">
 		<tar destfile="${dist.dir}/${ant.project.name}-${version}-bin.tar.bz2" compression="bzip2">
 			<tarfileset dir="${dist.dir}">
-				<include name="${ant.project.name}.jar" />
+				<include name="${ant.project.name}-${version}.jar" />
 			</tarfileset>
 			<tarfileset dir="${basedir}">
 				<include name="COPYING" />
