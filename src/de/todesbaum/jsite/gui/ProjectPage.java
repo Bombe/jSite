@@ -69,7 +69,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * Wizard page that lets the user manage his projects and start inserts.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectPage extends TWizardPage implements ListSelectionListener, DocumentListener, ClipboardOwner {
@@ -127,7 +127,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Creates a new project page.
-	 * 
+	 *
 	 * @param wizard
 	 *            The wizard this page belongs to
 	 */
@@ -179,7 +179,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Adds the given listener to the list of listeners.
-	 * 
+	 *
 	 * @param listener
 	 *            The listener to add
 	 */
@@ -189,7 +189,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Removes the given listener from the list of listeners.
-	 * 
+	 *
 	 * @param listener
 	 *            The listener to remove
 	 */
@@ -289,7 +289,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Creates the information panel.
-	 * 
+	 *
 	 * @return The information panel
 	 */
 	private JComponent createInformationPanel() {
@@ -405,7 +405,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Sets the project list.
-	 * 
+	 *
 	 * @param projects
 	 *            The list of projects
 	 */
@@ -418,7 +418,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Returns the list of projects.
-	 * 
+	 *
 	 * @return The list of projects
 	 */
 	public Project[] getProjects() {
@@ -427,7 +427,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Sets the freenet interface to use.
-	 * 
+	 *
 	 * @param freenetInterface
 	 *            The freenetInterface to use
 	 */
@@ -437,7 +437,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/**
 	 * Returns the currently selected project.
-	 * 
+	 *
 	 * @return The currently selected project
 	 */
 	public Project getSelectedProject() {
@@ -447,7 +447,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * Updates the currently selected project with changed information from a
 	 * textfield.
-	 * 
+	 *
 	 * @param documentEvent
 	 *            The document event to process
 	 */

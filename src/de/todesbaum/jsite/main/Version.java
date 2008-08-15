@@ -21,7 +21,7 @@ package de.todesbaum.jsite.main;
 
 /**
  * Container for version information.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Version {
@@ -31,7 +31,7 @@ public class Version {
 
 	/**
 	 * Returns the version.
-	 * 
+	 *
 	 * @return The version
 	 */
 	public static final String getVersion() {
