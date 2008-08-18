@@ -24,10 +24,44 @@ package de.todesbaum.jsite.main;
  *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
-public class Version {
+public class Version implements Comparable<Version> {
 
 	/** The version. */
-	private static final String VERSION = "0.6.3";
+	private static final Version VERSION = new Version(0, 6, 2);
+
+	/** The components of the version information. */
+	private final int[] components;
+
+	/**
+	 * Creates a new version container with the given components.
+	 *
+	 * @param components
+	 *            The version components
+	 */
+	public Version(int... components) {
+		this.components = new int[components.length];
+		System.arraycopy(components, 0, this.components, 0, components.length);
+	}
+
+	/**
+	 * Returns the number of version components.
+	 *
+	 * @return The number of version components
+	 */
+	public int size() {
+		return components.length;
+	}
+
+	/**
+	 * Returns the version component with the given index.
+	 *
+	 * @param index
+	 *            The index of the version component
+	 * @return The version component
+	 */
+	public int getComponent(int index) {
+		return components[index];
+	}
 
 	/**
 	 * Returns the version.
@@ -35,7 +69,36 @@ public class Version {
 	 * @return The version
 	 */
 	public static final String getVersion() {
-		return VERSION;
+		return VERSION.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder versionString = new StringBuilder();
+		for (int component : components) {
+			if (versionString.length() != 0) {
+				versionString.append('.');
+			}
+			versionString.append(component);
+		}
+		return versionString.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int compareTo(Version version) {
+		int lessComponents = Math.min(components.length, version.components.length);
+		for (int index = 0; index < lessComponents; index++) {
+			if (version.components[index] == components[index]) {
+				continue;
+			}
+			return components[index] - version.components[index];
+		}
+		return components.length - version.components.length;
 	}
 
 }
