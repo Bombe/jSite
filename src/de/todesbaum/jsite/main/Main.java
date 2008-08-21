@@ -61,7 +61,7 @@ import de.todesbaum.util.swing.WizardListener;
 
 /**
  * The main class that ties together everything.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
@@ -80,7 +80,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Enumeration for all possible pages.
-	 * 
+	 *
 	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
 	 */
 	private static enum PageType {
@@ -132,7 +132,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Creates a new core with the given configuration from the given file.
-	 * 
+	 *
 	 * @param configFilename
 	 *            The name of the configuration file
 	 */
@@ -204,7 +204,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Creates the menu bar.
-	 * 
+	 *
 	 * @return The menu bar
 	 */
 	private JMenuBar createMenuBar() {
@@ -282,7 +282,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Shows the page with the given type.
-	 * 
+	 *
 	 * @param pageType
 	 *            The page type to show
 	 */
@@ -295,7 +295,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Saves the configuration.
-	 * 
+	 *
 	 * @return <code>true</code> if the configuration could be saved,
 	 *         <code>false</code> otherwise
 	 */
@@ -314,7 +314,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Finds a supported locale for the given locale.
-	 * 
+	 *
 	 * @param forLocale
 	 *            The locale to find a supported locale for
 	 * @return The supported locale that was found, or the default locale if no
@@ -345,7 +345,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Switches the language of the interface to the given locale.
-	 * 
+	 *
 	 * @param locale
 	 *            The locale to switch to
 	 */
@@ -538,7 +538,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/**
 	 * Main method that is called by the VM.
-	 * 
+	 *
 	 * @param args
 	 *            The command-line arguments
 	 */
