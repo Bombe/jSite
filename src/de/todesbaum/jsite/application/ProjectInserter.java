@@ -49,7 +49,7 @@ import de.todesbaum.util.io.StreamCopier;
 
 /**
  * Manages project inserts.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
@@ -77,7 +77,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Adds a listener to the list of registered listeners.
-	 * 
+	 *
 	 * @param insertListener
 	 *            The listener to add
 	 */
@@ -87,7 +87,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Removes a listener from the list of registered listeners.
-	 * 
+	 *
 	 * @param insertListener
 	 *            The listener to remove
 	 */
@@ -97,7 +97,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Notifies all listeners that the project insert has started.
-	 * 
+	 *
 	 * @see InsertListener#projectInsertStarted(Project)
 	 */
 	protected void fireProjectInsertStarted() {
@@ -108,7 +108,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Notifies all listeners that the insert has generated a URI.
-	 * 
+	 *
 	 * @see InsertListener#projectURIGenerated(Project, String)
 	 * @param uri
 	 *            The generated URI
@@ -121,7 +121,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Notifies all listeners that the insert has made some progress.
-	 * 
+	 *
 	 * @see InsertListener#projectInsertProgress(Project, int, int, int, int,
 	 *      boolean)
 	 * @param succeeded
@@ -144,7 +144,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Notifies all listeners the project insert has finished.
-	 * 
+	 *
 	 * @see InsertListener#projectInsertFinished(Project, boolean, Throwable)
 	 * @param success
 	 *            <code>true</code> if the project was inserted successfully,
@@ -160,7 +160,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Sets the debug mode.
-	 * 
+	 *
 	 * @param debug
 	 *            <code>true</code> to activate debug mode, <code>false</code>
 	 *            to deactivate
@@ -171,7 +171,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Sets the project to insert.
-	 * 
+	 *
 	 * @param project
 	 *            The project to insert
 	 */
@@ -181,7 +181,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Sets the freenet interface to use.
-	 * 
+	 *
 	 * @param freenetInterface
 	 *            The freenet interface to use
 	 */
@@ -201,7 +201,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * Creates an input stream that delivers the given file, replacing edition
 	 * tokens in the file’s content, if necessary.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file
 	 * @param fileOption
@@ -245,7 +245,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Creates an input stream for a container.
-	 * 
+	 *
 	 * @param containerFiles
 	 *            All container definitions
 	 * @param containerName
@@ -294,7 +294,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * Creates a file entry suitable for handing in to
 	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the file to insert
 	 * @param edition
@@ -333,7 +333,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Creates container definitions.
-	 * 
+	 *
 	 * @param files
 	 *            The list of all files
 	 * @param containers
