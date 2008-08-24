@@ -445,6 +445,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			String editionPart = finalURI.substring(finalURI.lastIndexOf('/') + 1);
 			int newEdition = Integer.parseInt(editionPart);
 			project.setEdition(newEdition);
+			project.setLastInsertionTime(System.currentTimeMillis());
 		}
 	}
 
