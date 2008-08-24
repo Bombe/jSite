@@ -95,6 +95,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/** The “generate key” action. */
 	private Action projectGenerateKeyAction;
 
+	/** The “reset edition” action. */
+	private Action projectResetEditionAction;
+
 	/** The file chooser. */
 	private JFileChooser pathChooser;
 
@@ -266,6 +269,17 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectGenerateKeyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
 		projectGenerateKeyAction.setEnabled(false);
 
+		projectResetEditionAction = new AbstractAction(I18n.getMessage("jsite.project.action.reset-edition")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				actionResetEdition();
+			}
+		};
+		projectResetEditionAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.reset-edition.tooltip"));
+		projectResetEditionAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_R);
+		projectResetEditionAction.setEnabled(false);
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			@SuppressWarnings("synthetic-access")
@@ -282,6 +296,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
 				projectGenerateKeyAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.generate-new-key"));
 				projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
+				projectResetEditionAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.reset-edition"));
+				projectResetEditionAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.reset-edition.tooltip"));
 				pathChooser.setApproveButtonText(I18n.getMessage("jsite.project.action.browse.choose"));
 			}
 		});
@@ -358,7 +374,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		final TLabel projectPrivateKeyLabel = new TLabel(I18n.getMessage("jsite.project.project.private-key") + ":", KeyEvent.VK_R, projectPrivateKeyTextField);
 		informationTable.add(projectPrivateKeyLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPrivateKeyTextField, new GridBagConstraints(1, 6, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(projectPrivateKeyTextField, new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(new JButton(projectResetEditionAction), new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectPathTextField = new JTextField();
 		projectPathTextField.getDocument().putProperty("name", "project.path");
@@ -590,6 +607,20 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		}
 	}
 
+	/**
+	 * Resets the current edition TODO
+	 */
+	private void actionResetEdition() {
+		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.reset-edition"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
+			return;
+		}
+		int selectedIndex = projectList.getSelectedIndex();
+		if (selectedIndex > -1) {
+			Project selectedProject = (Project) projectList.getSelectedValue();
+			selectedProject.setEdition(-1);
+		}
+	}
+
 	//
 	// INTERFACE ListSelectionListener
 	//
@@ -611,6 +642,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectCloneAction.setEnabled(selectedRow > -1);
 		projectCopyURIAction.setEnabled(selectedRow > -1);
 		projectGenerateKeyAction.setEnabled(selectedRow > -1);
+		projectResetEditionAction.setEnabled(selectedRow > -1);
 		if (selectedRow > -1) {
 			projectNameTextField.setText(selectedProject.getName());
 			projectDescriptionTextField.setText(selectedProject.getDescription());
