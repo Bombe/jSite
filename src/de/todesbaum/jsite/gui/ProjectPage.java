@@ -608,7 +608,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	}
 
 	/**
-	 * Resets the current edition TODO
+	 * Resets the edition of the currently selected project.
 	 */
 	private void actionResetEdition() {
 		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.reset-edition"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
