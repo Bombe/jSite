@@ -1,5 +1,5 @@
 /*
- * jSite-0.7 - 
+ * jSite-0.7 -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -62,7 +62,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * Wizard page that lets the user edit his nodes.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class NodeManagerPage extends TWizardPage implements ListSelectionListener, DocumentListener, ChangeListener {
@@ -93,7 +93,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Creates a new node manager wizard page.
-	 * 
+	 *
 	 * @param wizard
 	 *            The wizard this page belongs to
 	 */
@@ -113,7 +113,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Adds a listener for node manager events.
-	 * 
+	 *
 	 * @param nodeManagerListener
 	 *            The listener to add
 	 */
@@ -123,7 +123,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Removes a listener for node manager events.
-	 * 
+	 *
 	 * @param nodeManagerListener
 	 *            The listener to remove
 	 */
@@ -133,7 +133,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Notifies all listeners that the node configuration has changed.
-	 * 
+	 *
 	 * @param nodes
 	 *            The new list of nodes
 	 */
@@ -249,7 +249,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Sets the node list.
-	 * 
+	 *
 	 * @param nodes
 	 *            The list of nodes
 	 */
@@ -264,7 +264,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Returns the node list.
-	 * 
+	 *
 	 * @return The list of nodes
 	 */
 	public Node[] getNodes() {
@@ -277,7 +277,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Returns the currently selected node.
-	 * 
+	 *
 	 * @return The selected node, or <code>null</code> if no node is selected
 	 */
 	private Node getSelectedNode() {
@@ -286,7 +286,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 	/**
 	 * Updates node name or hostname when the user types into the textfields.
-	 * 
+	 *
 	 * @see #insertUpdate(DocumentEvent)
 	 * @see #removeUpdate(DocumentEvent)
 	 * @see #changedUpdate(DocumentEvent)
