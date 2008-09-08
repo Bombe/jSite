@@ -359,6 +359,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("null")
 	public void valueChanged(ListSelectionEvent e) {
 		Object source = e.getSource();
 		if (source instanceof JList) {
