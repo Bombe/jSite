@@ -338,6 +338,28 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
 	}
 
+	/**
+	 * Formats the given number so that it always has the the given number of
+	 * fractional digits.
+	 *
+	 * @param number
+	 *            The number to format
+	 * @param digits
+	 *            The number of fractional digits
+	 * @return The formatted number
+	 */
+	private String formatNumber(double number, int digits) {
+		int multiplier = (int) Math.pow(10, digits);
+		String formattedNumber = String.valueOf((int) (number * multiplier) / (double) multiplier);
+		if (formattedNumber.indexOf('.') == -1) {
+			formattedNumber += '.';
+			for (int digit = 0; digit < digits; digit++) {
+				formattedNumber += "0";
+			}
+		}
+		return formattedNumber;
+	}
+
 	//
 	// INTERFACE ClipboardOwner
 	//
