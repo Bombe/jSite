@@ -291,8 +291,10 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 				int progress = (succeeded + failed + fatal) * 100 / total;
 				StringBuilder progressString = new StringBuilder();
 				progressString.append(progress).append("% (");
-				progressString.append(succeeded + failed + fatal).append("/").append(total);
-				progressString.append(")");
+				progressString.append(succeeded + failed + fatal).append('/').append(total);
+				progressString.append(") (");
+				progressString.append(formatNumber(total * 32.0 / ((System.currentTimeMillis() - startTime) / 1000), 1));
+				progressString.append(' ').append(I18n.getMessage("jsite.insert.k-per-s")).append(')');
 				progressBar.setString(progressString.toString());
 				if (finalized) {
 					progressBar.setFont(progressBar.getFont().deriveFont(Font.BOLD));
