@@ -57,7 +57,7 @@ import de.todesbaum.util.swing.TWizardPage;
 
 /**
  * Wizard page that shows the progress of an insert.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
@@ -82,7 +82,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	/**
 	 * Creates a new progress insert wizard page.
-	 * 
+	 *
 	 * @param wizard
 	 *            The wizard this page belongs to
 	 */
@@ -138,7 +138,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	/**
 	 * Creates the main panel.
-	 * 
+	 *
 	 * @return The main panel
 	 */
 	private JComponent createProjectInsertPanel() {
@@ -210,7 +210,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	/**
 	 * Sets whether to activate the debug mode.
-	 * 
+	 *
 	 * @param debug
 	 *            <code>true</code> to activate the debug mode,
 	 *            <code>false</code> to deactivate.
@@ -221,7 +221,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	/**
 	 * Sets the project to insert.
-	 * 
+	 *
 	 * @param project
 	 *            The project to insert
 	 */
@@ -238,7 +238,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 	/**
 	 * Sets the freenet interface to use.
-	 * 
+	 *
 	 * @param freenetInterface
 	 *            The freenet interface to use
 	 */
