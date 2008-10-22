@@ -113,13 +113,23 @@ public class Configuration {
 			return false;
 		}
 		File lockFile = new File(lockFilename);
-		lockFile.deleteOnExit();
 		try {
-			return lockFile.createNewFile();
+			boolean fileLocked = lockFile.createNewFile();
+			if (fileLocked) {
+				lockFile.deleteOnExit();
+			}
+			return fileLocked;
 		} catch (IOException e) {
 			/* ignore. */
 		}
 		return false;
+	}
+
+	/**
+	 * Tells the VM to remove the lock file on program exit.
+	 */
+	public void removeLockfileOnExit() {
+		new File(lockFilename).deleteOnExit();
 	}
 
 	/**
