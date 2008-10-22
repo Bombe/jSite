@@ -145,8 +145,11 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
 		if (!configuration.createLockFile()) {
-			JOptionPane.showMessageDialog(null, I18n.getMessage("jsite.main.already-running"), null, JOptionPane.ERROR_MESSAGE);
-			return;
+			int option = JOptionPane.showOptionDialog(null, I18n.getMessage("jsite.main.already-running"), "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.main.already-running.override"), I18n.getMessage("jsite.wizard.quit") }, I18n.getMessage("jsite.wizard.quit"));
+			if (option != 0) {
+				return;
+			}
+			configuration.removeLockfileOnExit();
 		}
 		wizard = new TWizard();
 		createActions();
