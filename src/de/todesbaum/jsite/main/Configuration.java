@@ -44,7 +44,7 @@ import de.todesbaum.util.xml.XML;
 
 /**
  * The configuration.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Configuration {
@@ -68,7 +68,7 @@ public class Configuration {
 
 	/**
 	 * Creates a new configuration that is read from the given file.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the configuration file
 	 */
@@ -79,7 +79,7 @@ public class Configuration {
 	/**
 	 * Creates a new configuration that is read from the given file and uses the
 	 * given lock file.
-	 * 
+	 *
 	 * @param filename
 	 *            The name of the configuration file
 	 * @param lockFilename
@@ -93,7 +93,7 @@ public class Configuration {
 
 	/**
 	 * Creates the directory of the configuration file.
-	 * 
+	 *
 	 * @return <code>true</code> if the directory exists, or if it could be
 	 *         created, <code>false</code> otherwise
 	 */
@@ -104,7 +104,7 @@ public class Configuration {
 
 	/**
 	 * Creates the lock file.
-	 * 
+	 *
 	 * @return <code>true</code> if the lock file did not already exist and
 	 *         could be created, <code>false</code> otherwise
 	 */
@@ -152,7 +152,7 @@ public class Configuration {
 
 	/**
 	 * Saves the configuration.
-	 * 
+	 *
 	 * @return <code>true</code> if the configuration could be saved,
 	 *         <code>false</code> otherwise
 	 */
@@ -183,7 +183,7 @@ public class Configuration {
 
 	/**
 	 * Returns the value of a node.
-	 * 
+	 *
 	 * @param nodeNames
 	 *            The name of all nodes in the chain
 	 * @param defaultValue
@@ -205,7 +205,7 @@ public class Configuration {
 
 	/**
 	 * Returns the integer value of a node.
-	 * 
+	 *
 	 * @param nodeNames
 	 *            The names of all nodes in the chain
 	 * @param defaultValue
@@ -224,7 +224,7 @@ public class Configuration {
 
 	/**
 	 * Returns the boolean value of a node.
-	 * 
+	 *
 	 * @param nodeNames
 	 *            The names of all nodes in the chain
 	 * @param defaultValue
@@ -242,7 +242,7 @@ public class Configuration {
 
 	/**
 	 * Returns the hostname of the node.
-	 * 
+	 *
 	 * @return The hostname of the node
 	 * @deprecated Use {@link #getSelectedNode()} instead
 	 */
@@ -253,7 +253,7 @@ public class Configuration {
 
 	/**
 	 * Sets the hostname of the node.
-	 * 
+	 *
 	 * @param nodeAddress
 	 *            The hostname of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
@@ -265,7 +265,7 @@ public class Configuration {
 
 	/**
 	 * The port number of the node
-	 * 
+	 *
 	 * @return The port number of the node
 	 * @deprecated Use {@link #getSelectedNode()} instead.
 	 */
@@ -276,7 +276,7 @@ public class Configuration {
 
 	/**
 	 * Sets the port number of the node.
-	 * 
+	 *
 	 * @param nodePort
 	 *            The port number of the node
 	 * @deprecated Use {@link #setSelectedNode(Node)} instead
@@ -288,9 +288,9 @@ public class Configuration {
 
 	/**
 	 * Returns whether the node configuration page should be skipped on startup.
-	 * 
-	 * @return <code>true</code> to skip the node configuration page on
-	 *         startup, <code>false</code> to show it
+	 *
+	 * @return <code>true</code> to skip the node configuration page on startup,
+	 *         <code>false</code> to show it
 	 */
 	public boolean isSkipNodePage() {
 		return getNodeBooleanValue(new String[] { "skip-node-page" }, false);
@@ -298,7 +298,7 @@ public class Configuration {
 
 	/**
 	 * Sets whether the node configuration page should be skipped on startup.
-	 * 
+	 *
 	 * @param skipNodePage
 	 *            <code>true</code> to skip the node configuration page on
 	 *            startup, <code>false</code> to show it
@@ -309,7 +309,7 @@ public class Configuration {
 
 	/**
 	 * Returns all configured projects.
-	 * 
+	 *
 	 * @return A list of all projects
 	 */
 	public Project[] getProjects() {
@@ -362,7 +362,7 @@ public class Configuration {
 
 	/**
 	 * Sets the list of all projects.
-	 * 
+	 *
 	 * @param projects
 	 *            The list of all projects
 	 */
@@ -401,7 +401,7 @@ public class Configuration {
 
 	/**
 	 * Returns the stored locale.
-	 * 
+	 *
 	 * @return The stored locale
 	 */
 	public Locale getLocale() {
@@ -415,7 +415,7 @@ public class Configuration {
 
 	/**
 	 * Sets the locale to store.
-	 * 
+	 *
 	 * @param locale
 	 *            The locale to store
 	 */
@@ -431,7 +431,7 @@ public class Configuration {
 
 	/**
 	 * Returns a list of configured nodes.
-	 * 
+	 *
 	 * @return The list of the configured nodes
 	 */
 	public Node[] getNodes() {
@@ -460,7 +460,7 @@ public class Configuration {
 
 	/**
 	 * Sets the list of configured nodes.
-	 * 
+	 *
 	 * @param nodes
 	 *            The list of configured nodes
 	 */
@@ -479,7 +479,7 @@ public class Configuration {
 
 	/**
 	 * Sets the selected node.
-	 * 
+	 *
 	 * @param selectedNode
 	 *            The selected node
 	 */
@@ -493,7 +493,7 @@ public class Configuration {
 
 	/**
 	 * Returns the selected node.
-	 * 
+	 *
 	 * @return The selected node
 	 */
 	public Node getSelectedNode() {
