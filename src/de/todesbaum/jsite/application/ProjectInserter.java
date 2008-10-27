@@ -54,6 +54,9 @@ import de.todesbaum.util.io.StreamCopier;
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
 
+	/** Random number for FCP instances. */
+	private static final int random = (int) (Math.random() * Integer.MAX_VALUE);
+
 	/** Counter for FCP connection identifier. */
 	private static int counter = 0;
 
@@ -366,7 +369,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		List<String> files = fileScanner.getFiles();
 
 		/* create connection to node */
-		Connection connection = freenetInterface.getConnection("project-insert-" + counter++);
+		Connection connection = freenetInterface.getConnection("project-insert-" + random + counter++);
 		boolean connected = false;
 		Throwable cause = null;
 		try {

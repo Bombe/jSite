@@ -34,6 +34,9 @@ import de.todesbaum.util.freenet.fcp2.Node;
  */
 public class Freenet7Interface {
 
+	/** Random number to differentiate several jSites. */
+	private static final int number = (int) (Math.random() * Integer.MAX_VALUE);
+
 	/** Counter. */
 	private static int counter = 0;
 
@@ -52,7 +55,7 @@ public class Freenet7Interface {
 	 */
 	public void setNodeAddress(String hostname) {
 		node = new Node(hostname);
-		connection = new Connection(node, "connection-" + counter++);
+		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
 	}
 
 	/**
@@ -65,7 +68,7 @@ public class Freenet7Interface {
 	 */
 	public void setNodeAddress(String hostname, int port) {
 		node = new Node(hostname, port);
-		connection = new Connection(node, "connection-" + counter++);
+		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
 	}
 
 	/**
@@ -77,7 +80,7 @@ public class Freenet7Interface {
 	public void setNode(de.todesbaum.jsite.application.Node node) {
 		if (node != null) {
 			this.node = new Node(node.getHostname(), node.getPort());
-			connection = new Connection(node, "connection-" + counter++);
+			connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
 		} else {
 			this.node = null;
 			connection = null;
