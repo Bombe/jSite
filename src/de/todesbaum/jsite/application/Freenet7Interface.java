@@ -1,5 +1,5 @@
 /*
- * jSite - 
+ * jSite -
  * Copyright (C) 2006 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import de.todesbaum.util.freenet.fcp2.Node;
 
 /**
  * Interface for freenet-related operations.
- * 
+ *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Freenet7Interface {
@@ -44,9 +44,9 @@ public class Freenet7Interface {
 	private Connection connection;
 
 	/**
-	 * Sets the hostname of the node. The default port for FCP2 connections ({@link Node#DEFAULT_PORT})
-	 * is used.
-	 * 
+	 * Sets the hostname of the node. The default port for FCP2 connections (
+	 * {@link Node#DEFAULT_PORT}) is used.
+	 *
 	 * @param hostname
 	 *            The hostname of the node
 	 */
@@ -57,7 +57,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Sets the hostname and the port of the node.
-	 * 
+	 *
 	 * @param hostname
 	 *            The hostname of the node
 	 * @param port
@@ -70,7 +70,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Sets hostname and port from the given node.
-	 * 
+	 *
 	 * @param node
 	 *            The node to get the hostname and port from
 	 */
@@ -94,7 +94,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Returns the node this interface is connecting to.
-	 * 
+	 *
 	 * @return The node
 	 */
 	public Node getNode() {
@@ -103,7 +103,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Creates a new connection to the current node with the given identifier.
-	 * 
+	 *
 	 * @param identifier
 	 *            The identifier of the connection
 	 * @return The connection to the node
@@ -115,7 +115,7 @@ public class Freenet7Interface {
 	/**
 	 * Checks whether the current node is connected. If the node is not
 	 * connected, a connection will be tried.
-	 * 
+	 *
 	 * @return <code>true</code> if the node is connected, <code>false</code>
 	 *         otherwise
 	 * @throws IOException
@@ -130,7 +130,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Generates an SSK key pair.
-	 * 
+	 *
 	 * @return An array of strings, the first one being the generated private
 	 *         (insert) URI and the second one being the generated public
 	 *         (request) URI
@@ -149,7 +149,7 @@ public class Freenet7Interface {
 
 	/**
 	 * Checks whether the interface has already been configured with a node.
-	 * 
+	 *
 	 * @return <code>true</code> if this interface already has a node set,
 	 *         <code>false</code> otherwise
 	 */
