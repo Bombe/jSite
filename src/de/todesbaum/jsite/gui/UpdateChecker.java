@@ -46,9 +46,12 @@ import de.todesbaum.util.freenet.fcp2.Connection;
  */
 public class UpdateChecker {
 
+	/** The edition for the update check URL. */
+	private static final int UPDATE_EDITION = 2;
+
 	/** The URL for update checks. */
 	@SuppressWarnings("unused")
-	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/0/currentVersion.txt";
+	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/" + UPDATE_EDITION + "/jSite.properties";
 
 	/** Object used for synchronization. */
 	private final Object syncObject = new Object();
