@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.JFrame;
-
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.main.Main;
 import de.todesbaum.jsite.main.Version;
@@ -70,9 +68,6 @@ public class UpdateChecker implements Runnable {
 	/** Last found version. */
 	private Version lastVersion = Main.getVersion();
 
-	/** The parent of the dialog. */
-	private final JFrame parent;
-
 	/** The freenet interface. */
 	private final Freenet7Interface freenetInterface;
 
@@ -80,13 +75,10 @@ public class UpdateChecker implements Runnable {
 	 * Creates a new update checker that uses the given frame as its parent and
 	 * communications via the given freenet interface.
 	 *
-	 * @param parent
-	 *            The parent of the dialog
 	 * @param freenetInterface
 	 *            The freenet interface
 	 */
-	public UpdateChecker(JFrame parent, Freenet7Interface freenetInterface) {
-		this.parent = parent;
+	public UpdateChecker(Freenet7Interface freenetInterface) {
 		this.freenetInterface = freenetInterface;
 	}
 
