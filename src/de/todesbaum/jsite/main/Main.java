@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -53,6 +54,7 @@ import de.todesbaum.jsite.gui.ProjectFilesPage;
 import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.gui.UpdateChecker;
+import de.todesbaum.jsite.gui.UpdateListener;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.image.IconLoader;
@@ -65,7 +67,7 @@ import de.todesbaum.util.swing.WizardListener;
  *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
-public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener {
+public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener, UpdateListener {
 
 	/** Whether the debug mode is activated. */
 	private static boolean debug = false;
@@ -172,6 +174,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		wizard.setIcon(jSiteIcon);
 
 		updateChecker = new UpdateChecker(wizard, freenetInterface);
+		updateChecker.addUpdateListener(this);
 		updateChecker.start();
 
 		initPages();
@@ -564,6 +567,19 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Node node = (Node) menuItem.getClientProperty("Node");
 			selectedNode = node;
 			freenetInterface.setNode(selectedNode);
+		}
+	}
+
+	//
+	// INTERFACE UpdateListener
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void foundUpdateData(Version foundVersion, long versionTimestamp) {
+		if (foundVersion.compareTo(VERSION) > 0) {
+			JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.update-checker.found-version.message"), foundVersion.toString(), new Date(versionTimestamp)), I18n.getMessage("jsite.update-checker.found-version.title"), JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
