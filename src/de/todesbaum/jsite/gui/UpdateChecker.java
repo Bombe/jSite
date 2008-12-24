@@ -101,6 +101,19 @@ public class UpdateChecker implements Runnable {
 	}
 
 	//
+	// ACCESSORS
+	//
+
+	/**
+	 * Returns the latest version that was found.
+	 *
+	 * @return The latest found version
+	 */
+	public Version getLatestVersion() {
+		return lastVersion;
+	}
+
+	//
 	// ACTIONS
 	//
 
