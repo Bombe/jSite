@@ -172,6 +172,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		wizard.setIcon(jSiteIcon);
 
 		updateChecker = new UpdateChecker(wizard, freenetInterface);
+		updateChecker.start();
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
@@ -204,9 +205,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			/**
 			 * {@inheritDoc}
 			 */
-			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
-				updateChecker.checkForUpdates();
+				/* TODO */
 			}
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {

@@ -19,54 +19,62 @@
 
 package de.todesbaum.jsite.gui;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.text.MessageFormat;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
 import de.todesbaum.jsite.application.Freenet7Interface;
-import de.todesbaum.jsite.i18n.I18n;
-import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.jsite.main.Main;
+import de.todesbaum.jsite.main.Version;
+import de.todesbaum.util.freenet.fcp2.Client;
+import de.todesbaum.util.freenet.fcp2.ClientGet;
 import de.todesbaum.util.freenet.fcp2.Connection;
+import de.todesbaum.util.freenet.fcp2.Message;
+import de.todesbaum.util.freenet.fcp2.Persistence;
+import de.todesbaum.util.freenet.fcp2.ReturnType;
+import de.todesbaum.util.freenet.fcp2.Verbosity;
+import de.todesbaum.util.io.Closer;
 
 /**
  * Checks for newer versions of jSite.
  *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
-public class UpdateChecker {
+public class UpdateChecker implements Runnable {
+
+	/** Counter for connection names. */
+	private static int counter = 0;
 
 	/** The edition for the update check URL. */
-	private static final int UPDATE_EDITION = 2;
+	private static final int UPDATE_EDITION = 0;
 
 	/** The URL for update checks. */
-	@SuppressWarnings("unused")
-	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE/jSite/" + UPDATE_EDITION + "/jSite.properties";
+	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE";
 
 	/** Object used for synchronization. */
 	private final Object syncObject = new Object();
+
+	/** Update listeners. */
+	private final List<UpdateListener> updateListeners = new ArrayList<UpdateListener>();
+
+	/** Whether the main thread should stop. */
+	private boolean shouldStop = false;
+
+	/** Current last found edition of update key. */
+	private int lastUpdateEdition = UPDATE_EDITION;
+
+	/** Last found version. */
+	private Version lastVersion = Main.getVersion();
 
 	/** The parent of the dialog. */
 	private final JFrame parent;
 
 	/** The freenet interface. */
 	private final Freenet7Interface freenetInterface;
-
-	/** The cancel action. */
-	private Action cancelAction;
-
-	/** Whether the busy dialog has been cancelled. */
-	private boolean cancelled;
 
 	/**
 	 * Creates a new update checker that uses the given frame as its parent and
@@ -80,31 +88,38 @@ public class UpdateChecker {
 	public UpdateChecker(JFrame parent, Freenet7Interface freenetInterface) {
 		this.parent = parent;
 		this.freenetInterface = freenetInterface;
-		cancelled = false;
-		initActions();
+	}
+
+	//
+	// EVENT LISTENER MANAGEMENT
+	//
+
+	public void addUpdateListener(UpdateListener updateListener) {
+		updateListeners.add(updateListener);
+	}
+
+	public void removeUpdateListener(UpdateListener updateListener) {
+		updateListeners.remove(updateListener);
+	}
+
+	protected void fireUpdateFound(Version foundVersion, long versionTimestamp) {
+		for (UpdateListener updateListener : updateListeners) {
+			updateListener.foundUpdateData(foundVersion, versionTimestamp);
+		}
 	}
 
 	//
 	// ACTIONS
 	//
 
-	/**
-	 * Checks for updates, showing a dialog with an indeterminate progress bar.
-	 */
-	public void checkForUpdates() {
-		JDialog busyDialog = showBusyDialog();
-		Connection connection = freenetInterface.getConnection("jSite-update-check");
-		try {
-			if (!connection.connect()) {
-				busyDialog.setVisible(false);
-				JOptionPane.showMessageDialog(parent, I18n.getMessage(""), I18n.getMessage(""), JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		} catch (IOException ioe1) {
-			busyDialog.setVisible(false);
-			JOptionPane.showMessageDialog(parent, MessageFormat.format(I18n.getMessage(""), ioe1.getMessage()), I18n.getMessage(""), JOptionPane.ERROR_MESSAGE);
-		} finally {
-			connection.disconnect();
+	public void start() {
+		new Thread(this).start();
+	}
+
+	public void stop() {
+		synchronized (syncObject) {
+			shouldStop = true;
+			syncObject.notifyAll();
 		}
 	}
 
@@ -112,87 +127,91 @@ public class UpdateChecker {
 	// PRIVATE METHODS
 	//
 
-	/**
-	 * Initializes all actions.
-	 */
-	private void initActions() {
-		cancelAction = new AbstractAction(I18n.getMessage("")) {
-
-			/**
-			 * {@inheritDoc}
-			 */
-			@SuppressWarnings("synthetic-access")
-			public void actionPerformed(ActionEvent actionEvent) {
-				synchronized (syncObject) {
-					cancelled = true;
-				}
-			}
-		};
-	}
-
-	/**
-	 * Shows a “please wait” dialog.
-	 *
-	 * @return The dialog
-	 */
-	private JDialog showBusyDialog() {
-		BusyPanel busyPanel = new BusyPanel();
-		JButton cancelButton = new JButton(cancelAction);
-		JOptionPane optionPane = new JOptionPane(busyPanel, JOptionPane.INFORMATION_MESSAGE, 0, null, new Object[] { cancelButton });
-		final JDialog busyDialog = optionPane.createDialog(parent, I18n.getMessage(""));
-		new Thread(new Runnable() {
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public void run() {
-				busyDialog.setVisible(true);
-			}
-		}).start();
-		return busyDialog;
-	}
-
-	/**
-	 * A panel that shows a busy progress bar and a “please wait” message.
-	 *
-	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
-	 */
-	private class BusyPanel extends JPanel {
-
-		/**
-		 * Creates a new busy panel.
-		 */
-		public BusyPanel() {
-			super(new BorderLayout(12, 12));
-			initComponents();
+	private boolean shouldStop() {
+		synchronized (syncObject) {
+			return shouldStop;
 		}
-
-		//
-		// PRIVATE METHODS
-		//
-
-		/**
-		 * Initializes all components of this panel.
-		 */
-		private void initComponents() {
-			final JLabel label = new JLabel(I18n.getMessage("")); /* TODO */
-			JProgressBar progressBar = new JProgressBar();
-			progressBar.setIndeterminate(true);
-
-			add(label, BorderLayout.PAGE_START);
-			add(progressBar, BorderLayout.PAGE_END);
-
-			I18nContainer.getInstance().registerRunnable(new Runnable() {
-
-				/**
-				 * {@inheritDoc}
-				 */
-				public void run() {
-					label.setText(I18n.getMessage("")); /* TODO */
-				}
-			});
-		}
-
 	}
 
+	private String constructUpdateKey(int edition) {
+		return UPDATE_KEY + "/jSite/" + edition + "/jSite.properties";
+	}
+
+	//
+	// INTERFACE Runnable
+	//
+
+	public void run() {
+		Connection connection = freenetInterface.getConnection("jSite-" + ++counter + "-UpdateChecker");
+		try {
+			connection.connect();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Client client = new Client(connection);
+		while (!shouldStop()) {
+			System.out.println("Trying " + constructUpdateKey(lastUpdateEdition));
+			ClientGet clientGet = new ClientGet("get-update-key");
+			clientGet.setUri(constructUpdateKey(lastUpdateEdition));
+			clientGet.setPersistence(Persistence.CONNECTION);
+			clientGet.setReturnType(ReturnType.direct);
+			clientGet.setVerbosity(Verbosity.ALL);
+			try {
+				client.execute(clientGet);
+				boolean stop = false;
+				while (!stop) {
+					Message message = client.readMessage();
+					System.out.println(message);
+					if ("GetFailed".equals(message.getName())) {
+						if ("27".equals(message.get("code"))) {
+							String editionString = message.get("redirecturi").split("/")[2];
+							int editionNumber = -1;
+							try {
+								editionNumber = Integer.parseInt(editionString);
+							} catch (NumberFormatException nfe1) {
+								/* ignore. */
+							}
+							if (editionNumber != -1) {
+								System.out.println("Found new edition " + editionNumber);
+								lastUpdateEdition = editionNumber;
+								break;
+							}
+						}
+					}
+					if ("AllData".equals(message.getName())) {
+						System.out.println("Update data found.");
+						InputStream dataInputStream = null;
+						Properties properties = new Properties();
+						try {
+							dataInputStream = message.getPayloadInputStream();
+							properties.load(dataInputStream);
+						} finally {
+							Closer.close(dataInputStream);
+						}
+
+						String foundVersionString = properties.getProperty("jSite.Version");
+						if (foundVersionString != null) {
+							Version foundVersion = Version.parse(foundVersionString);
+							if (foundVersion != null) {
+								if (foundVersion.compareTo(Main.getVersion()) > 0) {
+									lastVersion = foundVersion;
+									String versionTimestampString = properties.getProperty("jSite.Date");
+									long versionTimestamp = -1;
+									try {
+										versionTimestamp = Long.parseLong(versionTimestampString);
+									} catch (NumberFormatException nfe1) {
+										/* ignore. */
+									}
+									fireUpdateFound(foundVersion, versionTimestamp);
+								}
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				System.out.println("Got IOException: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}
 }
