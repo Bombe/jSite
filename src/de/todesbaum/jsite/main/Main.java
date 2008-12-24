@@ -73,7 +73,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static boolean debug = false;
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 6, 2);
+	private static final Version VERSION = new Version(0, 7);
 
 	/** The configuration. */
 	private Configuration configuration;
