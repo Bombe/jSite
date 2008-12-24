@@ -70,6 +70,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/** Whether the debug mode is activated. */
 	private static boolean debug = false;
 
+	/** The version. */
+	private static final Version VERSION = new Version(0, 6, 2);
+
 	/** The configuration. */
 	private Configuration configuration;
 
@@ -210,7 +213,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), Version.getVersion()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
+				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), getVersion().toString()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
 			}
 		};
 
@@ -360,6 +363,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			}
 		}
 		return SUPPORTED_LOCALES[0];
+	}
+
+	/**
+	 * Returns the version.
+	 *
+	 * @return The version
+	 */
+	public static final Version getVersion() {
+		return VERSION;
 	}
 
 	//

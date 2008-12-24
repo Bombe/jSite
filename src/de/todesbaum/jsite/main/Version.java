@@ -26,9 +26,6 @@ package de.todesbaum.jsite.main;
  */
 public class Version implements Comparable<Version> {
 
-	/** The version. */
-	private static final Version VERSION = new Version(0, 6, 2);
-
 	/** The components of the version information. */
 	private final int[] components;
 
@@ -64,12 +61,25 @@ public class Version implements Comparable<Version> {
 	}
 
 	/**
-	 * Returns the version.
+	 * Parses a version from the given string.
 	 *
-	 * @return The version
+	 * @param versionString
+	 *            The version string to parse
+	 * @return The parsed version, or <code>null</code> if the string could not
+	 *         be parsed
 	 */
-	public static final String getVersion() {
-		return VERSION.toString();
+	public static Version parse(String versionString) {
+		String[] componentStrings = versionString.split("\\.");
+		int[] components = new int[componentStrings.length];
+		int index = -1;
+		for (String componentString : componentStrings) {
+			try {
+				components[++index] = Integer.parseInt(componentString);
+			} catch (NumberFormatException nfe1) {
+				return null;
+			}
+		}
+		return new Version(components);
 	}
 
 	/**
