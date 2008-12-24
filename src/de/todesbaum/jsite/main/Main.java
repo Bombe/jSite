@@ -208,8 +208,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			/**
 			 * {@inheritDoc}
 			 */
+			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
-				/* TODO */
+				showLatestUpdate();
 			}
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
@@ -402,6 +403,22 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		wizard.setPage(wizard.getPage());
 		configuration.setLocale(supportedLocale);
+	}
+
+	/**
+	 * Shows a dialog box that shows the last version that was found by the
+	 * {@link UpdateChecker}.
+	 */
+	private void showLatestUpdate() {
+		Version latestVersion = updateChecker.getLatestVersion();
+		int versionDifference = latestVersion.compareTo(VERSION);
+		if (versionDifference > 0) {
+			JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.update-checker.latest-version.newer.message"), VERSION, latestVersion), I18n.getMessage("jsite.update-checker.latest-version.title"), JOptionPane.INFORMATION_MESSAGE);
+		} else if (versionDifference < 0) {
+			JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.update-checker.latest-version.older.message"), VERSION, latestVersion), I18n.getMessage("jsite.update-checker.latest-version.title"), JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.update-checker.latest-version.okay.message"), VERSION, latestVersion), I18n.getMessage("jsite.update-checker.latest-version.title"), JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	//
