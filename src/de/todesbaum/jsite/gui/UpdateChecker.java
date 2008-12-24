@@ -86,14 +86,34 @@ public class UpdateChecker implements Runnable {
 	// EVENT LISTENER MANAGEMENT
 	//
 
+	/**
+	 * Adds an update listener to the list of registered listeners.
+	 *
+	 * @param updateListener
+	 *            The update listener to add
+	 */
 	public void addUpdateListener(UpdateListener updateListener) {
 		updateListeners.add(updateListener);
 	}
 
+	/**
+	 * Removes the given listener from the list of registered listeners.
+	 *
+	 * @param updateListener
+	 *            The update listener to remove
+	 */
 	public void removeUpdateListener(UpdateListener updateListener) {
 		updateListeners.remove(updateListener);
 	}
 
+	/**
+	 * Notifies all listeners that a version was found.
+	 *
+	 * @param foundVersion
+	 *            The version that was found
+	 * @param versionTimestamp
+	 *            The timestamp of the version
+	 */
 	protected void fireUpdateFound(Version foundVersion, long versionTimestamp) {
 		for (UpdateListener updateListener : updateListeners) {
 			updateListener.foundUpdateData(foundVersion, versionTimestamp);
@@ -117,10 +137,16 @@ public class UpdateChecker implements Runnable {
 	// ACTIONS
 	//
 
+	/**
+	 * Starts the update checker.
+	 */
 	public void start() {
 		new Thread(this).start();
 	}
 
+	/**
+	 * Stops the update checker.
+	 */
 	public void stop() {
 		synchronized (syncObject) {
 			shouldStop = true;
@@ -132,12 +158,25 @@ public class UpdateChecker implements Runnable {
 	// PRIVATE METHODS
 	//
 
+	/**
+	 * Returns whether the update checker should stop.
+	 *
+	 * @return <code>true</code> if the update checker should stop,
+	 *         <code>false</code> otherwise
+	 */
 	private boolean shouldStop() {
 		synchronized (syncObject) {
 			return shouldStop;
 		}
 	}
 
+	/**
+	 * Creates the URI of the update file for the given edition.
+	 *
+	 * @param edition
+	 *            The edition number
+	 * @return The URI for the update file for the given edition
+	 */
 	private String constructUpdateKey(int edition) {
 		return UPDATE_KEY + "/jSite/" + edition + "/jSite.properties";
 	}
@@ -146,6 +185,9 @@ public class UpdateChecker implements Runnable {
 	// INTERFACE Runnable
 	//
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void run() {
 		Connection connection = freenetInterface.getConnection("jSite-" + ++counter + "-UpdateChecker");
 		try {
@@ -235,4 +277,5 @@ public class UpdateChecker implements Runnable {
 			}
 		}
 	}
+
 }
