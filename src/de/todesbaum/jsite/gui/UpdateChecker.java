@@ -149,10 +149,13 @@ public class UpdateChecker implements Runnable {
 			e1.printStackTrace();
 		}
 		Client client = new Client(connection);
+		boolean checkNow = false;
+		int currentEdition = lastUpdateEdition;
 		while (!shouldStop()) {
-			System.out.println("Trying " + constructUpdateKey(lastUpdateEdition));
+			checkNow = false;
+			System.out.println("Trying " + constructUpdateKey(currentEdition));
 			ClientGet clientGet = new ClientGet("get-update-key");
-			clientGet.setUri(constructUpdateKey(lastUpdateEdition));
+			clientGet.setUri(constructUpdateKey(currentEdition));
 			clientGet.setPersistence(Persistence.CONNECTION);
 			clientGet.setReturnType(ReturnType.direct);
 			clientGet.setVerbosity(Verbosity.ALL);
@@ -173,7 +176,9 @@ public class UpdateChecker implements Runnable {
 							}
 							if (editionNumber != -1) {
 								System.out.println("Found new edition " + editionNumber);
+								currentEdition = editionNumber;
 								lastUpdateEdition = editionNumber;
+								checkNow = true;
 								break;
 							}
 						}
@@ -193,17 +198,19 @@ public class UpdateChecker implements Runnable {
 						if (foundVersionString != null) {
 							Version foundVersion = Version.parse(foundVersionString);
 							if (foundVersion != null) {
-								if (foundVersion.compareTo(Main.getVersion()) > 0) {
-									lastVersion = foundVersion;
-									String versionTimestampString = properties.getProperty("jSite.Date");
-									long versionTimestamp = -1;
-									try {
-										versionTimestamp = Long.parseLong(versionTimestampString);
-									} catch (NumberFormatException nfe1) {
-										/* ignore. */
-									}
-									fireUpdateFound(foundVersion, versionTimestamp);
+								lastVersion = foundVersion;
+								String versionTimestampString = properties.getProperty("jSite.Date");
+								System.out.println(versionTimestampString);
+								long versionTimestamp = -1;
+								try {
+									versionTimestamp = Long.parseLong(versionTimestampString);
+								} catch (NumberFormatException nfe1) {
+									/* ignore. */
 								}
+								fireUpdateFound(foundVersion, versionTimestamp);
+								stop = true;
+								checkNow = true;
+								++currentEdition;
 							}
 						}
 					}
@@ -211,6 +218,15 @@ public class UpdateChecker implements Runnable {
 			} catch (IOException e) {
 				System.out.println("Got IOException: " + e.getMessage());
 				e.printStackTrace();
+			}
+			if (!checkNow && !shouldStop()) {
+				synchronized (syncObject) {
+					try {
+						syncObject.wait(15 * 60 * 1000);
+					} catch (InterruptedException ie1) {
+						/* ignore. */
+					}
+				}
 			}
 		}
 	}
