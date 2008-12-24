@@ -154,7 +154,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		if (!configuration.createLockFile()) {
 			int option = JOptionPane.showOptionDialog(null, I18n.getMessage("jsite.main.already-running"), "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.main.already-running.override"), I18n.getMessage("jsite.wizard.quit") }, I18n.getMessage("jsite.wizard.quit"));
 			if (option != 0) {
-				return;
+				throw new IllegalStateException("Lockfile override not active, refusing start.");
 			}
 			configuration.removeLockfileOnExit();
 		}
