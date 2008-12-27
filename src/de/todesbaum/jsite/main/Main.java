@@ -466,7 +466,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (project.getIndexFile() == null) {
+			if ((project.getIndexFile() == null) || (project.getIndexFile().length() == 0)) {
 				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.empty-index"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
 					return;
 				}
