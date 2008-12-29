@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-package de.todesbaum.jsite.gui;
+package de.todesbaum.jsite.application;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.main.Main;
 import de.todesbaum.jsite.main.Version;
 import de.todesbaum.util.freenet.fcp2.Client;
