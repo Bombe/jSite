@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.todesbaum.jsite.main.Main;
 import de.todesbaum.jsite.main.Version;
@@ -42,6 +44,9 @@ import de.todesbaum.util.io.Closer;
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class UpdateChecker implements Runnable {
+
+	/** The logger. */
+	private static final Logger logger = Logger.getLogger(UpdateChecker.class.getName());
 
 	/** Counter for connection names. */
 	private static int counter = 0;
@@ -199,7 +204,7 @@ public class UpdateChecker implements Runnable {
 		int currentEdition = lastUpdateEdition;
 		while (!shouldStop()) {
 			checkNow = false;
-			System.out.println("Trying " + constructUpdateKey(currentEdition));
+			logger.log(Level.FINE, "Trying " + constructUpdateKey(currentEdition));
 			ClientGet clientGet = new ClientGet("get-update-key");
 			clientGet.setUri(constructUpdateKey(currentEdition));
 			clientGet.setPersistence(Persistence.CONNECTION);
@@ -210,7 +215,7 @@ public class UpdateChecker implements Runnable {
 				boolean stop = false;
 				while (!stop) {
 					Message message = client.readMessage();
-					System.out.println(message);
+					logger.log(Level.FINEST, "Received message: " + message);
 					if ("GetFailed".equals(message.getName())) {
 						if ("27".equals(message.get("code"))) {
 							String editionString = message.get("redirecturi").split("/")[2];
@@ -221,7 +226,7 @@ public class UpdateChecker implements Runnable {
 								/* ignore. */
 							}
 							if (editionNumber != -1) {
-								System.out.println("Found new edition " + editionNumber);
+								logger.log(Level.INFO, "Found new edition " + editionNumber);
 								currentEdition = editionNumber;
 								lastUpdateEdition = editionNumber;
 								checkNow = true;
@@ -230,7 +235,7 @@ public class UpdateChecker implements Runnable {
 						}
 					}
 					if ("AllData".equals(message.getName())) {
-						System.out.println("Update data found.");
+						logger.log(Level.FINE, "Update data found.");
 						InputStream dataInputStream = null;
 						Properties properties = new Properties();
 						try {
@@ -246,7 +251,7 @@ public class UpdateChecker implements Runnable {
 							if (foundVersion != null) {
 								lastVersion = foundVersion;
 								String versionTimestampString = properties.getProperty("jSite.Date");
-								System.out.println(versionTimestampString);
+								logger.log(Level.FINEST, "Version timestamp: " + versionTimestampString);
 								long versionTimestamp = -1;
 								try {
 									versionTimestamp = Long.parseLong(versionTimestampString);
@@ -262,7 +267,7 @@ public class UpdateChecker implements Runnable {
 					}
 				}
 			} catch (IOException e) {
-				System.out.println("Got IOException: " + e.getMessage());
+				logger.log(Level.INFO, "Got IOException: " + e.getMessage());
 				e.printStackTrace();
 			}
 			if (!checkNow && !shouldStop()) {

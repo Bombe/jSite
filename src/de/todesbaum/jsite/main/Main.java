@@ -30,6 +30,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -68,9 +72,6 @@ import de.todesbaum.util.swing.WizardListener;
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener, UpdateListener {
-
-	/** Whether the debug mode is activated. */
-	private static boolean debug = false;
 
 	/** The version. */
 	private static final Version VERSION = new Version(0, 7);
@@ -304,7 +305,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		pages.put(PageType.PAGE_PROJECT_FILES, projectFilesPage);
 
 		ProjectInsertPage projectInsertPage = new ProjectInsertPage(wizard);
-		projectInsertPage.setDebug(debug);
 		projectInsertPage.setName("page.project.insert");
 		projectInsertPage.setFreenetInterface(freenetInterface);
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
@@ -611,6 +611,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 *            The command-line arguments
 	 */
 	public static void main(String[] args) {
+		/* initialize logger. */
+		Logger logger = Logger.getLogger("de.todesbaum");
+		Handler handler = new ConsoleHandler();
+		logger.addHandler(handler);
 		String configFilename = null;
 		boolean nextIsConfigFilename = false;
 		for (String argument : args) {
@@ -622,7 +626,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				printHelp();
 				return;
 			} else if ("--debug".equals(argument)) {
-				debug = true;
+				logger.setLevel(Level.ALL);
+				handler.setLevel(Level.ALL);
 			} else if ("--config-file".equals(argument)) {
 				nextIsConfigFilename = true;
 			}

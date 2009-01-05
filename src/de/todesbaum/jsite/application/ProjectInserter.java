@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,14 +56,14 @@ import de.todesbaum.util.io.StreamCopier;
  */
 public class ProjectInserter implements FileScannerListener, Runnable {
 
+	/** The logger. */
+	private static final Logger logger = Logger.getLogger(ProjectInserter.class.getName());
+
 	/** Random number for FCP instances. */
 	private static final int random = (int) (Math.random() * Integer.MAX_VALUE);
 
 	/** Counter for FCP connection identifier. */
 	private static int counter = 0;
-
-	/** Whether debug mode is set. */
-	private boolean debug = false;
 
 	/** The list of insert listeners. */
 	private List<InsertListener> insertListeners = new ArrayList<InsertListener>();
@@ -170,17 +172,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		for (InsertListener insertListener : insertListeners) {
 			insertListener.projectInsertFinished(project, success, cause);
 		}
-	}
-
-	/**
-	 * Sets the debug mode.
-	 *
-	 * @param debug
-	 *            <code>true</code> to activate debug mode, <code>false</code>
-	 *            to deactivate
-	 */
-	public void setDebug(boolean debug) {
-		this.debug = debug;
 	}
 
 	/**
@@ -434,13 +425,11 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		while (!finished) {
 			Message message = client.readMessage();
 			finished = (message == null) || (disconnected = client.isDisconnected());
-			if (debug) {
-				System.out.println(message);
-			}
 			if (firstMessage) {
 				fireProjectUploadFinished();
 				firstMessage = false;
 			}
+			logger.log(Level.FINE, "Received message: " + message);
 			if (!finished) {
 				@SuppressWarnings("null")
 				String messageName = message.getName();

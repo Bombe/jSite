@@ -209,17 +209,6 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	}
 
 	/**
-	 * Sets whether to activate the debug mode.
-	 *
-	 * @param debug
-	 *            <code>true</code> to activate the debug mode,
-	 *            <code>false</code> to deactivate.
-	 */
-	public void setDebug(boolean debug) {
-		projectInserter.setDebug(debug);
-	}
-
-	/**
 	 * Sets the project to insert.
 	 *
 	 * @param project
