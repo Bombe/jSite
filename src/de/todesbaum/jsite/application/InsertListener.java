@@ -103,8 +103,8 @@ public interface InsertListener extends EventListener {
 	 * @param project
 	 *            The project being inserted
 	 * @param success
-	 *            <code>true</code> if the insert succeeded,
-	 *            <code>false</code> otherwise
+	 *            <code>true</code> if the insert succeeded, <code>false</code>
+	 *            otherwise
 	 * @param cause
 	 *            The cause of a failure, if any (may be <code>null</code>)
 	 */
