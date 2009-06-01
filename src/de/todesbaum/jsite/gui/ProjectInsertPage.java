@@ -267,6 +267,13 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	public void projectUploadFinished(Project project) {
+		startTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void projectURIGenerated(Project project, final String uri) {
 		SwingUtilities.invokeLater(new Runnable() {
 

@@ -60,6 +60,15 @@ public interface InsertListener extends EventListener {
 	public void projectInsertStarted(Project project);
 
 	/**
+	 * Notifies a listener that the upload of a project has finished and the
+	 * inserting will start now.
+	 *
+	 * @param project
+	 *            The project that has been uploaded
+	 */
+	public void projectUploadFinished(Project project);
+
+	/**
 	 * Notifies a listener that a project insert has generated a URI.
 	 *
 	 * @param project
