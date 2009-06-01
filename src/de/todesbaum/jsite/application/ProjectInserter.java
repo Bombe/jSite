@@ -125,6 +125,17 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * Notifies all listeners that the insert has made some progress.
 	 *
+	 * @see InsertListener#projectUploadFinished(Project)
+	 */
+	protected void fireProjectUploadFinished() {
+		for (InsertListener insertListener : insertListeners) {
+			insertListener.projectUploadFinished(project);
+		}
+	}
+
+	/**
+	 * Notifies all listeners that the insert has made some progress.
+	 *
 	 * @see InsertListener#projectInsertProgress(Project, int, int, int, int,
 	 *      boolean)
 	 * @param succeeded
@@ -416,6 +427,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* parse progress and success messages */
 		String finalURI = null;
+		boolean firstMessage = true;
 		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
@@ -424,6 +436,10 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			finished = (message == null) || (disconnected = client.isDisconnected());
 			if (debug) {
 				System.out.println(message);
+			}
+			if (firstMessage) {
+				fireProjectUploadFinished();
+				firstMessage = false;
 			}
 			if (!finished) {
 				@SuppressWarnings("null")
