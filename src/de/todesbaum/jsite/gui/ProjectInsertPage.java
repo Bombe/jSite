@@ -254,12 +254,12 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * {@inheritDoc}
 	 */
 	public void projectInsertStarted(final Project project) {
-		startTime = System.currentTimeMillis();
+
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@SuppressWarnings("synthetic-access")
 			public void run() {
-				startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date(startTime)));
+				startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date()));
 			}
 		});
 	}
