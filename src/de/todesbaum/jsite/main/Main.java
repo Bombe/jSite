@@ -74,7 +74,7 @@ import de.todesbaum.util.swing.WizardListener;
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener, UpdateListener {
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 7);
+	private static final Version VERSION = new Version(0, 7, 1);
 
 	/** The configuration. */
 	private Configuration configuration;
