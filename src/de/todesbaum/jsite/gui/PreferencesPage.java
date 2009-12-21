@@ -41,6 +41,9 @@ public class PreferencesPage extends TWizardPage {
 	/** Action that chooses a new temp directory. */
 	private Action chooseTempDirectoryAction;
 
+	/** The temp directory. */
+	private String tempDirectory;
+
 	/**
 	 * Creates a new “preferences” page.
 	 *
@@ -64,6 +67,35 @@ public class PreferencesPage extends TWizardPage {
 			}
 		});
 	}
+
+	//
+	// ACCESSORS
+	//
+
+	/**
+	 * Returns the temp directory.
+	 *
+	 * @return The temp directory, or {@code null} to use the default temp
+	 *         directory
+	 */
+	public String getTempDirectory() {
+		return tempDirectory;
+	}
+
+	/**
+	 * Sets the temp directory.
+	 *
+	 * @param tempDirectory
+	 *            The temp directory, or {@code null} to use the default temp
+	 *            directory
+	 */
+	public void setTempDirectory(String tempDirectory) {
+		this.tempDirectory = tempDirectory;
+	}
+
+	//
+	// PRIVATE METHODS
+	//
 
 	/**
 	 * Initializes this page.
