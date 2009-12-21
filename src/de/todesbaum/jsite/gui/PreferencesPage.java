@@ -141,11 +141,11 @@ public class PreferencesPage extends TWizardPage {
 	private JPanel createPreferencesPanel() {
 		JPanel preferencesPanel = new JPanel(new BorderLayout(12, 12));
 
-		JPanel fileOptionsPanel = new JPanel(new GridBagLayout());
-		preferencesPanel.add(fileOptionsPanel, BorderLayout.CENTER);
+		JPanel tempDirectoryPanel = new JPanel(new GridBagLayout());
+		preferencesPanel.add(tempDirectoryPanel, BorderLayout.CENTER);
 
-		final JLabel fileOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.file-options") + "</b></html>");
-		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		final JLabel tempDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
+		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -154,7 +154,7 @@ public class PreferencesPage extends TWizardPage {
 			 */
 			@Override
 			public void run() {
-				fileOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.file-options") + "</b></html>");
+				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 			}
 		});
 
