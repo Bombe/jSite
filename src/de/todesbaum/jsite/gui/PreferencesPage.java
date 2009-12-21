@@ -19,10 +19,12 @@
 
 package de.todesbaum.jsite.gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JPanel;
 
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
@@ -68,6 +70,8 @@ public class PreferencesPage extends TWizardPage {
 	 */
 	private void pageInit() {
 		createActions();
+		setLayout(new BorderLayout(12, 12));
+		add(createPreferencesPanel(), BorderLayout.CENTER);
 	}
 
 	/**
@@ -91,6 +95,16 @@ public class PreferencesPage extends TWizardPage {
 				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.choose-temp-directory"));
 			}
 		});
+	}
+
+	/**
+	 * Creates the panel containing all preferences.
+	 *
+	 * @return The preferences panel
+	 */
+	private JPanel createPreferencesPanel() {
+		JPanel preferencesPanel = new JPanel(new BorderLayout(12, 12));
+		return preferencesPanel;
 	}
 
 	/**
