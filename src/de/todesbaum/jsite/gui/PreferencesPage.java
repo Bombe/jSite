@@ -147,6 +147,17 @@ public class PreferencesPage extends TWizardPage {
 		final JLabel fileOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.file-options") + "</b></html>");
 		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
+		I18nContainer.getInstance().registerRunnable(new Runnable() {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void run() {
+				fileOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.file-options") + "</b></html>");
+			}
+		});
+
 		return preferencesPanel;
 	}
 
