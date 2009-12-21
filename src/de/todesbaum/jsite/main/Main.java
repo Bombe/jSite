@@ -227,6 +227,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
+				checkForUpdatesAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.check-for-updates"));
 				aboutAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.about"));
 			}
 		});
