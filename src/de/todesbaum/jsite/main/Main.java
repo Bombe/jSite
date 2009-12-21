@@ -118,6 +118,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/** The “manage nodes” action. */
 	private Action manageNodeAction;
 
+	/** The “preferences” action. */
+	private Action optionsPreferencesAction;
+
 	/** The “check for updates” action. */
 	private Action checkForUpdatesAction;
 
@@ -204,6 +207,17 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			}
 		};
+		optionsPreferencesAction = new AbstractAction(I18n.getMessage("jsite.menu.options.preferences")) {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				optionsPreferences();
+			}
+		};
 		checkForUpdatesAction = new AbstractAction(I18n.getMessage("jsite.menu.help.check-for-updates")) {
 
 			/**
@@ -227,6 +241,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
+				optionsPreferencesAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.options.preferences"));
 				checkForUpdatesAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.check-for-updates"));
 				aboutAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.help.about"));
 			}
@@ -258,6 +273,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		selectedNode = configuration.getSelectedNode();
 		nodesUpdated(configuration.getNodes());
 
+		final JMenu optionsMenu = new JMenu(I18n.getMessage("jsite.menu.options"));
+		menuBar.add(optionsMenu);
+		optionsMenu.add(optionsPreferencesAction);
+
 		/* evil hack to right-align the help menu */
 		JPanel panel = new JPanel();
 		panel.setOpaque(false);
@@ -274,6 +293,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			public void run() {
 				languageMenu.setText(I18n.getMessage("jsite.menu.languages"));
 				nodeMenu.setText(I18n.getMessage("jsite.menu.nodes"));
+				optionsMenu.setText(I18n.getMessage("jsite.menu.options"));
 				helpMenu.setText(I18n.getMessage("jsite.menu.help"));
 				for (Map.Entry<Locale, Action> languageActionEntry : languageActions.entrySet()) {
 					languageActionEntry.getValue().putValue(Action.NAME, I18n.getMessage("jsite.menu.language." + languageActionEntry.getKey().getLanguage()));
@@ -404,6 +424,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		wizard.setPage(wizard.getPage());
 		configuration.setLocale(supportedLocale);
+	}
+
+	/**
+	 * Shows a dialog with general preferences.
+	 */
+	private void optionsPreferences() {
+
 	}
 
 	/**
