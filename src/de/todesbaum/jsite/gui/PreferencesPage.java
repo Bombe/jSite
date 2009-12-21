@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -116,7 +117,7 @@ public class PreferencesPage extends TWizardPage {
 	 * Creates all actions.
 	 */
 	private void createActions() {
-		chooseTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.choose-temp-directory")) {
+		chooseTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.choose")) {
 
 			@Override
 			@SuppressWarnings("synthetic-access")
@@ -130,7 +131,7 @@ public class PreferencesPage extends TWizardPage {
 			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
-				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.choose-temp-directory"));
+				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.choose"));
 			}
 		});
 	}
@@ -158,6 +159,9 @@ public class PreferencesPage extends TWizardPage {
 		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
 		defaultTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
 		customTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
+
+		JButton chooseButton = new JButton(chooseTempDirectoryAction);
+		tempDirectoryPanel.add(chooseButton, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
