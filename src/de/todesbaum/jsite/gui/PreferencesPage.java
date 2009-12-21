@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -153,6 +154,10 @@ public class PreferencesPage extends TWizardPage {
 
 		final JRadioButton customTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.custom"));
 		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+
+		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
+		defaultTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
+		customTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
