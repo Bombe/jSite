@@ -56,6 +56,7 @@ import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
+import de.todesbaum.jsite.gui.PreferencesPage;
 import de.todesbaum.jsite.gui.ProjectFilesPage;
 import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
@@ -105,7 +106,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		PAGE_PROJECT_FILES,
 
 		/** The project insert page. */
-		PAGE_INSERT_PROJECT
+		PAGE_INSERT_PROJECT,
+
+		/** The preferences page. */
+		PAGE_PREFERENCES
 
 	}
 
@@ -329,6 +333,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		projectInsertPage.setName("page.project.insert");
 		projectInsertPage.setFreenetInterface(freenetInterface);
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
+
+		PreferencesPage preferencesPage = new PreferencesPage(wizard);
+		preferencesPage.setName("page.preferences");
+		pages.put(PageType.PAGE_PREFERENCES, preferencesPage);
 	}
 
 	/**
@@ -430,7 +438,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * Shows a dialog with general preferences.
 	 */
 	private void optionsPreferences() {
-
+		showPage(PageType.PAGE_PREFERENCES);
 	}
 
 	/**
