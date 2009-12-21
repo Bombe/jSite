@@ -29,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
@@ -147,6 +148,9 @@ public class PreferencesPage extends TWizardPage {
 		final JLabel tempDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
+		final JRadioButton defaultTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.default"));
+		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			/**
@@ -155,6 +159,7 @@ public class PreferencesPage extends TWizardPage {
 			@Override
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
+				defaultTempDirectory.setText(I18n.getMessage("jsite.preferences.temp-directory.default"));
 			}
 		});
 
