@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
@@ -47,6 +48,9 @@ public class PreferencesPage extends TWizardPage {
 
 	/** Action that chooses a new temp directory. */
 	private Action chooseTempDirectoryAction;
+
+	/** The text field containing the directory. */
+	private JTextField tempDirectoryTextField;
 
 	/** The temp directory. */
 	private String tempDirectory;
@@ -148,17 +152,20 @@ public class PreferencesPage extends TWizardPage {
 		preferencesPanel.add(tempDirectoryPanel, BorderLayout.CENTER);
 
 		final JLabel tempDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
-		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
 		final JRadioButton defaultTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.default"));
-		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
+		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
 
 		final JRadioButton customTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.custom"));
-		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
 
 		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
 		defaultTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
 		customTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
+
+		tempDirectoryTextField = new JTextField();
+		tempDirectoryPanel.add(tempDirectoryTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
 
 		JButton chooseButton = new JButton(chooseTempDirectoryAction);
 		tempDirectoryPanel.add(chooseButton, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
