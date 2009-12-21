@@ -439,6 +439,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	private void optionsPreferences() {
 		showPage(PageType.PAGE_PREFERENCES);
+		optionsPreferencesAction.setEnabled(false);
+		wizard.setNextEnabled(true);
 	}
 
 	/**
@@ -551,6 +553,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 			nodeMenu.setEnabled(true);
+		} else if ("page.preferences".equals(pageName)) {
+			showPage(PageType.PAGE_PROJECTS);
+			optionsPreferencesAction.setEnabled(true);
 		}
 	}
 
