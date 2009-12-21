@@ -20,10 +20,14 @@
 package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.todesbaum.jsite.i18n.I18n;
@@ -136,6 +140,13 @@ public class PreferencesPage extends TWizardPage {
 	 */
 	private JPanel createPreferencesPanel() {
 		JPanel preferencesPanel = new JPanel(new BorderLayout(12, 12));
+
+		JPanel fileOptionsPanel = new JPanel(new GridBagLayout());
+		preferencesPanel.add(fileOptionsPanel, BorderLayout.CENTER);
+
+		final JLabel fileOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.file-options") + "</b></html>");
+		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
 		return preferencesPanel;
 	}
 
