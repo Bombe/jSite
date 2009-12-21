@@ -151,6 +151,9 @@ public class PreferencesPage extends TWizardPage {
 		final JRadioButton defaultTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.default"));
 		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
 
+		final JRadioButton customTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.custom"));
+		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			/**
@@ -160,6 +163,7 @@ public class PreferencesPage extends TWizardPage {
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 				defaultTempDirectory.setText(I18n.getMessage("jsite.preferences.temp-directory.default"));
+				customTempDirectory.setText(I18n.getMessage("jsite.preferences.temp-directory.custom"));
 			}
 		});
 
