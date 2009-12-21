@@ -1,6 +1,6 @@
 /*
  * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * Copyright (C) 2006-2009 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
