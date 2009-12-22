@@ -523,4 +523,31 @@ public class Configuration {
 		return new Node(hostname, port, name);
 	}
 
+	/**
+	 * Returns the temp directory to use.
+	 *
+	 * @return The temp directoy, or {@code null} to use the default temp
+	 *         directory
+	 */
+	public String getTempDirectory() {
+		return getNodeValue(new String[] { "temp-directory" }, null);
+	}
+
+	/**
+	 * Sets the temp directory to use.
+	 *
+	 * @param tempDirectory
+	 *            The temp directory to use, or {@code null} to use the default
+	 *            temp directory
+	 */
+	public void setTempDirectory(String tempDirectory) {
+		if (tempDirectory != null) {
+			SimpleXML tempDirectoryNode = new SimpleXML("temp-directory");
+			tempDirectoryNode.setValue(tempDirectory);
+			rootNode.replace(tempDirectoryNode);
+		} else {
+			rootNode.remove("temp-directory");
+		}
+	}
+
 }

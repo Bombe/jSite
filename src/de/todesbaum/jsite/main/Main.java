@@ -340,6 +340,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		PreferencesPage preferencesPage = new PreferencesPage(wizard);
 		preferencesPage.setName("page.preferences");
+		preferencesPage.setTempDirectory(configuration.getTempDirectory());
 		pages.put(PageType.PAGE_PREFERENCES, preferencesPage);
 	}
 
@@ -371,6 +372,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		ProjectPage projectPage = (ProjectPage) pages.get(PageType.PAGE_PROJECTS);
 		configuration.setProjects(projectPage.getProjects());
+
+		PreferencesPage preferencesPage = (PreferencesPage) pages.get(PageType.PAGE_PREFERENCES);
+		configuration.setTempDirectory(preferencesPage.getTempDirectory());
 
 		return configuration.save();
 	}
