@@ -556,7 +556,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			}
 			configuration.save();
 			showPage(PageType.PAGE_INSERT_PROJECT);
-			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).startInsert();
+			ProjectInsertPage projectInsertPage = (ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT);
+			String tempDirectory = ((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).getTempDirectory();
+			projectInsertPage.setTempDirectory(tempDirectory);
+			projectInsertPage.startInsert();
 			nodeMenu.setEnabled(false);
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
@@ -564,8 +567,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		} else if ("page.preferences".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
-			String tempDirectory = ((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).getTempDirectory();
-			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).setTempDirectory(tempDirectory);
 		}
 	}
 
