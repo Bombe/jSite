@@ -52,13 +52,33 @@ public class ClientPutComplexDir extends ClientPutDir {
 	/** The total number of bytes of the payload. */
 	private long payloadLength = 0;
 
+	/** The temp directory to use. */
+	private final String tempDirectory;
+
 	/**
 	 * Creates a new <code>ClientPutComplexDir</code> command with the specified identifier and URI.
 	 * @param identifier The identifier of the command
 	 * @param uri The URI of the command
 	 */
 	public ClientPutComplexDir(String identifier, String uri) {
+		this(identifier, uri, null);
+	}
+
+	/**
+	 * Creates a new <code>ClientPutComplexDir</code> command with the specified
+	 * identifier and URI.
+	 *
+	 * @param identifier
+	 *            The identifier of the command
+	 * @param uri
+	 *            The URI of the command
+	 * @param tempDirectory
+	 *            The temp directory to use, or {@code null} to use the default
+	 *            temp directory
+	 */
+	public ClientPutComplexDir(String identifier, String uri, String tempDirectory) {
 		super("ClientPutComplexDir", identifier, uri);
+		this.tempDirectory = tempDirectory;
 	}
 
 	/**
@@ -69,7 +89,7 @@ public class ClientPutComplexDir extends ClientPutDir {
 		if (fileEntry instanceof DirectFileEntry) {
 			if (payloadFile == null){
 				try {
-					payloadFile = File.createTempFile("payload", ".dat");
+					payloadFile = File.createTempFile("payload", ".dat", (tempDirectory != null) ? new File(tempDirectory) : null);
 					payloadFile.deleteOnExit();
 				} catch (IOException e) {
 				}
