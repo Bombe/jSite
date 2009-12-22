@@ -235,6 +235,18 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter.setFreenetInterface(freenetInterface);
 	}
 
+	/**
+	 * Sets the project inserter’s temp directory.
+	 *
+	 * @see ProjectInserter#setTempDirectory(String)
+	 * @param tempDirectory
+	 *            The temp directory to use, or {@code null} to use the system
+	 *            default
+	 */
+	public void setTempDirectory(String tempDirectory) {
+		projectInserter.setTempDirectory(tempDirectory);
+	}
+
 	//
 	// INTERFACE InsertListener
 	//
