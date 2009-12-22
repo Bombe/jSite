@@ -232,6 +232,7 @@ public class PreferencesPage extends TWizardPage {
 	private void selectDefaultTempDirectory() {
 		tempDirectoryTextField.setEnabled(false);
 		chooseTempDirectoryAction.setEnabled(false);
+		tempDirectory = null;
 	}
 
 	/**
@@ -240,6 +241,12 @@ public class PreferencesPage extends TWizardPage {
 	private void selectCustomTempDirectory() {
 		tempDirectoryTextField.setEnabled(true);
 		chooseTempDirectoryAction.setEnabled(true);
+		if (tempDirectoryTextField.getText().length() == 0) {
+			chooseTempDirectory();
+			if (tempDirectoryTextField.getText().length() == 0) {
+				defaultTempDirectory.setSelected(true);
+			}
+		}
 	}
 
 	/**
