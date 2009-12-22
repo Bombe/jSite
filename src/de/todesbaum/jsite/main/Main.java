@@ -449,6 +449,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);
+		wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 	}
 
 	/**
