@@ -74,6 +74,10 @@ import de.todesbaum.util.swing.WizardListener;
  */
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener, UpdateListener {
 
+	/** The logger. */
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Main.class.getName());
+
 	/** The version. */
 	private static final Version VERSION = new Version(0, 7, 1);
 
