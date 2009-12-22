@@ -116,7 +116,7 @@ public class Connection {
 	 *            The received message
 	 */
 	protected void fireMessageReceived(Message message) {
-		for (ConnectionListener connectionListener: connectionListeners) {
+		for (ConnectionListener connectionListener : connectionListeners) {
 			connectionListener.messageReceived(this, message);
 		}
 	}
@@ -125,7 +125,7 @@ public class Connection {
 	 * Notifies listeners about the loss of the connection.
 	 */
 	protected void fireConnectionTerminated() {
-		for (ConnectionListener connectionListener: connectionListeners) {
+		for (ConnectionListener connectionListener : connectionListeners) {
 			connectionListener.connectionTerminated(this);
 		}
 	}

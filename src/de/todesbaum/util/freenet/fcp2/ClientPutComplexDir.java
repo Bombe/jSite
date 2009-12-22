@@ -32,8 +32,8 @@ import java.util.List;
 import de.todesbaum.util.io.Closer;
 
 /**
- * Implementation of the <code>ClientPutComplexDir</code> command. This
- * command can be used to insert directories that do not exist on disk.
+ * Implementation of the <code>ClientPutComplexDir</code> command. This command
+ * can be used to insert directories that do not exist on disk.
  *
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
@@ -56,9 +56,13 @@ public class ClientPutComplexDir extends ClientPutDir {
 	private final String tempDirectory;
 
 	/**
-	 * Creates a new <code>ClientPutComplexDir</code> command with the specified identifier and URI.
-	 * @param identifier The identifier of the command
-	 * @param uri The URI of the command
+	 * Creates a new <code>ClientPutComplexDir</code> command with the specified
+	 * identifier and URI.
+	 *
+	 * @param identifier
+	 *            The identifier of the command
+	 * @param uri
+	 *            The URI of the command
 	 */
 	public ClientPutComplexDir(String identifier, String uri) {
 		this(identifier, uri, null);
@@ -83,15 +87,18 @@ public class ClientPutComplexDir extends ClientPutDir {
 
 	/**
 	 * Adds a file to the directory inserted by this request.
-	 * @param fileEntry The file entry to add to the directory
+	 *
+	 * @param fileEntry
+	 *            The file entry to add to the directory
 	 */
 	public void addFileEntry(FileEntry fileEntry) {
 		if (fileEntry instanceof DirectFileEntry) {
-			if (payloadFile == null){
+			if (payloadFile == null) {
 				try {
 					payloadFile = File.createTempFile("payload", ".dat", (tempDirectory != null) ? new File(tempDirectory) : null);
 					payloadFile.deleteOnExit();
 				} catch (IOException e) {
+					/* ignore. */
 				}
 			}
 			if (payloadFile != null) {
@@ -125,7 +132,7 @@ public class ClientPutComplexDir extends ClientPutDir {
 	protected void write(Writer writer) throws IOException {
 		super.write(writer);
 		int fileIndex = 0;
-		for (FileEntry fileEntry: fileEntries) {
+		for (FileEntry fileEntry : fileEntries) {
 			writer.write("Files." + fileIndex + ".Name=" + fileEntry.getFilename() + LINEFEED);
 			if (fileEntry.getContentType() != null) {
 				writer.write("Files." + fileIndex + ".Metadata.ContentType=" + fileEntry.getContentType() + LINEFEED);
