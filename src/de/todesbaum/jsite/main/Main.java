@@ -556,6 +556,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		} else if ("page.preferences".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
+			String tempDirectory = ((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).getTempDirectory();
+			((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).setTempDirectory(tempDirectory);
 		}
 	}
 
