@@ -80,6 +80,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/** Object used for synchronization. */
 	protected final Object lockObject = new Object();
 
+	/** The temp directory. */
+	private String tempDirectory;
+
 	/**
 	 * Adds a listener to the list of registered listeners.
 	 *
@@ -195,6 +198,17 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	}
 
 	/**
+	 * Sets the temp directory to use.
+	 *
+	 * @param tempDirectory
+	 *            The temp directory to use, or {@code null} to use the system
+	 *            default
+	 */
+	public void setTempDirectory(String tempDirectory) {
+		this.tempDirectory = tempDirectory;
+	}
+
+	/**
 	 * Starts the insert.
 	 */
 	public void start() {
@@ -266,7 +280,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 *             if an I/O error occurs
 	 */
 	private InputStream createContainerInputStream(Map<String, List<String>> containerFiles, String containerName, int edition, long[] containerLength) throws IOException {
-		File tempFile = File.createTempFile("jsite", ".zip");
+		File tempFile = File.createTempFile("jsite", ".zip", (tempDirectory == null) ? null : new File(tempDirectory));
 		tempFile.deleteOnExit();
 		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
 		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
