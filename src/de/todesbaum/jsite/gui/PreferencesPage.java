@@ -46,6 +46,12 @@ import de.todesbaum.util.swing.TWizardPage;
  */
 public class PreferencesPage extends TWizardPage {
 
+	/** Select default temp directory action. */
+	private Action selectDefaultTempDirectoryAction;
+
+	/** Select custom temp directory action. */
+	private Action selectCustomTempDirectoryAction;
+
 	/** Action that chooses a new temp directory. */
 	private Action chooseTempDirectoryAction;
 
@@ -121,6 +127,28 @@ public class PreferencesPage extends TWizardPage {
 	 * Creates all actions.
 	 */
 	private void createActions() {
+		selectDefaultTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.default")) {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				selectDefaultTempDirectory();
+			}
+		};
+		selectCustomTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.custom")) {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				selectCustomTempDirectory();
+			}
+		};
 		chooseTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.choose")) {
 
 			@Override
@@ -135,6 +163,8 @@ public class PreferencesPage extends TWizardPage {
 			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
+				selectDefaultTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.default"));
+				selectCustomTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.custom"));
 				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.choose"));
 			}
 		});
@@ -154,10 +184,10 @@ public class PreferencesPage extends TWizardPage {
 		final JLabel tempDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
-		final JRadioButton defaultTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.default"));
+		final JRadioButton defaultTempDirectory = new JRadioButton(selectDefaultTempDirectoryAction);
 		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
 
-		final JRadioButton customTempDirectory = new JRadioButton(I18n.getMessage("jsite.preferences.temp-directory.custom"));
+		final JRadioButton customTempDirectory = new JRadioButton(selectCustomTempDirectoryAction);
 		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
 
 		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
@@ -178,12 +208,26 @@ public class PreferencesPage extends TWizardPage {
 			@Override
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
-				defaultTempDirectory.setText(I18n.getMessage("jsite.preferences.temp-directory.default"));
-				customTempDirectory.setText(I18n.getMessage("jsite.preferences.temp-directory.custom"));
 			}
 		});
 
 		return preferencesPanel;
+	}
+
+	/**
+	 * Activates the default temp directory radio button.
+	 */
+	private void selectDefaultTempDirectory() {
+		tempDirectoryTextField.setEnabled(false);
+		chooseTempDirectoryAction.setEnabled(false);
+	}
+
+	/**
+	 * Activates the custom temp directory radio button.
+	 */
+	private void selectCustomTempDirectory() {
+		tempDirectoryTextField.setEnabled(true);
+		chooseTempDirectoryAction.setEnabled(true);
 	}
 
 	/**
