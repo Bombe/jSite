@@ -386,6 +386,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* create connection to node */
 		Connection connection = freenetInterface.getConnection("project-insert-" + random + counter++);
+		connection.setTempDirectory(tempDirectory);
 		boolean connected = false;
 		Throwable cause = null;
 		try {
@@ -409,7 +410,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/* collect files */
 		int edition = project.getEdition();
 		String dirURI = "USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
-		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI);
+		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI, tempDirectory);
 		if ((project.getIndexFile() != null) && (project.getIndexFile().length() > 0)) {
 			putDir.setDefaultName(project.getIndexFile());
 		}
