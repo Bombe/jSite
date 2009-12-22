@@ -65,6 +65,9 @@ public class PreferencesPage extends TWizardPage {
 	/** The “default” button. */
 	private JRadioButton defaultTempDirectory;
 
+	/** The “custom” button. */
+	private JRadioButton customTempDirectory;
+
 	/**
 	 * Creates a new “preferences” page.
 	 *
@@ -112,6 +115,12 @@ public class PreferencesPage extends TWizardPage {
 	 */
 	public void setTempDirectory(String tempDirectory) {
 		this.tempDirectory = tempDirectory;
+		tempDirectoryTextField.setText((tempDirectory != null) ? tempDirectory : "");
+		if (tempDirectory != null) {
+			customTempDirectory.setSelected(true);
+		} else {
+			defaultTempDirectory.setSelected(true);
+		}
 	}
 
 	//
@@ -191,7 +200,7 @@ public class PreferencesPage extends TWizardPage {
 		defaultTempDirectory = new JRadioButton(selectDefaultTempDirectoryAction);
 		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
 
-		final JRadioButton customTempDirectory = new JRadioButton(selectCustomTempDirectoryAction);
+		customTempDirectory = new JRadioButton(selectCustomTempDirectoryAction);
 		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
 
 		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
