@@ -118,6 +118,7 @@ public class PreferencesPage extends TWizardPage {
 		tempDirectoryTextField.setText((tempDirectory != null) ? tempDirectory : "");
 		if (tempDirectory != null) {
 			customTempDirectory.setSelected(true);
+			chooseTempDirectoryAction.setEnabled(true);
 		} else {
 			defaultTempDirectory.setSelected(true);
 		}
