@@ -562,9 +562,11 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			projectInsertPage.setTempDirectory(tempDirectory);
 			projectInsertPage.startInsert();
 			nodeMenu.setEnabled(false);
+			optionsPreferencesAction.setEnabled(false);
 		} else if ("page.project.insert".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 			nodeMenu.setEnabled(true);
+			optionsPreferencesAction.setEnabled(true);
 		} else if ("page.preferences".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
