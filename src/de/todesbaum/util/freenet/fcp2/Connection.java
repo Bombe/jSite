@@ -71,6 +71,9 @@ public class Connection {
 	/** The NodeHello message sent by the node on connect. */
 	protected Message nodeHello;
 
+	/** The temp directory to use. */
+	private String tempDirectory;
+
 	/**
 	 * Creates a new connection to the specified node with the specified name.
 	 *
@@ -134,6 +137,17 @@ public class Connection {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Sets the temp directory to use for creation of temporary files.
+	 *
+	 * @param tempDirectory
+	 *            The temp directory to use, or {@code null} to use the default
+	 *            temp directory
+	 */
+	public void setTempDirectory(String tempDirectory) {
+		this.tempDirectory = tempDirectory;
 	}
 
 	/**
@@ -313,7 +327,7 @@ public class Connection {
 						/* need to read message from stream now */
 						File tempFile = null;
 						try {
-							tempFile = File.createTempFile("fcpv2", "data");
+							tempFile = File.createTempFile("fcpv2", "data", (tempDirectory != null) ? new File(tempDirectory) : null);
 							tempFile.deleteOnExit();
 							FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
 							long dataLength = Long.parseLong(message.get("DataLength"));
