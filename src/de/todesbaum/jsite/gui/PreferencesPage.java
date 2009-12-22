@@ -202,6 +202,7 @@ public class PreferencesPage extends TWizardPage {
 		} else {
 			defaultTempDirectory.setSelected(true);
 		}
+		chooseTempDirectoryAction.setEnabled(tempDirectory != null);
 		tempDirectoryPanel.add(tempDirectoryTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
 
 		JButton chooseButton = new JButton(chooseTempDirectoryAction);
