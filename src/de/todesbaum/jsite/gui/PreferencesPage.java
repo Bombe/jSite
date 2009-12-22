@@ -29,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -242,7 +243,14 @@ public class PreferencesPage extends TWizardPage {
 	 * Lets the user choose a new temp directory.
 	 */
 	private void chooseTempDirectory() {
-		/* TODO */
+		JFileChooser fileChooser = new JFileChooser(tempDirectory);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnValue = fileChooser.showDialog(wizard, I18n.getMessage("jsite.preferences.temp-directory.choose.approve"));
+		if (returnValue == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+		tempDirectory = fileChooser.getSelectedFile().getPath();
+		tempDirectoryTextField.setText(tempDirectory);
 	}
 
 }
