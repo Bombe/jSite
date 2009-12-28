@@ -419,7 +419,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		for (String filename : files) {
 			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
 			if (fileEntry != null) {
-				putDir.addFileEntry(fileEntry);
+				try {
+					putDir.addFileEntry(fileEntry);
+				} catch (IOException ioe1) {
+					fireProjectInsertFinished(false, ioe1);
+					return;
+				}
 			}
 		}
 

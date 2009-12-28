@@ -90,8 +90,10 @@ public class ClientPutComplexDir extends ClientPutDir {
 	 *
 	 * @param fileEntry
 	 *            The file entry to add to the directory
+	 * @throws IOException
+	 *             if an I/O error occurs when creating the payload stream
 	 */
-	public void addFileEntry(FileEntry fileEntry) {
+	public void addFileEntry(FileEntry fileEntry) throws IOException {
 		if (fileEntry instanceof DirectFileEntry) {
 			if (payloadFile == null) {
 				try {
@@ -114,7 +116,8 @@ public class ClientPutComplexDir extends ClientPutDir {
 					payloadOutputStream.flush();
 					fileEntries.add(fileEntry);
 				} catch (IOException ioe1) {
-					/* hmm, ignore? */
+					payloadFile.delete();
+					throw ioe1;
 				} finally {
 					Closer.close(payloadOutputStream);
 					Closer.close(payloadInputStream);
