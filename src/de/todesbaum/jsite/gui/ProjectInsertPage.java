@@ -337,7 +337,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
-				progressBar.setString(I18n.getMessage("jsite.insert.done"));
+				progressBar.setString(I18n.getMessage("jsite.insert.done") + " (" + getTransferRate() + " " + I18n.getMessage("jsite.insert.k-per-s") + ")");
 				wizard.setNextEnabled(true);
 				wizard.setQuitEnabled(true);
 			}
