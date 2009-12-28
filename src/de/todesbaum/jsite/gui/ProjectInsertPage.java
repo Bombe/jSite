@@ -80,6 +80,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/** The start time of the insert. */
 	private long startTime = 0;
 
+	/** The number of inserted blocks. */
+	private volatile int insertedBlocks;
+
 	/**
 	 * Creates a new progress insert wizard page.
 	 *
@@ -290,6 +293,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * {@inheritDoc}
 	 */
 	public void projectInsertProgress(Project project, final int succeeded, final int failed, final int fatal, final int total, final boolean finalized) {
+		insertedBlocks = succeeded;
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@SuppressWarnings("synthetic-access")
@@ -301,7 +305,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 				progressString.append(progress).append("% (");
 				progressString.append(succeeded + failed + fatal).append('/').append(total);
 				progressString.append(") (");
-				progressString.append(formatNumber(succeeded * 32.0 / ((System.currentTimeMillis() - startTime) / 1000), 1));
+				progressString.append(getTransferRate());
 				progressString.append(' ').append(I18n.getMessage("jsite.insert.k-per-s")).append(')');
 				progressBar.setString(progressString.toString());
 				if (finalized) {
@@ -372,6 +376,15 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			}
 		}
 		return formattedNumber;
+	}
+
+	/**
+	 * Returns the formatted transfer rate at this point.
+	 *
+	 * @return The formatted transfer rate
+	 */
+	private String getTransferRate() {
+		return formatNumber(insertedBlocks * 32.0 / ((System.currentTimeMillis() - startTime) / 1000), 1);
 	}
 
 	//
