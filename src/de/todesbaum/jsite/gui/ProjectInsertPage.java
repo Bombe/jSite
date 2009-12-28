@@ -316,7 +316,11 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
 		if (success) {
-			JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.inserted"), null, JOptionPane.INFORMATION_MESSAGE);
+			String copyURILabel = I18n.getMessage("jsite.insert.okay-copy-uri");
+			String selectedValue = (String) JOptionPane.showInputDialog(this, I18n.getMessage("jsite.insert.inserted"), I18n.getMessage("jsite.insert.done.title"), JOptionPane.INFORMATION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.insert.okay"), copyURILabel }, copyURILabel);
+			if (copyURILabel.equals(selectedValue)) {
+				actionCopyURI();
+			}
 		} else {
 			if (cause == null) {
 				JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.insert-failed"), null, JOptionPane.ERROR_MESSAGE);
