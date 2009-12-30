@@ -75,7 +75,6 @@ import de.todesbaum.util.swing.WizardListener;
 public class Main implements ActionListener, ListSelectionListener, WizardListener, NodeManagerListener, UpdateListener {
 
 	/** The logger. */
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
@@ -650,6 +649,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * {@inheritDoc}
 	 */
 	public void foundUpdateData(Version foundVersion, long versionTimestamp) {
+		logger.log(Level.FINEST, "Found version {0} from {1,date}.", new Object[] { foundVersion, versionTimestamp });
 		if (foundVersion.compareTo(VERSION) > 0) {
 			JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.update-checker.found-version.message"), foundVersion.toString(), new Date(versionTimestamp)), I18n.getMessage("jsite.update-checker.found-version.title"), JOptionPane.INFORMATION_MESSAGE);
 		}
