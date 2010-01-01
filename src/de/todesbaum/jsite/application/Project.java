@@ -60,6 +60,9 @@ public class Project implements Comparable<Project> {
 	/** The edition to insert to. */
 	protected int edition;
 
+	/** Whether to ignore hidden directory. */
+	private boolean ignoreHiddenFiles;
+
 	/** Options for files. */
 	protected Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 
@@ -86,6 +89,7 @@ public class Project implements Comparable<Project> {
 		localPath = project.localPath;
 		indexFile = project.indexFile;
 		lastInsertionTime = project.lastInsertionTime;
+		ignoreHiddenFiles = project.ignoreHiddenFiles;
 		fileOptions = new HashMap<String, FileOption>(project.fileOptions);
 	}
 
@@ -245,6 +249,27 @@ public class Project implements Comparable<Project> {
 	 */
 	public void setRequestURI(String requestURI) {
 		this.requestURI = shortenURI(requestURI);
+	}
+
+	/**
+	 * Returns whether hidden files are ignored, i.e. not inserted.
+	 *
+	 * @return {@code true} if hidden files are not inserted, {@code false}
+	 *         otherwise
+	 */
+	public boolean isIgnoreHiddenFiles() {
+		return ignoreHiddenFiles;
+	}
+
+	/**
+	 * Sets whether hidden files are ignored, i.e. not inserted.
+	 *
+	 * @param ignoreHiddenFiles
+	 *            {@code true} if hidden files are not inserted, {@code false}
+	 *            otherwise
+	 */
+	public void setIgnoreHiddenFiles(boolean ignoreHiddenFiles) {
+		this.ignoreHiddenFiles = ignoreHiddenFiles;
 	}
 
 	/**
