@@ -343,6 +343,11 @@ public class Configuration {
 					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue("0")));
 					project.setInsertURI(projectNode.getNode("insert-uri").getValue(""));
 					project.setRequestURI(projectNode.getNode("request-uri").getValue(""));
+					if (projectNode.getNode("ignore-hidden-files") != null) {
+						project.setIgnoreHiddenFiles(Boolean.parseBoolean(projectNode.getNode("ignore-hidden-files").getValue("true")));
+					} else {
+						project.setIgnoreHiddenFiles(true);
+					}
 					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					if (fileOptionsNode != null) {
@@ -389,6 +394,7 @@ public class Configuration {
 			projectNode.append("path", project.getPath());
 			projectNode.append("insert-uri", project.getInsertURI());
 			projectNode.append("request-uri", project.getRequestURI());
+			projectNode.append("ignore-hidden-files", String.valueOf(project.isIgnoreHiddenFiles()));
 			SimpleXML fileOptionsNode = projectNode.append("file-options");
 			Iterator<Entry<String, FileOption>> entries = project.getFileOptions().entrySet().iterator();
 			while (entries.hasNext()) {
