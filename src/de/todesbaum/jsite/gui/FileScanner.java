@@ -142,8 +142,9 @@ public class FileScanner implements Runnable {
 	private void scanFiles(File rootDir, List<String> fileList) throws IOException {
 		File[] files = rootDir.listFiles(new FileFilter() {
 
+			@SuppressWarnings("synthetic-access")
 			public boolean accept(File file) {
-				return !file.isHidden();
+				return !project.isIgnoreHiddenFiles() || !file.isHidden();
 			}
 		});
 		if (files == null) {
