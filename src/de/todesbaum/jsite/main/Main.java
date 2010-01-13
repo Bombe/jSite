@@ -24,8 +24,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -530,7 +532,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 					return;
 				}
 			}
-			if (hasIndexFile && !project.getFileOption(indexFile).getMimeType().equals("text/html")) {
+			List<String> allowedIndexContentTypes = Arrays.asList("text/html", "application/xhtml+xml");
+			if (hasIndexFile && !allowedIndexContentTypes.contains(project.getFileOption(indexFile).getMimeType())) {
 				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.index-not-html"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
 					return;
 				}
