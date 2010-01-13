@@ -131,6 +131,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/** The project path textfield. */
 	private JTextField projectPathTextField;
 
+	/** Whether the “copy URI to clipboard” action was used. */
+	private boolean uriCopied;
+
 	/**
 	 * Creates a new project page.
 	 *
@@ -473,6 +476,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	}
 
 	/**
+	 * Returns whether the “copy URI to clipboard” button was used.
+	 *
+	 * @return {@code true} if the “copy URI to clipboard” button was used,
+	 *         {@code false} otherwise
+	 */
+	public boolean wasUriCopied() {
+		return uriCopied;
+	}
+
+	/**
 	 * Updates the currently selected project with changed information from a
 	 * textfield.
 	 *
@@ -591,6 +604,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			Project selectedProject = (Project) projectList.getSelectedValue();
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			clipboard.setContents(new StringSelection(selectedProject.getFinalRequestURI(0)), this);
+			uriCopied = true;
 		}
 	}
 

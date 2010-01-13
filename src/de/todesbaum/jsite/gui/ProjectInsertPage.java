@@ -83,6 +83,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/** The number of inserted blocks. */
 	private volatile int insertedBlocks;
 
+	/** Whether the “copy URI to clipboard” button was used. */
+	private boolean uriCopied;
+
 	/**
 	 * Creates a new progress insert wizard page.
 	 *
@@ -250,6 +253,16 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter.setTempDirectory(tempDirectory);
 	}
 
+	/**
+	 * Returns whether the “copy URI to clipboard” button was used.
+	 *
+	 * @return {@code true} if an URI was copied to clipboard, {@code false}
+	 *         otherwise
+	 */
+	public boolean wasUriCopied() {
+		return uriCopied;
+	}
+
 	//
 	// INTERFACE InsertListener
 	//
@@ -352,6 +365,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * Copies the request URI of the project to the clipboard.
 	 */
 	private void actionCopyURI() {
+		uriCopied = true;
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection(requestURITextField.getText()), this);
 	}

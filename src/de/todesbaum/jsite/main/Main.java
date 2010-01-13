@@ -593,6 +593,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * {@inheritDoc}
 	 */
 	public void wizardQuitPressed(TWizard wizard) {
+		if (((ProjectPage) pages.get(PageType.PAGE_PROJECTS)).wasUriCopied() || ((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).wasUriCopied()) {
+			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.use-clipboard-now"));
+		}
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
 			if (saveConfiguration()) {
 				System.exit(0);
