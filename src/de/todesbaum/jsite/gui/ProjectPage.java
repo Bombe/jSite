@@ -119,6 +119,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/** The local path textfield. */
 	private JTextField projectLocalPathTextField;
 
+	/** The textfield for the complete URI. */
+	private JTextField projectCompleteUriTextField;
+
 	/** The public key textfield. */
 	private JTextField projectPublicKeyTextField;
 
@@ -318,7 +321,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		functionButtons.add(new JButton(projectAddAction));
 		functionButtons.add(new JButton(projectDeleteAction));
 		functionButtons.add(new JButton(projectCloneAction));
-		functionButtons.add(new JButton(projectCopyURIAction));
 
 		informationPanel.add(functionButtons, BorderLayout.PAGE_START);
 		informationPanel.add(informationTable, BorderLayout.CENTER);
@@ -401,6 +403,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPathTextField.setEnabled(false);
 
 		final TLabel projectPathLabel = new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField);
+		informationTable.add(projectPathLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		informationTable.add(projectPathTextField, new GridBagConstraints(1, 7, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+
+		projectCompleteUriTextField = new JTextField();
+		projectCompleteUriTextField.setEditable(false);
+		final TLabel projectUriLabel = new TLabel(I18n.getMessage("jsite.project.project.uri") + ":", KeyEvent.VK_U, projectCompleteUriTextField);
+		informationTable.add(projectUriLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		informationTable.add(projectCompleteUriTextField, new GridBagConstraints(1, 8, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(new JButton(projectCopyURIAction), new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			public void run() {
@@ -412,10 +424,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				projectPublicKeyLabel.setText(I18n.getMessage("jsite.project.project.public-key") + ":");
 				projectPrivateKeyLabel.setText(I18n.getMessage("jsite.project.project.private-key") + ":");
 				projectPathLabel.setText(I18n.getMessage("jsite.project.project.path") + ":");
+				projectUriLabel.setText(I18n.getMessage("jsite.project.project.uri") + ":");
 			}
 		});
-		informationTable.add(projectPathLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPathTextField, new GridBagConstraints(1, 7, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		return informationPanel;
 	}
@@ -650,6 +661,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			projectPublicKeyTextField.setText(selectedProject.getRequestURI());
 			projectPrivateKeyTextField.setText(selectedProject.getInsertURI());
 			projectPathTextField.setText(selectedProject.getPath());
+			projectCompleteUriTextField.setText("freenet:" + selectedProject.getFinalRequestURI(0));
 		} else {
 			projectNameTextField.setText("");
 			projectDescriptionTextField.setText("");
@@ -657,6 +669,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			projectPublicKeyTextField.setText("");
 			projectPrivateKeyTextField.setText("");
 			projectPathTextField.setText("");
+			projectCompleteUriTextField.setText("");
 		}
 	}
 
