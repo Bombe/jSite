@@ -367,16 +367,30 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			 * {@inheritDoc}
 			 */
 			@Override
+			@SuppressWarnings("synthetic-access")
 			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
 				super.insertString(fb, offset, string.replaceAll("/", ""), attr);
+				updateCompleteURI();
 			}
 
 			/**
 			 * {@inheritDoc}
 			 */
 			@Override
+			@SuppressWarnings("synthetic-access")
 			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 				super.replace(fb, offset, length, text.replaceAll("/", ""), attrs);
+				updateCompleteURI();
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+				super.remove(fb, offset, length);
+				updateCompleteURI();
 			}
 		});
 		projectPathTextField.setEnabled(false);
@@ -597,6 +611,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			if (!keyDialog.wasCancelled()) {
 				selectedProject.setInsertURI(keyDialog.getPrivateKey());
 				selectedProject.setRequestURI(keyDialog.getPublicKey());
+				updateCompleteURI();
 			}
 		}
 	}
@@ -612,6 +627,18 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		if (selectedIndex > -1) {
 			Project selectedProject = (Project) projectList.getSelectedValue();
 			selectedProject.setEdition(-1);
+			updateCompleteURI();
+		}
+	}
+
+	/**
+	 * Updates the complete URI text field.
+	 */
+	private void updateCompleteURI() {
+		int selectedIndex = projectList.getSelectedIndex();
+		if (selectedIndex > -1) {
+			Project selectedProject = (Project) projectList.getSelectedValue();
+			projectCompleteUriTextField.setText(selectedProject.getFinalRequestURI(0));
 		}
 	}
 
