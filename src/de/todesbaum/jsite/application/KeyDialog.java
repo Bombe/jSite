@@ -81,6 +81,9 @@ public class KeyDialog extends JDialog {
 	/** The text field for the public key. */
 	private JTextField publicKeyTextField;
 
+	/** Whether the dialog was cancelled. */
+	private boolean cancelled;
+
 	/**
 	 * Creates a new key dialog.
 	 *
@@ -106,6 +109,15 @@ public class KeyDialog extends JDialog {
 	//
 	// ACCESSORS
 	//
+
+	/**
+	 * Returns whether the dialog was cancelled.
+	 *
+	 * @return {@code true} if the dialog was cancelled, {@code false} otherwise
+	 */
+	public boolean wasCancelled() {
+		return cancelled;
+	}
 
 	/**
 	 * Returns the public key.
@@ -276,6 +288,7 @@ public class KeyDialog extends JDialog {
 	private void actionOk() {
 		publicKey = publicKeyTextField.getText();
 		privateKey = privateKeyTextField.getText();
+		cancelled = false;
 		setVisible(false);
 	}
 
@@ -283,6 +296,7 @@ public class KeyDialog extends JDialog {
 	 * Quits the dialog, discarding all changes.
 	 */
 	private void actionCancel() {
+		cancelled = true;
 		setVisible(false);
 	}
 
