@@ -59,6 +59,7 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
 import de.todesbaum.jsite.application.Freenet7Interface;
+import de.todesbaum.jsite.application.KeyDialog;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
@@ -89,11 +90,11 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/** The “clone project” action. */
 	private Action projectCloneAction;
 
+	/** The “manage keys” action. */
+	private Action projectManageKeysAction;
+
 	/** The “copy URI” action. */
 	private Action projectCopyURIAction;
-
-	/** The “generate key” action. */
-	private Action projectGenerateKeyAction;
 
 	/** The “reset edition” action. */
 	private Action projectResetEditionAction;
@@ -121,12 +122,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/** The textfield for the complete URI. */
 	private JTextField projectCompleteUriTextField;
-
-	/** The public key textfield. */
-	private JTextField projectPublicKeyTextField;
-
-	/** The private key textfield. */
-	private JTextField projectPrivateKeyTextField;
 
 	/** The project path textfield. */
 	private JTextField projectPathTextField;
@@ -264,16 +259,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectCopyURIAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
 		projectCopyURIAction.setEnabled(false);
 
-		projectGenerateKeyAction = new AbstractAction(I18n.getMessage("jsite.project.action.generate-new-key")) {
+		projectManageKeysAction = new AbstractAction(I18n.getMessage("jsite.project.action.manage-keys")) {
 
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
-				actionGenerateNewKey();
+				actionManageKeys();
 			}
 		};
-		projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
-		projectGenerateKeyAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
-		projectGenerateKeyAction.setEnabled(false);
+		projectManageKeysAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.manage-keys.tooltip"));
+		projectManageKeysAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_M);
+		projectManageKeysAction.setEnabled(false);
 
 		projectResetEditionAction = new AbstractAction(I18n.getMessage("jsite.project.action.reset-edition")) {
 
@@ -300,8 +295,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				projectCloneAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.clone-project.tooltip"));
 				projectCopyURIAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.copy-uri"));
 				projectCopyURIAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.copy-uri.tooltip"));
-				projectGenerateKeyAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.generate-new-key"));
-				projectGenerateKeyAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.generate-new-key.tooltip"));
+				projectManageKeysAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.manage-keys"));
+				projectManageKeysAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.manage-keys.tooltip"));
 				projectResetEditionAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.reset-edition"));
 				projectResetEditionAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project.action.reset-edition.tooltip"));
 				pathChooser.setApproveButtonText(I18n.getMessage("jsite.project.action.browse.choose"));
@@ -324,6 +319,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		functionButtons.add(new JButton(projectAddAction));
 		functionButtons.add(new JButton(projectDeleteAction));
 		functionButtons.add(new JButton(projectCloneAction));
+		functionButtons.add(new JButton(projectManageKeysAction));
 
 		informationPanel.add(functionButtons, BorderLayout.PAGE_START);
 		informationPanel.add(informationTable, BorderLayout.CENTER);
@@ -362,26 +358,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		final JLabel projectAddressLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.project.project.address") + "</b></html>");
 		informationTable.add(projectAddressLabel, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
-		projectPublicKeyTextField = new JTextField(27);
-		projectPublicKeyTextField.getDocument().putProperty("name", "project.publickey");
-		projectPublicKeyTextField.getDocument().addDocumentListener(this);
-		projectPublicKeyTextField.setEnabled(false);
-
-		final TLabel projectPublicKeyLabel = new TLabel(I18n.getMessage("jsite.project.project.public-key") + ":", KeyEvent.VK_U, projectPublicKeyTextField);
-		informationTable.add(projectPublicKeyLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPublicKeyTextField, new GridBagConstraints(1, 5, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		informationTable.add(new JButton(projectGenerateKeyAction), new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-
-		projectPrivateKeyTextField = new JTextField(27);
-		projectPrivateKeyTextField.getDocument().putProperty("name", "project.privatekey");
-		projectPrivateKeyTextField.getDocument().addDocumentListener(this);
-		projectPrivateKeyTextField.setEnabled(false);
-
-		final TLabel projectPrivateKeyLabel = new TLabel(I18n.getMessage("jsite.project.project.private-key") + ":", KeyEvent.VK_R, projectPrivateKeyTextField);
-		informationTable.add(projectPrivateKeyLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPrivateKeyTextField, new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		informationTable.add(new JButton(projectResetEditionAction), new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-
 		projectPathTextField = new JTextField();
 		projectPathTextField.getDocument().putProperty("name", "project.path");
 		projectPathTextField.getDocument().addDocumentListener(this);
@@ -406,15 +382,15 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectPathTextField.setEnabled(false);
 
 		final TLabel projectPathLabel = new TLabel(I18n.getMessage("jsite.project.project.path") + ":", KeyEvent.VK_P, projectPathTextField);
-		informationTable.add(projectPathLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectPathTextField, new GridBagConstraints(1, 7, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(projectPathLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		informationTable.add(projectPathTextField, new GridBagConstraints(1, 5, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		projectCompleteUriTextField = new JTextField();
 		projectCompleteUriTextField.setEditable(false);
 		final TLabel projectUriLabel = new TLabel(I18n.getMessage("jsite.project.project.uri") + ":", KeyEvent.VK_U, projectCompleteUriTextField);
-		informationTable.add(projectUriLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		informationTable.add(projectCompleteUriTextField, new GridBagConstraints(1, 8, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		informationTable.add(new JButton(projectCopyURIAction), new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(projectUriLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		informationTable.add(projectCompleteUriTextField, new GridBagConstraints(1, 6, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		informationTable.add(new JButton(projectCopyURIAction), new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -424,8 +400,6 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				projectDescriptionLabel.setText(I18n.getMessage("jsite.project.project.description") + ":");
 				projectLocalPathLabel.setText(I18n.getMessage("jsite.project.project.local-path") + ":");
 				projectAddressLabel.setText("<html><b>" + I18n.getMessage("jsite.project.project.address") + "</b></html>");
-				projectPublicKeyLabel.setText(I18n.getMessage("jsite.project.project.public-key") + ":");
-				projectPrivateKeyLabel.setText(I18n.getMessage("jsite.project.project.private-key") + ":");
 				projectPathLabel.setText(I18n.getMessage("jsite.project.project.path") + ":");
 				projectUriLabel.setText(I18n.getMessage("jsite.project.project.uri") + ":");
 			}
@@ -609,26 +583,21 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	}
 
 	/**
-	 * Generates a new key for the currently selected project.
+	 * Opens a {@link KeyDialog} and lets the user manipulate the keys of the
+	 * project.
 	 */
-	private void actionGenerateNewKey() {
-		if (JOptionPane.showConfirmDialog(this, I18n.getMessage("jsite.project.warning.generate-new-key"), null, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
-			return;
-		}
+	private void actionManageKeys() {
 		int selectedIndex = projectList.getSelectedIndex();
 		if (selectedIndex > -1) {
 			Project selectedProject = (Project) projectList.getSelectedValue();
-			String[] keyPair = null;
-			try {
-				keyPair = freenetInterface.generateKeyPair();
-			} catch (IOException ioe1) {
-				JOptionPane.showMessageDialog(this, MessageFormat.format(I18n.getMessage("jsite.project.keygen.io-error"), ioe1.getMessage()), null, JOptionPane.ERROR_MESSAGE);
-				return;
+			KeyDialog keyDialog = new KeyDialog(freenetInterface, wizard);
+			keyDialog.setPrivateKey(selectedProject.getInsertURI());
+			keyDialog.setPublicKey(selectedProject.getRequestURI());
+			keyDialog.setVisible(true);
+			if (!keyDialog.wasCancelled()) {
+				selectedProject.setInsertURI(keyDialog.getPrivateKey());
+				selectedProject.setRequestURI(keyDialog.getPublicKey());
 			}
-			selectedProject.setInsertURI(keyPair[0]);
-			selectedProject.setRequestURI(keyPair[1]);
-			projectPublicKeyTextField.setText(selectedProject.getRequestURI());
-			projectPrivateKeyTextField.setText(selectedProject.getInsertURI());
 		}
 	}
 
@@ -659,29 +628,23 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectNameTextField.setEnabled(selectedRow > -1);
 		projectDescriptionTextField.setEnabled(selectedRow > -1);
 		projectLocalPathTextField.setEnabled(selectedRow > -1);
-		projectPublicKeyTextField.setEnabled(selectedRow > -1);
-		projectPrivateKeyTextField.setEnabled(selectedRow > -1);
 		projectPathTextField.setEnabled(selectedRow > -1);
 		projectLocalPathBrowseAction.setEnabled(selectedRow > -1);
 		projectDeleteAction.setEnabled(selectedRow > -1);
 		projectCloneAction.setEnabled(selectedRow > -1);
 		projectCopyURIAction.setEnabled(selectedRow > -1);
-		projectGenerateKeyAction.setEnabled(selectedRow > -1);
+		projectManageKeysAction.setEnabled(selectedRow > -1);
 		projectResetEditionAction.setEnabled(selectedRow > -1);
 		if (selectedRow > -1) {
 			projectNameTextField.setText(selectedProject.getName());
 			projectDescriptionTextField.setText(selectedProject.getDescription());
 			projectLocalPathTextField.setText(selectedProject.getLocalPath());
-			projectPublicKeyTextField.setText(selectedProject.getRequestURI());
-			projectPrivateKeyTextField.setText(selectedProject.getInsertURI());
 			projectPathTextField.setText(selectedProject.getPath());
 			projectCompleteUriTextField.setText("freenet:" + selectedProject.getFinalRequestURI(0));
 		} else {
 			projectNameTextField.setText("");
 			projectDescriptionTextField.setText("");
 			projectLocalPathTextField.setText("");
-			projectPublicKeyTextField.setText("");
-			projectPrivateKeyTextField.setText("");
 			projectPathTextField.setText("");
 			projectCompleteUriTextField.setText("");
 		}
