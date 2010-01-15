@@ -28,13 +28,15 @@ import java.util.ListIterator;
 
 import javax.swing.AbstractListModel;
 
-
 /**
+ * @param <T>
+ *            The type of the elements
  * @author David Roden &lt;droden@gmail.com&gt;
  */
-public class SortedListModel extends AbstractListModel implements List {
+public class SortedListModel<T extends Comparable<T>> extends AbstractListModel implements List<T> {
 
-	private List elements = new ArrayList();
+	/** The elements. */
+	private List<T> elements = new ArrayList<T>();
 
 	/**
 	 * {@inheritDoc}
@@ -53,7 +55,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void add(int index, Object element) {
+	public void add(int index, T element) {
 		elements.add(index, element);
 		Collections.sort(elements);
 		fireContentsChanged(this, 0, size());
@@ -62,7 +64,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean add(Object o) {
+	public boolean add(T o) {
 		boolean result = elements.add(o);
 		Collections.sort(elements);
 		fireContentsChanged(this, 0, size());
@@ -72,7 +74,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean addAll(Collection c) {
+	public boolean addAll(Collection<? extends T> c) {
 		boolean result = elements.addAll(c);
 		Collections.sort(elements);
 		fireContentsChanged(this, 0, size());
@@ -82,7 +84,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean addAll(int index, Collection c) {
+	public boolean addAll(int index, Collection<? extends T> c) {
 		boolean result = elements.addAll(index, c);
 		Collections.sort(elements);
 		fireContentsChanged(this, 0, size());
@@ -107,7 +109,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean containsAll(Collection c) {
+	public boolean containsAll(Collection<?> c) {
 		return elements.containsAll(c);
 	}
 
@@ -121,7 +123,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object get(int index) {
+	public T get(int index) {
 		return elements.get(index);
 	}
 
@@ -149,7 +151,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Iterator iterator() {
+	public Iterator<T> iterator() {
 		return elements.iterator();
 	}
 
@@ -163,21 +165,21 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ListIterator listIterator() {
+	public ListIterator<T> listIterator() {
 		return elements.listIterator();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ListIterator listIterator(int index) {
+	public ListIterator<T> listIterator(int index) {
 		return elements.listIterator(index);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object remove(int index) {
+	public T remove(int index) {
 		fireContentsChanged(this, 0, size());
 		return elements.remove(index);
 	}
@@ -193,7 +195,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeAll(Collection c) {
+	public boolean removeAll(Collection<?> c) {
 		fireContentsChanged(this, 0, size());
 		return elements.removeAll(c);
 	}
@@ -201,7 +203,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<?> c) {
 		fireContentsChanged(this, 0, size());
 		return elements.retainAll(c);
 	}
@@ -209,8 +211,8 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object set(int index, Object element) {
-		Object result = elements.set(index, element);
+	public T set(int index, T element) {
+		T result = elements.set(index, element);
 		Collections.sort(elements);
 		fireContentsChanged(this, 0, size());
 		return result;
@@ -226,7 +228,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List subList(int fromIndex, int toIndex) {
+	public List<T> subList(int fromIndex, int toIndex) {
 		return elements.subList(fromIndex, toIndex);
 	}
 
@@ -240,7 +242,7 @@ public class SortedListModel extends AbstractListModel implements List {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object[] toArray(Object[] a) {
+	public <U extends Object> U[] toArray(U[] a) {
 		return elements.toArray(a);
 	}
 
