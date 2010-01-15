@@ -116,6 +116,7 @@ public class SortedListModel<T extends Comparable<T>> extends AbstractListModel 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean equals(Object o) {
 		return elements.equals(o);
 	}
@@ -130,6 +131,7 @@ public class SortedListModel<T extends Comparable<T>> extends AbstractListModel 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public int hashCode() {
 		return elements.hashCode();
 	}
