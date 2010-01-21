@@ -80,6 +80,7 @@ public final class Persistence {
 	 *
 	 * @return The name of this persistence option
 	 */
+	@Override
 	public String toString() {
 		return name;
 	}

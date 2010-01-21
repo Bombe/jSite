@@ -56,6 +56,7 @@ public class TWizard extends JFrame implements WindowListener {
 	private JLabel pageHeading;
 	private JLabel pageDescription;
 
+	@Override
 	protected void frameInit() {
 		super.frameInit();
 		setResizable(false);

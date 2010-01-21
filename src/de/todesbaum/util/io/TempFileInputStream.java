@@ -49,6 +49,7 @@ public class TempFileInputStream extends FileInputStream {
 		tempFile = file;
 	}
 
+	@Override
 	public void close() throws IOException {
 		super.close();
 		tempFile.delete();
