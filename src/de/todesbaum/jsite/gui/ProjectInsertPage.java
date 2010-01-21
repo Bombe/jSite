@@ -34,6 +34,8 @@ import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -61,6 +63,9 @@ import de.todesbaum.util.swing.TWizardPage;
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class ProjectInsertPage extends TWizardPage implements InsertListener, ClipboardOwner {
+
+	/** The logger. */
+	private static final Logger logger = Logger.getLogger(ProjectInsertPage.class.getName());
 
 	/** The project inserter. */
 	private ProjectInserter projectInserter;
@@ -300,6 +305,25 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 				requestURITextField.setText(uri);
 			}
 		});
+		logger.log(Level.FINEST, "Insert generated URI: " + uri);
+		int slash = uri.indexOf('/');
+		slash = uri.indexOf('/', slash + 1);
+		int secondSlash = uri.indexOf('/', slash + 1);
+		if (secondSlash == -1) {
+			secondSlash = uri.length();
+		}
+		String editionNumber = uri.substring(slash + 1, secondSlash);
+		logger.log(Level.FINEST, "Extracted edition number: " + editionNumber);
+		int edition = -1;
+		try {
+			edition = Integer.valueOf(editionNumber);
+		} catch (NumberFormatException nfe1) {
+			/* ignore. */
+		}
+		logger.log(Level.FINEST, "Insert edition: " + edition + ", Project edition: " + project.getEdition());
+		if ((edition != -1) && (edition == project.getEdition())) {
+			JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.reinserted-edition"), I18n.getMessage("jsite.insert.reinserted-edition.title"), JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 
 	/**
