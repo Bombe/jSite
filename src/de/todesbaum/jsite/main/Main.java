@@ -541,8 +541,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
 			boolean insert = false;
 			for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
+				String fileName = fileOptionEntry.getKey();
 				FileOption fileOption = fileOptionEntry.getValue();
 				insert |= fileOption.isInsert() || fileOption.isInsertRedirect();
+				if (fileName.equals(project.getIndexFile()) && !fileOption.isInsert() && !fileOption.isInsertRedirect()) {
+					JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.index-not-inserted"), null, JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				if (!fileOption.isInsert() && fileOption.isInsertRedirect() && ((fileOption.getCustomKey().length() == 0) || "CHK@".equals(fileOption.getCustomKey()))) {
 					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.project-files.no-custom-key"), fileOptionEntry.getKey()), null, JOptionPane.ERROR_MESSAGE);
 					return;
