@@ -84,7 +84,6 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
-			@Override
 			public void run() {
 				setHeading(I18n.getMessage("jsite.preferences.heading"));
 				setDescription(I18n.getMessage("jsite.preferences.description"));
@@ -146,7 +145,6 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
-			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				selectDefaultTempDirectory();
@@ -157,7 +155,6 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
-			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				selectCustomTempDirectory();
@@ -165,7 +162,6 @@ public class PreferencesPage extends TWizardPage {
 		};
 		chooseTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.choose")) {
 
-			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent e) {
 				chooseTempDirectory();
@@ -174,7 +170,6 @@ public class PreferencesPage extends TWizardPage {
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
-			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				selectDefaultTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.default"));
@@ -227,7 +222,6 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
-			@Override
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 			}

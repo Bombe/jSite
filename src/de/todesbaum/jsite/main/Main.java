@@ -221,7 +221,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			/**
 			 * {@inheritDoc}
 			 */
-			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				optionsPreferences();
