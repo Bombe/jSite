@@ -356,6 +356,9 @@ public class Configuration {
 							String filename = fileOptionNode.getNode("filename").getValue();
 							FileOption fileOption = project.getFileOption(filename);
 							fileOption.setInsert(Boolean.parseBoolean(fileOptionNode.getNode("insert").getValue()));
+							if (fileOptionNode.getNode("insert-redirect") != null) {
+								fileOption.setInsertRedirect(Boolean.parseBoolean(fileOptionNode.getNode("insert-redirect").getValue()));
+							}
 							fileOption.setCustomKey(fileOptionNode.getNode("custom-key").getValue(""));
 							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
 							fileOption.setContainer(fileOptionNode.getNode("container").getValue());
@@ -404,6 +407,7 @@ public class Configuration {
 					SimpleXML fileOptionNode = fileOptionsNode.append("file-option");
 					fileOptionNode.append("filename", entry.getKey());
 					fileOptionNode.append("insert", String.valueOf(fileOption.isInsert()));
+					fileOptionNode.append("insert-redirect", String.valueOf(fileOption.isInsertRedirect()));
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
 					fileOptionNode.append("container", fileOption.getContainer());

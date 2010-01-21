@@ -44,6 +44,9 @@ public class FileOption {
 	/** The insert state. */
 	private boolean insert;
 
+	/** Whether to insert a redirect. */
+	private boolean insertRedirect;
+
 	/** The custom key. */
 	private String customKey;
 
@@ -80,7 +83,8 @@ public class FileOption {
 
 	/**
 	 * Returns the custom key. The custom key is only used when
-	 * {@link #isInsert()} returns <code>true</code>.
+	 * {@link #isInsert()} and {@link #isInsertRedirect()} both return {@code
+	 * true}.
 	 *
 	 * @return The custom key
 	 */
@@ -90,7 +94,7 @@ public class FileOption {
 
 	/**
 	 * Sets the custom key. The custom key is only used when {@link #isInsert()}
-	 * returns <code>true</code>.
+	 * and {@link #isInsertRedirect()} both return {@code true}.
 	 *
 	 * @param customKey
 	 *            The custom key
@@ -104,8 +108,9 @@ public class FileOption {
 	}
 
 	/**
-	 * Returns whether the file should be inserted. If a file is not inserted, a
-	 * custom key has to be specified for it.
+	 * Returns whether the file should be inserted. If a file is not inserted
+	 * and {@link #isInsertRedirect()} is also {@code false}, the file will not
+	 * be inserted at all.
 	 *
 	 * @see #setCustomKey(String)
 	 * @return <code>true</code> if the file should be inserted,
@@ -116,8 +121,9 @@ public class FileOption {
 	}
 
 	/**
-	 * Sets whether the file should be inserted. If a file is not inserted, a
-	 * custom key has to be specified for it.
+	 * Sets whether the file should be inserted. If a file is not inserted and
+	 * {@link #isInsertRedirect()} is also {@code false}, the file will not be
+	 * inserted at all.
 	 *
 	 * @param insert
 	 *            <code>true</code> if the file should be inserted,
@@ -125,6 +131,34 @@ public class FileOption {
 	 */
 	public void setInsert(boolean insert) {
 		this.insert = insert;
+	}
+
+	/**
+	 * Returns whether a redirect to a different key should be inserted. This
+	 * will only matter if {@link #isInsert()} returns {@code false}. The key
+	 * that should be redirected to still needs to be specified via
+	 * {@link #setCustomKey(String)}.
+	 *
+	 * @return {@code true} if a redirect should be inserted, {@code false}
+	 *         otherwise
+	 */
+	public boolean isInsertRedirect() {
+		return insertRedirect;
+	}
+
+	/**
+	 * Sets whether a redirect should be inserted. This will only matter if
+	 * {@link #isInsert()} returns {@code false}, i.e. it has been
+	 * {@link #setInsert(boolean)} to {@code false}. The key that should be
+	 * redirected to still needs to be specified via
+	 * {@link #setCustomKey(String)}.
+	 *
+	 * @param insertRedirect
+	 *            {@code true} if a redirect should be inserted, {@code false}
+	 *            otherwise
+	 */
+	public void setInsertRedirect(boolean insertRedirect) {
+		this.insertRedirect = insertRedirect;
 	}
 
 	/**

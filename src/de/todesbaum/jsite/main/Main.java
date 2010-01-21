@@ -541,7 +541,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
 			for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 				FileOption fileOption = fileOptionEntry.getValue();
-				if (!fileOption.isInsert() && ((fileOption.getCustomKey().length() == 0) || "CHK@".equals(fileOption.getCustomKey()))) {
+				if (!fileOption.isInsert() && fileOption.isInsertRedirect() && ((fileOption.getCustomKey().length() == 0) || "CHK@".equals(fileOption.getCustomKey()))) {
 					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.project-files.no-custom-key"), fileOptionEntry.getKey()), null, JOptionPane.ERROR_MESSAGE);
 					return;
 				}

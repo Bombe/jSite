@@ -106,6 +106,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/** The “insert” checkbox. */
 	private JCheckBox fileOptionsInsertCheckBox;
 
+	/** The “insert redirect” checkbox. */
+	private JCheckBox fileOptionsInsertRedirectCheckBox;
+
 	/** The “custom key” textfield. */
 	private JTextField fileOptionsCustomKeyTextField;
 
@@ -268,9 +271,16 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsCustomKeyTextField.setEnabled(false);
 		fileOptionsCustomKeyTextField.getDocument().addDocumentListener(this);
 
+		fileOptionsInsertRedirectCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.insert-redirect"), false);
+		fileOptionsInsertRedirectCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert-redirect.tooltip"));
+		fileOptionsInsertRedirectCheckBox.setName("insert-redirect");
+		fileOptionsInsertRedirectCheckBox.setMnemonic(KeyEvent.VK_R);
+		fileOptionsInsertRedirectCheckBox.addActionListener(this);
+
 		final TLabel customKeyLabel = new TLabel(I18n.getMessage("jsite.project-files.custom-key") + ":", KeyEvent.VK_K, fileOptionsCustomKeyTextField);
-		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(1, 5, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsInsertRedirectCheckBox, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(2, 5, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		fileOptionsMIMETypeComboBox = new JComboBox(DefaultMIMETypes.getAllMIMETypes());
 		fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
@@ -340,6 +350,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				defaultFileCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.default.tooltip"));
 				fileOptionsInsertCheckBox.setText(I18n.getMessage("jsite.project-files.insert"));
 				fileOptionsInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert.tooltip"));
+				fileOptionsInsertRedirectCheckBox.setText(I18n.getMessage("jsite.project-files.insert-redirect"));
+				fileOptionsInsertRedirectCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert-redirect.tooltip"));
 				fileOptionsCustomKeyTextField.setToolTipText(I18n.getMessage("jsite.project-files.custom-key.tooltip"));
 				customKeyLabel.setText(I18n.getMessage("jsite.project-files.custom-key") + ":");
 				fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
@@ -564,11 +576,15 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				}
 			} else if ("insert".equals(checkBox.getName())) {
 				boolean isInsert = checkBox.isSelected();
-				fileOptionsCustomKeyTextField.setEnabled(!isInsert);
 				fileOption.setInsert(isInsert);
 				if (!isInsert) {
 					fileOptionsContainerComboBox.setSelectedItem("");
 				}
+				fileOptionsInsertRedirectCheckBox.setEnabled(!isInsert);
+			} else if ("insert-redirect".equals(checkBox.getName())) {
+				boolean isInsertRedirect = checkBox.isSelected();
+				fileOption.setInsertRedirect(isInsertRedirect);
+				fileOptionsCustomKeyTextField.setEnabled(isInsertRedirect);
 			} else if ("project-files.replace-edition".equals(checkBox.getName())) {
 				boolean replaceEdition = checkBox.isSelected();
 				fileOption.setReplaceEdition(replaceEdition);
@@ -604,7 +620,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		boolean insert = fileOptionsInsertCheckBox.isSelected();
 		defaultFileCheckBox.setEnabled(enabled);
 		fileOptionsInsertCheckBox.setEnabled(enabled);
-		fileOptionsCustomKeyTextField.setEnabled(enabled && !insert);
 		fileOptionsMIMETypeComboBox.setEnabled(enabled);
 		fileOptionsContainerComboBox.setEnabled(enabled);
 		addContainerAction.setEnabled(enabled);
@@ -615,6 +630,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			FileOption fileOption = project.getFileOption(filename);
 			defaultFileCheckBox.setSelected(filename.equals(project.getIndexFile()));
 			fileOptionsInsertCheckBox.setSelected(fileOption.isInsert());
+			fileOptionsInsertRedirectCheckBox.setEnabled(!fileOption.isInsert());
+			fileOptionsInsertRedirectCheckBox.setSelected(fileOption.isInsertRedirect());
+			fileOptionsCustomKeyTextField.setEnabled(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setText(fileOption.getCustomKey());
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
 			fileOptionsContainerComboBox.setSelectedItem(fileOption.getContainer());
@@ -624,6 +642,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		} else {
 			defaultFileCheckBox.setSelected(false);
 			fileOptionsInsertCheckBox.setSelected(true);
+			fileOptionsInsertRedirectCheckBox.setEnabled(false);
+			fileOptionsInsertRedirectCheckBox.setSelected(false);
+			fileOptionsCustomKeyTextField.setEnabled(false);
 			fileOptionsCustomKeyTextField.setText("CHK@");
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(DefaultMIMETypes.DEFAULT_MIME_TYPE);
 			fileOptionsContainerComboBox.setSelectedItem("");
