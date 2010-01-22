@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -434,6 +435,22 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		if (!insert) {
 			checkReport.addIssue("error.no-files-to-insert", true);
+		}
+		Set<String> fileNames = new HashSet<String>();
+		for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
+			FileOption fileOption = fileOptionEntry.getValue();
+			if (!fileOption.isInsert() && !fileOption.isInsertRedirect()) {
+				logger.log(Level.FINEST, "Ignoring {0}.", fileOptionEntry.getKey());
+				continue;
+			}
+			String fileName = fileOptionEntry.getKey();
+			if (fileOption.hasChangedName()) {
+				fileName = fileOption.getChangedName();
+			}
+			logger.log(Level.FINEST, "Adding “{0}” for {1}.", new Object[] { fileName, fileOptionEntry.getKey() });
+			if (!fileNames.add(fileName)) {
+				checkReport.addIssue("error.duplicate-file", true, fileName);
+			}
 		}
 		return checkReport;
 	}
