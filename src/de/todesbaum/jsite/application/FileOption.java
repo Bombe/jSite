@@ -29,6 +29,9 @@ public class FileOption {
 	/** The default for the insert state. */
 	private static final boolean DEFAULT_INSERT = true;
 
+	/** The default for the insert redirect state. */
+	private static final boolean DEFAULT_INSERT_REDIRECT = true;
+
 	/** The default for the custom key. */
 	private static final String DEFAULT_CUSTOM_KEY = "CHK@";
 
@@ -76,6 +79,7 @@ public class FileOption {
 	 */
 	public FileOption(String defaultMimeType) {
 		insert = DEFAULT_INSERT;
+		insertRedirect = DEFAULT_INSERT_REDIRECT;
 		customKey = DEFAULT_CUSTOM_KEY;
 		this.defaultMimeType = defaultMimeType;
 		mimeType = defaultMimeType;
@@ -309,6 +313,9 @@ public class FileOption {
 			return true;
 		}
 		if (editionRange != DEFAULT_EDITION_RANGE) {
+			return true;
+		}
+		if (insertRedirect != DEFAULT_INSERT_REDIRECT) {
 			return true;
 		}
 		return false;
