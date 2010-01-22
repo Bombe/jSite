@@ -21,17 +21,12 @@ package de.todesbaum.jsite.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -50,12 +45,14 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
+import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
+import de.todesbaum.jsite.application.ProjectInserter.CheckReport.Issue;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -496,11 +493,11 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			ProjectPage projectPage = (ProjectPage) wizard.getPage();
 			Project project = projectPage.getSelectedProject();
 			if ((project.getLocalPath() == null) || (project.getLocalPath().trim().length() == 0)) {
-				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.no-local-path"), null, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.warning.no-local-path"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if ((project.getPath() == null) || (project.getPath().trim().length() == 0)) {
-				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.no-path"), null, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.warning.no-path"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			((ProjectFilesPage) pages.get(PageType.PAGE_PROJECT_FILES)).setProject(project);
@@ -510,52 +507,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			ProjectPage projectPage = (ProjectPage) pages.get(PageType.PAGE_PROJECTS);
 			Project project = projectPage.getSelectedProject();
 			if (selectedNode == null) {
-				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.error.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if ((project.getIndexFile() == null) || (project.getIndexFile().length() == 0)) {
-				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.empty-index"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
+			CheckReport checkReport = ProjectInserter.validateProject(project);
+			for (Issue issue : checkReport) {
+				if (issue.isFatal()) {
+					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite." + issue.getErrorKey()), (Object[]) issue.getParameters()), null, JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-			} else {
-				File indexFile = new File(project.getLocalPath(), project.getIndexFile());
-				if (!indexFile.exists()) {
-					JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.index-missing"), null, JOptionPane.ERROR_MESSAGE);
+				if (JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite." + issue.getErrorKey()), (Object[]) issue.getParameters()), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
 					return;
 				}
-			}
-			String indexFile = project.getIndexFile();
-			boolean hasIndexFile = (indexFile != null);
-			if (hasIndexFile && !project.getFileOption(indexFile).getContainer().equals("")) {
-				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.container-index"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
-					return;
-				}
-			}
-			List<String> allowedIndexContentTypes = Arrays.asList("text/html", "application/xhtml+xml");
-			if (hasIndexFile && !allowedIndexContentTypes.contains(project.getFileOption(indexFile).getMimeType())) {
-				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.index-not-html"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
-					return;
-				}
-			}
-			Map<String, FileOption> fileOptions = project.getFileOptions();
-			Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
-			boolean insert = false;
-			for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
-				String fileName = fileOptionEntry.getKey();
-				FileOption fileOption = fileOptionEntry.getValue();
-				insert |= fileOption.isInsert() || fileOption.isInsertRedirect();
-				if (fileName.equals(project.getIndexFile()) && !fileOption.isInsert() && !fileOption.isInsertRedirect()) {
-					JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.index-not-inserted"), null, JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if (!fileOption.isInsert() && fileOption.isInsertRedirect() && ((fileOption.getCustomKey().length() == 0) || "CHK@".equals(fileOption.getCustomKey()))) {
-					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.project-files.no-custom-key"), fileOptionEntry.getKey()), null, JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-			if (!insert) {
-				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-files-to-insert"), null, JOptionPane.ERROR_MESSAGE);
-				return;
 			}
 			boolean nodeRunning = false;
 			try {
@@ -564,7 +527,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				/* ignore. */
 			}
 			if (!nodeRunning) {
-				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.no-node-running"), null, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.error.no-node-running"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			configuration.save();
