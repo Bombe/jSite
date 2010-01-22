@@ -112,6 +112,12 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/** The “custom key” textfield. */
 	private JTextField fileOptionsCustomKeyTextField;
 
+	/** The “rename” check box. */
+	private JCheckBox fileOptionsRenameCheckBox;
+
+	/** The “new name” text field. */
+	private JTextField fileOptionsRenameTextField;
+
 	/** The “mime type” combo box. */
 	private JComboBox fileOptionsMIMETypeComboBox;
 
@@ -283,6 +289,46 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(2, 5, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
+		fileOptionsRenameCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.rename"), false);
+		fileOptionsRenameCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.rename.tooltip"));
+		fileOptionsRenameCheckBox.setName("rename");
+		fileOptionsRenameCheckBox.setMnemonic(KeyEvent.VK_N);
+		fileOptionsRenameCheckBox.addActionListener(this);
+		fileOptionsRenameCheckBox.setEnabled(false);
+
+		fileOptionsRenameTextField = new JTextField();
+		fileOptionsRenameTextField.setEnabled(false);
+		fileOptionsRenameTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@SuppressWarnings("synthetic-access")
+			private void storeText(DocumentEvent documentEvent) {
+				FileOption fileOption = getSelectedFile();
+				Document document = documentEvent.getDocument();
+				int documentLength = document.getLength();
+				try {
+					fileOption.setChangedName(document.getText(0, documentLength).trim());
+				} catch (BadLocationException ble1) {
+					/* ignore, it should never happen. */
+				}
+			}
+
+			public void changedUpdate(DocumentEvent documentEvent) {
+				storeText(documentEvent);
+			}
+
+			public void insertUpdate(DocumentEvent documentEvent) {
+				storeText(documentEvent);
+			}
+
+			public void removeUpdate(DocumentEvent documentEvent) {
+				storeText(documentEvent);
+			}
+
+		});
+
+		fileOptionsPanel.add(fileOptionsRenameCheckBox, new GridBagConstraints(0, 6, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsRenameTextField, new GridBagConstraints(2, 6, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+
 		fileOptionsMIMETypeComboBox = new JComboBox(DefaultMIMETypes.getAllMIMETypes());
 		fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 		fileOptionsMIMETypeComboBox.setName("project-files.mime-type");
@@ -291,8 +337,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsMIMETypeComboBox.setEnabled(false);
 
 		final TLabel mimeTypeLabel = new TLabel(I18n.getMessage("jsite.project-files.mime-type") + ":", KeyEvent.VK_M, fileOptionsMIMETypeComboBox);
-		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 6, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 7, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		containerComboBoxModel = new DefaultComboBoxModel();
 		fileOptionsContainerComboBox = new JComboBox(containerComboBoxModel);
@@ -310,11 +356,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		editContainerButton.setVisible(false);
 		JButton deleteContainerButton = new JButton(deleteContainerAction);
 		deleteContainerButton.setVisible(false);
-		fileOptionsPanel.add(containerLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsContainerComboBox, new GridBagConstraints(1, 7, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(addContainerButton, new GridBagConstraints(2, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(editContainerButton, new GridBagConstraints(3, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(deleteContainerButton, new GridBagConstraints(4, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(containerLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsContainerComboBox, new GridBagConstraints(1, 8, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(addContainerButton, new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(editContainerButton, new GridBagConstraints(3, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(deleteContainerButton, new GridBagConstraints(4, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		JPanel fileOptionsReplacementPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 6, 6));
 		fileOptionsReplacementPanel.setBorder(new EmptyBorder(-6, -6, -6, -6));
@@ -338,7 +384,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsReplacementPanel.add(editionRangeLabel);
 		fileOptionsReplacementPanel.add(replaceEditionRangeSpinner);
 
-		fileOptionsPanel.add(fileOptionsReplacementPanel, new GridBagConstraints(0, 8, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsReplacementPanel, new GridBagConstraints(0, 9, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -355,6 +401,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				fileOptionsInsertRedirectCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert-redirect.tooltip"));
 				fileOptionsCustomKeyTextField.setToolTipText(I18n.getMessage("jsite.project-files.custom-key.tooltip"));
 				customKeyLabel.setText(I18n.getMessage("jsite.project-files.custom-key") + ":");
+				fileOptionsRenameCheckBox.setText("jsite.project-files.rename");
+				fileOptionsRenameCheckBox.setToolTipText("jsite.project-files.rename.tooltip");
 				fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 				mimeTypeLabel.setText(I18n.getMessage("jsite.project-files.mime-type") + ":");
 				fileOptionsContainerComboBox.setToolTipText(I18n.getMessage("jsite.project-files.container.tooltip"));
@@ -548,6 +596,21 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		});
 	}
 
+	/**
+	 * Returns the {@link FileOption file options} for the currently selected
+	 * file.
+	 *
+	 * @return The {@link FileOption}s for the selected file, or {@code null} if
+	 *         no file is selected
+	 */
+	private FileOption getSelectedFile() {
+		String filename = (String) projectFileList.getSelectedValue();
+		if (filename == null) {
+			return null;
+		}
+		return project.getFileOption(filename);
+	}
+
 	//
 	// INTERFACE ActionListener
 	//
@@ -586,6 +649,10 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				boolean isInsertRedirect = checkBox.isSelected();
 				fileOption.setInsertRedirect(isInsertRedirect);
 				fileOptionsCustomKeyTextField.setEnabled(isInsertRedirect);
+			} else if ("rename".equals(checkBox.getName())) {
+				boolean isRenamed = checkBox.isSelected();
+				fileOptionsRenameTextField.setEnabled(isRenamed);
+				fileOption.setChangedName(isRenamed ? fileOptionsRenameTextField.getText() : "");
 			} else if ("project-files.replace-edition".equals(checkBox.getName())) {
 				boolean replaceEdition = checkBox.isSelected();
 				fileOption.setReplaceEdition(replaceEdition);
@@ -621,6 +688,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		boolean insert = fileOptionsInsertCheckBox.isSelected();
 		defaultFileCheckBox.setEnabled(enabled);
 		fileOptionsInsertCheckBox.setEnabled(enabled);
+		fileOptionsRenameCheckBox.setEnabled(enabled);
 		fileOptionsMIMETypeComboBox.setEnabled(enabled);
 		fileOptionsContainerComboBox.setEnabled(enabled);
 		addContainerAction.setEnabled(enabled);
@@ -635,6 +703,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsInsertRedirectCheckBox.setSelected(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setEnabled(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setText(fileOption.getCustomKey());
+			fileOptionsRenameCheckBox.setSelected(fileOption.hasChangedName());
+			fileOptionsRenameTextField.setEnabled(fileOption.hasChangedName());
+			fileOptionsRenameTextField.setText(fileOption.getChangedName());
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
 			fileOptionsContainerComboBox.setSelectedItem(fileOption.getContainer());
 			replacementCheckBox.setSelected(fileOption.getReplaceEdition());
@@ -647,6 +718,10 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsInsertRedirectCheckBox.setSelected(false);
 			fileOptionsCustomKeyTextField.setEnabled(false);
 			fileOptionsCustomKeyTextField.setText("CHK@");
+			fileOptionsRenameCheckBox.setEnabled(false);
+			fileOptionsRenameCheckBox.setSelected(false);
+			fileOptionsRenameTextField.setEnabled(false);
+			fileOptionsRenameTextField.setText("");
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(DefaultMIMETypes.DEFAULT_MIME_TYPE);
 			fileOptionsContainerComboBox.setSelectedItem("");
 			replacementCheckBox.setSelected(false);
