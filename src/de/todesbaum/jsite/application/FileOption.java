@@ -50,6 +50,9 @@ public class FileOption {
 	/** The custom key. */
 	private String customKey;
 
+	/** The changed name. */
+	private String changedName;
+
 	/** The default MIME type. */
 	private final String defaultMimeType;
 
@@ -159,6 +162,39 @@ public class FileOption {
 	 */
 	public void setInsertRedirect(boolean insertRedirect) {
 		this.insertRedirect = insertRedirect;
+	}
+
+	/**
+	 * Returns whether this file has a changed name. Use
+	 * {@link #getChangedName()} is this method returns {@code true}.
+	 *
+	 * @return {@code true} if this file has a changed name, {@code false}
+	 *         otherwise
+	 */
+	public boolean hasChangedName() {
+		return (changedName != null) && (changedName.length() > 0);
+	}
+
+	/**
+	 * Returns the changed name for this file. This method will return {@code
+	 * null} or an empty {@link String} if this file should not be renamed.
+	 *
+	 * @return The changed name, or {@code null} if this file should not be
+	 *         renamed
+	 */
+	public String getChangedName() {
+		return changedName;
+	}
+
+	/**
+	 * Sets the changed name for this file. Setting the changed file to {@code
+	 * null} or an empty {@link String} will disable renaming.
+	 *
+	 * @param changedName
+	 *            The new changed name for this file
+	 */
+	public void setChangedName(String changedName) {
+		this.changedName = changedName;
 	}
 
 	/**

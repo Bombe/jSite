@@ -360,6 +360,9 @@ public class Configuration {
 								fileOption.setInsertRedirect(Boolean.parseBoolean(fileOptionNode.getNode("insert-redirect").getValue()));
 							}
 							fileOption.setCustomKey(fileOptionNode.getNode("custom-key").getValue(""));
+							if (fileOptionNode.getNode("changed-name") != null) {
+								fileOption.setChangedName(fileOptionNode.getNode("changed-name").getValue());
+							}
 							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
 							fileOption.setContainer(fileOptionNode.getNode("container").getValue());
 							if (fileOptionNode.getNode("replace-edition") != null) {
@@ -409,6 +412,7 @@ public class Configuration {
 					fileOptionNode.append("insert", String.valueOf(fileOption.isInsert()));
 					fileOptionNode.append("insert-redirect", String.valueOf(fileOption.isInsertRedirect()));
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
+					fileOptionNode.append("changed-name", fileOption.getChangedName());
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
 					fileOptionNode.append("container", fileOption.getContainer());
 					fileOptionNode.append("replace-edition", String.valueOf(fileOption.getReplaceEdition()));
