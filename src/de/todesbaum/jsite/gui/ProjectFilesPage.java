@@ -276,6 +276,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsInsertRedirectCheckBox.setName("insert-redirect");
 		fileOptionsInsertRedirectCheckBox.setMnemonic(KeyEvent.VK_R);
 		fileOptionsInsertRedirectCheckBox.addActionListener(this);
+		fileOptionsInsertRedirectCheckBox.setEnabled(false);
 
 		final TLabel customKeyLabel = new TLabel(I18n.getMessage("jsite.project-files.custom-key") + ":", KeyEvent.VK_K, fileOptionsCustomKeyTextField);
 		fileOptionsPanel.add(fileOptionsInsertRedirectCheckBox, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
