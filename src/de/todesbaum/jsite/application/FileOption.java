@@ -35,6 +35,9 @@ public class FileOption {
 	/** The default for the custom key. */
 	private static final String DEFAULT_CUSTOM_KEY = "CHK@";
 
+	/** The default changed name. */
+	private static final String DEFAULT_CHANGED_NAME = null;
+
 	/** The default container. */
 	private static final String DEFAULT_CONTAINER = "";
 
@@ -81,6 +84,7 @@ public class FileOption {
 		insert = DEFAULT_INSERT;
 		insertRedirect = DEFAULT_INSERT_REDIRECT;
 		customKey = DEFAULT_CUSTOM_KEY;
+		changedName = DEFAULT_CHANGED_NAME;
 		this.defaultMimeType = defaultMimeType;
 		mimeType = defaultMimeType;
 		container = DEFAULT_CONTAINER;
@@ -301,6 +305,9 @@ public class FileOption {
 			return true;
 		}
 		if (!customKey.equals(DEFAULT_CUSTOM_KEY)) {
+			return true;
+		}
+		if (((changedName != null) && !changedName.equals(DEFAULT_CHANGED_NAME)) || ((DEFAULT_CHANGED_NAME != null) && !DEFAULT_CHANGED_NAME.equals(changedName))) {
 			return true;
 		}
 		if (!defaultMimeType.equals(mimeType)) {
