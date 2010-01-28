@@ -52,7 +52,7 @@ import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
-import de.todesbaum.jsite.application.ProjectInserter.CheckReport.Issue;
+import de.todesbaum.jsite.application.ProjectInserter.Issue;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;

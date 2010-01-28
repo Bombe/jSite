@@ -40,7 +40,6 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import de.todesbaum.jsite.application.ProjectInserter.CheckReport.Issue;
 import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
@@ -639,72 +638,72 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			return issues.size();
 		}
 
+	}
+
+	/**
+	 * Container class for a single issue. An issue contains an error key
+	 * that describes the error, and a fatality flag that determines whether
+	 * the insert has to be aborted (if the flag is {@code true}) or if it
+	 * can still be performed and only a warning should be generated (if the
+	 * flag is {@code false}).
+	 *
+	 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’
+	 *         Roden</a>
+	 */
+	public static class Issue {
+
+		/** The error key. */
+		private final String errorKey;
+
+		/** The fatality flag. */
+		private final boolean fatal;
+
+		/** Additional parameters. */
+		private String[] parameters;
+
 		/**
-		 * Container class for a single issue. An issue contains an error key
-		 * that describes the error, and a fatality flag that determines whether
-		 * the insert has to be aborted (if the flag is {@code true}) or if it
-		 * can still be performed and only a warning should be generated (if the
-		 * flag is {@code false}).
+		 * Creates a new issue.
 		 *
-		 * @author <a href="mailto:bombe@pterodactylus.net">David ‘Bombe’
-		 *         Roden</a>
+		 * @param errorKey
+		 *            The error key
+		 * @param fatal
+		 *            The fatality flag
+		 * @param parameters
+		 *            Any additional parameters
 		 */
-		public static class Issue {
+		protected Issue(String errorKey, boolean fatal, String... parameters) {
+			this.errorKey = errorKey;
+			this.fatal = fatal;
+			this.parameters = parameters;
+		}
 
-			/** The error key. */
-			private final String errorKey;
+		/**
+		 * Returns the key of the encountered error.
+		 *
+		 * @return The error key
+		 */
+		public String getErrorKey() {
+			return errorKey;
+		}
 
-			/** The fatality flag. */
-			private final boolean fatal;
+		/**
+		 * Returns whether the issue is fatal and the insert has to be
+		 * aborted. Otherwise only a warning should be shown.
+		 *
+		 * @return {@code true} if the insert needs to be aborted, {@code
+		 *         false} otherwise
+		 */
+		public boolean isFatal() {
+			return fatal;
+		}
 
-			/** Additional parameters. */
-			private String[] parameters;
-
-			/**
-			 * Creates a new issue.
-			 *
-			 * @param errorKey
-			 *            The error key
-			 * @param fatal
-			 *            The fatality flag
-			 * @param parameters
-			 *            Any additional parameters
-			 */
-			protected Issue(String errorKey, boolean fatal, String... parameters) {
-				this.errorKey = errorKey;
-				this.fatal = fatal;
-				this.parameters = parameters;
-			}
-
-			/**
-			 * Returns the key of the encountered error.
-			 *
-			 * @return The error key
-			 */
-			public String getErrorKey() {
-				return errorKey;
-			}
-
-			/**
-			 * Returns whether the issue is fatal and the insert has to be
-			 * aborted. Otherwise only a warning should be shown.
-			 *
-			 * @return {@code true} if the insert needs to be aborted, {@code
-			 *         false} otherwise
-			 */
-			public boolean isFatal() {
-				return fatal;
-			}
-
-			/**
-			 * Returns any additional parameters.
-			 *
-			 * @return The additional parameters
-			 */
-			public String[] getParameters() {
-				return parameters;
-			}
-
+		/**
+		 * Returns any additional parameters.
+		 *
+		 * @return The additional parameters
+		 */
+		public String[] getParameters() {
+			return parameters;
 		}
 
 	}
