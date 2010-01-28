@@ -549,7 +549,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 
 		/* post-insert work */
-		fireProjectInsertFinished(success, disconnected ? new IOException("Connection terminated") : null);
 		if (success) {
 			@SuppressWarnings("null")
 			String editionPart = finalURI.substring(finalURI.lastIndexOf('/') + 1);
@@ -557,6 +556,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			project.setEdition(newEdition);
 			project.setLastInsertionTime(System.currentTimeMillis());
 		}
+		fireProjectInsertFinished(success, disconnected ? new IOException("Connection terminated") : null);
 	}
 
 	//
