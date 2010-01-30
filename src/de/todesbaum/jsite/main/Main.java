@@ -209,6 +209,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				showPage(PageType.PAGE_NODE_MANAGER);
+				optionsPreferencesAction.setEnabled(true);
 				wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 				wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 			}
@@ -555,6 +556,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		String pageName = wizard.getPage().getName();
 		if ("page.project".equals(pageName) || "page.preferences".equals(pageName)) {
 			showPage(PageType.PAGE_NODE_MANAGER);
+			optionsPreferencesAction.setEnabled(true);
 		} else if ("page.project.files".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
 		} else if ("page.project.insert".equals(pageName)) {
