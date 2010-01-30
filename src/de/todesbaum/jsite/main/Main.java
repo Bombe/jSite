@@ -553,7 +553,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	public void wizardPreviousPressed(TWizard wizard) {
 		String pageName = wizard.getPage().getName();
-		if ("page.project".equals(pageName)) {
+		if ("page.project".equals(pageName) || "page.preferences".equals(pageName)) {
 			showPage(PageType.PAGE_NODE_MANAGER);
 		} else if ("page.project.files".equals(pageName)) {
 			showPage(PageType.PAGE_PROJECTS);
