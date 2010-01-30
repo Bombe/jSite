@@ -123,6 +123,18 @@ public class PreferencesPage extends TWizardPage {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void pageAdded(TWizard wizard) {
+		super.pageAdded(wizard);
+		this.wizard.setPreviousName(I18n.getMessage("jsite.menu.nodes.manage-nodes"));
+		this.wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
+		this.wizard.setNextEnabled(false);
+	}
+
 	//
 	// PRIVATE METHODS
 	//
