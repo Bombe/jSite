@@ -162,9 +162,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 		projectList = new JList(projectListModel);
 		projectList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		projectList.addListSelectionListener(this);
-		projectList.setPreferredSize(new Dimension(150, projectList.getPreferredSize().height));
 
 		add(projectScrollPane = new JScrollPane(projectList), BorderLayout.LINE_START);
+		projectScrollPane.setPreferredSize(new Dimension(150, projectList.getPreferredSize().height));
 		add(createInformationPanel(), BorderLayout.CENTER);
 	}
 
