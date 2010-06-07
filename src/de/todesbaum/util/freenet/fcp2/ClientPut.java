@@ -49,6 +49,9 @@ public abstract class ClientPut extends Command {
 	/** The maximum number of retries of this command. */
 	protected int maxRetries = 0;
 
+	/** Whether to generate the keys early. */
+	protected boolean earlyEncode = false;
+
 	/** The persistence of this request. */
 	protected Persistence persistence = Persistence.CONNECTION;
 
@@ -151,6 +154,29 @@ public abstract class ClientPut extends Command {
 	}
 
 	/**
+	 * Returns whether the data should be encoded early to generate the final
+	 * key as fast as possible.
+	 *
+	 * @return {@code true} if the key should be generated early, {@code false}
+	 *         otherwise
+	 */
+	public boolean isEarlyEncode() {
+		return earlyEncode;
+	}
+
+	/**
+	 * Sets whether the data should be encoded early to generate the final key
+	 * as fast as possible.
+	 *
+	 * @param earlyEncode
+	 *            {@code true} if the key should be generated early, {@code
+	 *            false} otherwise
+	 */
+	public void setEarlyEncode(boolean earlyEncode) {
+		this.earlyEncode = earlyEncode;
+	}
+
+	/**
 	 * Returns the priority class of this request.
 	 * @return The priority class of this request
 	 */
@@ -203,6 +229,7 @@ public abstract class ClientPut extends Command {
 			writer.write("Verbosity=" + verbosity.getValue() + LINEFEED);
 		if (maxRetries != 0)
 			writer.write("MaxRetries=" + maxRetries + LINEFEED);
+		writer.write("EarlyEncode=" + earlyEncode);
 		if (priorityClass != null)
 			writer.write("PriorityClass=" + priorityClass.getValue() + LINEFEED);
 		writer.write("GetCHKOnly=" + getCHKOnly + LINEFEED);
