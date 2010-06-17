@@ -48,6 +48,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import de.todesbaum.jsite.application.AbortedException;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Project;
@@ -388,9 +389,13 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			}
 		} else {
 			if (cause == null) {
-				JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.insert-failed"), null, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.insert-failed"), I18n.getMessage("jsite.insert.insert-failed.title"), JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(this, MessageFormat.format(I18n.getMessage("jsite.insert.insert-failed-with-cause"), cause.getMessage()), null, JOptionPane.ERROR_MESSAGE);
+				if (cause instanceof AbortedException) {
+					JOptionPane.showMessageDialog(this, I18n.getMessage("jsite.insert.insert-aborted"), I18n.getMessage("jsite.insert.insert-aborted.title"), JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(this, MessageFormat.format(I18n.getMessage("jsite.insert.insert-failed-with-cause"), cause.getMessage()), I18n.getMessage("jsite.insert.insert-failed.title"), JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 		SwingUtilities.invokeLater(new Runnable() {
