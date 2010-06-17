@@ -206,7 +206,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	public void pageAdded(TWizard wizard) {
 		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		this.wizard.setPreviousEnabled(false);
-		this.wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
+		this.wizard.setNextName(I18n.getMessage("jsite.general.cancel"));
 		this.wizard.setQuitName(I18n.getMessage("jsite.wizard.quit"));
 	}
 
@@ -215,7 +215,6 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void startInsert() {
 		running = true;
-		wizard.setNextEnabled(false);
 		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
 		progressBar.setString(I18n.getMessage("jsite.insert.starting"));
@@ -400,6 +399,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
 				progressBar.setString(I18n.getMessage("jsite.insert.done") + " (" + getTransferRate() + " " + I18n.getMessage("jsite.insert.k-per-s") + ")");
+				wizard.setNextName(I18n.getMessage("jsite.wizard.next"));
 				wizard.setNextEnabled(true);
 				wizard.setQuitEnabled(true);
 			}
