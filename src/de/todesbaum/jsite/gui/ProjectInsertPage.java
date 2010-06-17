@@ -91,6 +91,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/** Whether the “copy URI to clipboard” button was used. */
 	private boolean uriCopied;
 
+	/** Whether the insert is currently running. */
+	private volatile boolean running = false;
+
 	/**
 	 * Creates a new progress insert wizard page.
 	 *
@@ -211,12 +214,33 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * Starts the insert.
 	 */
 	public void startInsert() {
+		running = true;
 		wizard.setNextEnabled(false);
 		copyURIAction.setEnabled(false);
 		progressBar.setValue(0);
 		progressBar.setString(I18n.getMessage("jsite.insert.starting"));
 		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
 		projectInserter.start();
+	}
+
+	/**
+	 * Stops the currently running insert.
+	 */
+	public void stopInsert() {
+		if (running) {
+			wizard.setNextEnabled(false);
+			projectInserter.stop();
+		}
+	}
+
+	/**
+	 * Returns whether the insert is currently running.
+	 *
+	 * @return {@code true} if the insert is currently running, {@code false}
+	 *         otherwise
+	 */
+	public boolean isRunning() {
+		return running;
 	}
 
 	/**
@@ -356,6 +380,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 * {@inheritDoc}
 	 */
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
+		running = false;
 		if (success) {
 			String copyURILabel = I18n.getMessage("jsite.insert.okay-copy-uri");
 			int selectedValue = JOptionPane.showOptionDialog(this, I18n.getMessage("jsite.insert.inserted"), I18n.getMessage("jsite.insert.done.title"), 0, JOptionPane.INFORMATION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.general.ok"), copyURILabel }, copyURILabel);
