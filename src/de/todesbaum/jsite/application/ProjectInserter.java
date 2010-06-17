@@ -88,6 +88,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/** The temp directory. */
 	private String tempDirectory;
 
+	/** The current connection. */
+	private Connection connection;
+
+	/** Whether the insert is cancelled. */
+	private volatile boolean cancelled = false;
+
 	/**
 	 * Adds a listener to the list of registered listeners.
 	 *
@@ -217,9 +223,22 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * Starts the insert.
 	 */
 	public void start() {
+		cancelled = false;
 		fileScanner = new FileScanner(project);
 		fileScanner.addFileScannerListener(this);
 		new Thread(fileScanner).start();
+	}
+
+	/**
+	 * Stops the current insert.
+	 */
+	public void stop() {
+		cancelled = true;
+		synchronized (lockObject) {
+			if (connection != null) {
+				connection.disconnect();
+			}
+		}
 	}
 
 	/**
@@ -462,7 +481,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		List<String> files = fileScanner.getFiles();
 
 		/* create connection to node */
-		Connection connection = freenetInterface.getConnection("project-insert-" + random + counter++);
+		synchronized (lockObject) {
+			connection = freenetInterface.getConnection("project-insert-" + random + counter++);
+		}
 		connection.setTempDirectory(tempDirectory);
 		boolean connected = false;
 		Throwable cause = null;
@@ -472,8 +493,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			cause = e1;
 		}
 
-		if (!connected) {
-			fireProjectInsertFinished(false, cause);
+		if (!connected || cancelled) {
+			fireProjectInsertFinished(false, cancelled ? new AbortedException() : cause);
 			return;
 		}
 
@@ -520,7 +541,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
-		while (!finished) {
+		while (!finished && !cancelled) {
 			Message message = client.readMessage();
 			finished = (message == null) || (disconnected = client.isDisconnected());
 			if (firstMessage) {
@@ -556,7 +577,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			project.setEdition(newEdition);
 			project.setLastInsertionTime(System.currentTimeMillis());
 		}
-		fireProjectInsertFinished(success, disconnected ? new IOException("Connection terminated") : null);
+		fireProjectInsertFinished(success, cancelled ? new AbortedException() : (disconnected ? new IOException("Connection terminated") : null));
 	}
 
 	//
