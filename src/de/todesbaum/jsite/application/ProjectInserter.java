@@ -439,7 +439,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		Map<String, FileOption> fileOptions = project.getFileOptions();
 		Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
-		boolean insert = false;
+		boolean insert = fileOptionEntries.isEmpty();
 		for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 			String fileName = fileOptionEntry.getKey();
 			FileOption fileOption = fileOptionEntry.getValue();
