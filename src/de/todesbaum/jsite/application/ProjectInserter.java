@@ -429,7 +429,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			}
 		}
 		String indexFile = project.getIndexFile();
-		boolean hasIndexFile = (indexFile != null);
+		boolean hasIndexFile = (indexFile != null) && (indexFile.length() > 0);
 		if (hasIndexFile && !project.getFileOption(indexFile).getContainer().equals("")) {
 			checkReport.addIssue("warning.container-index", false);
 		}
