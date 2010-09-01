@@ -324,6 +324,7 @@ public class Connection {
 		 * Main loop of the reader. Lines are read and converted into
 		 * {@link Message} objects.
 		 */
+		@SuppressWarnings("synthetic-access")
 		public void run() {
 			LineInputStream nodeReader = null;
 			try {
