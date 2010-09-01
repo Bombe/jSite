@@ -216,34 +216,15 @@ public class Connection {
 	 * Disconnects from the node.
 	 */
 	public void disconnect() {
-		if (nodeWriter != null) {
-			try {
-				nodeWriter.close();
-			} catch (IOException ioe1) {
-			}
-			nodeWriter = null;
-		}
-		if (nodeOutputStream != null) {
-			try {
-				nodeOutputStream.close();
-			} catch (IOException ioe1) {
-			}
-			nodeOutputStream = null;
-		}
-		if (nodeInputStream != null) {
-			try {
-				nodeInputStream.close();
-			} catch (IOException ioe1) {
-			}
-			nodeInputStream = null;
-		}
-		if (nodeSocket != null) {
-			try {
-				nodeSocket.close();
-			} catch (IOException ioe1) {
-			}
-			nodeSocket = null;
-		}
+		Closer.close(nodeWriter);
+		nodeWriter = null;
+		Closer.close(nodeOutputStream);
+		nodeOutputStream = null;
+		Closer.close(nodeInputStream);
+		nodeInputStream = null;
+		nodeInputStream = null;
+		Closer.close(nodeSocket);
+		nodeSocket = null;
 		synchronized (this) {
 			notify();
 		}
