@@ -34,6 +34,7 @@ import java.util.List;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.LineInputStream;
 import de.todesbaum.util.io.StreamCopier;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.io.TempFileInputStream;
 
 /**
@@ -260,6 +261,22 @@ public class Connection {
 	 *             if an I/O error occurs
 	 */
 	public synchronized void execute(Command command) throws IllegalStateException, IOException {
+		execute(command, null);
+	}
+
+	/**
+	 * Executes the specified command.
+	 *
+	 * @param command
+	 *            The command to execute
+	 * @param progressListener
+	 *            A progress listener for a payload transfer
+	 * @throws IllegalStateException
+	 *             if the connection is not connected
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public synchronized void execute(Command command, ProgressListener progressListener) throws IllegalStateException, IOException {
 		if (nodeSocket == null) {
 			throw new IllegalStateException("connection is not connected");
 		}
@@ -271,7 +288,7 @@ public class Connection {
 			InputStream payloadInputStream = null;
 			try {
 				payloadInputStream = command.getPayload();
-				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength());
+				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength(), progressListener);
 			} finally {
 				Closer.close(payloadInputStream);
 			}
