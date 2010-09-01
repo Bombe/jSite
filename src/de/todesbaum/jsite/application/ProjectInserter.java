@@ -53,6 +53,7 @@ import de.todesbaum.util.freenet.fcp2.Verbosity;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.ReplacingOutputStream;
 import de.todesbaum.util.io.StreamCopier;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * Manages project inserts.
@@ -93,6 +94,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/** Whether the insert is cancelled. */
 	private volatile boolean cancelled = false;
+
+	/** Progress listener for payload transfers. */
+	private ProgressListener progressListener;
 
 	/**
 	 * Adds a listener to the list of registered listeners.
@@ -222,8 +226,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * Starts the insert.
 	 */
-	public void start() {
+	public void start(ProgressListener progressListener) {
 		cancelled = false;
+		this.progressListener = progressListener;
 		fileScanner = new FileScanner(project);
 		fileScanner.addFileScannerListener(this);
 		new Thread(fileScanner).start();
@@ -529,7 +534,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* start request */
 		try {
-			client.execute(putDir);
+			client.execute(putDir, progressListener);
+			fireProjectUploadFinished();
 		} catch (IOException ioe1) {
 			fireProjectInsertFinished(false, ioe1);
 			return;
@@ -537,17 +543,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* parse progress and success messages */
 		String finalURI = null;
-		boolean firstMessage = true;
 		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
 		while (!finished && !cancelled) {
 			Message message = client.readMessage();
 			finished = (message == null) || (disconnected = client.isDisconnected());
-			if (firstMessage) {
-				fireProjectUploadFinished();
-				firstMessage = false;
-			}
 			logger.log(Level.FINE, "Received message: " + message);
 			if (!finished) {
 				@SuppressWarnings("null")
