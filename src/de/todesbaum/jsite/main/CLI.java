@@ -107,6 +107,10 @@ public class CLI implements InsertListener {
 
 		Project currentProject = null;
 		for (String argument : args) {
+			if (argument.startsWith("--config-file=")) {
+				/* we already parsed this one. */
+				continue;
+			}
 			String value = argument.substring(argument.indexOf('=') + 1).trim();
 			if (argument.startsWith("--node=")) {
 				Node newNode = getNode(value);
