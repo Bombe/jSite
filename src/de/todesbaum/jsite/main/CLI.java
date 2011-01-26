@@ -69,6 +69,7 @@ public class CLI implements InsertListener {
 
 		if ((args.length == 0) || args[0].equals("-h") || args[0].equals("--help")) {
 			outputWriter.println("\nParameters:\n");
+			outputWriter.println("  --config-file=<configuration file>");
 			outputWriter.println("  --node=<node name>");
 			outputWriter.println("  --project=<project name>");
 			outputWriter.println("  --local-directory=<local directory>");
@@ -80,7 +81,15 @@ public class CLI implements InsertListener {
 			return;
 		}
 
-		Configuration configuration = new Configuration();
+		String configFile = System.getProperty("user.home") + "/.jSite/config7";
+		for (String argument : args) {
+			String value = argument.substring(argument.indexOf('=') + 1).trim();
+			if (argument.startsWith("--config-file=")) {
+				configFile = value;
+			}
+		}
+
+		Configuration configuration = new Configuration(configFile);
 		if (!configuration.createLockFile()) {
 			outputWriter.println("Lock file found!");
 			return;
