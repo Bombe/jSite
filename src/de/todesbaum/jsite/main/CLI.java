@@ -248,7 +248,7 @@ public class CLI implements InsertListener {
 	 * {@inheritDoc}
 	 */
 	public void projectUploadFinished(Project project) {
-		outputWriter.println("Project \"" + project.getName() + "\" has ben uploaded, starting insert...");
+		outputWriter.println("Project \"" + project.getName() + "\" has been uploaded, starting insert...");
 	}
 
 	/**
