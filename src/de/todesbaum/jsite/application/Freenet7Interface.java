@@ -142,7 +142,7 @@ public class Freenet7Interface {
 	 */
 	public String[] generateKeyPair() throws IOException {
 		if (!isNodePresent()) {
-			return null;
+			throw new IOException("Node is offline.");
 		}
 		GenerateSSK generateSSK = new GenerateSSK();
 		Client client = new Client(connection, generateSSK);
