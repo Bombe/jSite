@@ -157,9 +157,11 @@ public class CLI implements InsertListener {
 			}
 		}
 
+		int errorCode = 1;
 		if (currentProject != null) {
 			if (insertProject(currentProject)) {
 				outputWriter.println("Project \"" + currentProject.getName() + "\" successfully inserted.");
+				errorCode = 0;
 			} else {
 				outputWriter.println("Project \"" + currentProject.getName() + "\" was not successfully inserted.");
 			}
@@ -167,6 +169,8 @@ public class CLI implements InsertListener {
 
 		configuration.setProjects(projects);
 		configuration.save();
+
+		System.exit(errorCode);
 	}
 
 	/**
