@@ -331,6 +331,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
+		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(true);
 		fireNodesUpdated(getNodes());
 	}
@@ -349,6 +350,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeListModel.removeElement(node);
 		nodeList.repaint();
 		fireNodesUpdated(getNodes());
+		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(nodeListModel.size() > 0);
 	}
 
@@ -370,7 +372,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 				nodeNameTextField.setEnabled(enabled);
 				nodeHostnameTextField.setEnabled(enabled);
 				nodePortSpinner.setEnabled(enabled);
-				deleteNodeAction.setEnabled(enabled);
+				deleteNodeAction.setEnabled(enabled && (nodeListModel.size() > 1));
 				if (enabled) {
 					nodeNameTextField.setText(node.getName());
 					nodeHostnameTextField.setText(node.getHostname());
