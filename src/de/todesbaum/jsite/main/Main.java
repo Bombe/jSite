@@ -19,6 +19,7 @@
 
 package de.todesbaum.jsite.main;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -39,6 +40,7 @@ import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
@@ -612,6 +614,21 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		nodeMenu.add(manageNodeAction);
 		selectedNode = newSelectedNode;
 		freenetInterface.setNode(selectedNode);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void nodeSelected(Node node) {
+		for (Component menuItem : nodeMenu.getMenuComponents()) {
+			if (menuItem instanceof JMenuItem) {
+				if (node.equals(((JMenuItem) menuItem).getClientProperty("Node"))) {
+					((JMenuItem) menuItem).setSelected(true);
+				}
+			}
+		}
+		freenetInterface.setNode(node);
+		selectedNode = node;
 	}
 
 	/**

@@ -39,4 +39,12 @@ public interface NodeManagerListener extends EventListener {
 	 */
 	public void nodesUpdated(Node[] nodes);
 
+	/**
+	 * Notifies a listener that the selected node has changed.
+	 *
+	 * @param node
+	 *            The new selected node
+	 */
+	public void nodeSelected(Node node);
+
 }

@@ -144,6 +144,18 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	}
 
 	/**
+	 * Notifies all listeners that a new node was selected.
+	 *
+	 * @param node
+	 *            The newly selected node
+	 */
+	protected void fireNodeSelected(Node node) {
+		for (NodeManagerListener nodeManagerListener : nodeManagerListeners) {
+			nodeManagerListener.nodeSelected(node);
+		}
+	}
+
+	/**
 	 * Creates all actions.
 	 */
 	private void createActions() {
@@ -347,8 +359,10 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.node-manager.delete-node.warning"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.CANCEL_OPTION) {
 			return;
 		}
+		int nodeIndex = nodeListModel.indexOf(node);
 		nodeListModel.removeElement(node);
 		nodeList.repaint();
+		fireNodeSelected((Node) nodeListModel.get(Math.min(nodeIndex, nodeListModel.size() - 1)));
 		fireNodesUpdated(getNodes());
 		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(nodeListModel.size() > 0);
