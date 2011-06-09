@@ -442,6 +442,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 			JSpinner sourceSpinner = (JSpinner) source;
 			if ("node-port".equals(sourceSpinner.getName())) {
 				selectedNode.setPort((Integer) sourceSpinner.getValue());
+				fireNodeSelected(selectedNode);
 				nodeList.repaint();
 			}
 		}
