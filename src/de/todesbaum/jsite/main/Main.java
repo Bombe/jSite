@@ -631,6 +631,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		selectedNode = node;
 	}
 
+	//
+	// INTERFACE ActionListener
+	//
+
 	/**
 	 * {@inheritDoc}
 	 */
