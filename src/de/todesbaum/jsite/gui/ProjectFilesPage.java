@@ -634,9 +634,16 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			JCheckBox checkBox = (JCheckBox) source;
 			if ("default-file".equals(checkBox.getName())) {
 				if (checkBox.isSelected()) {
-					project.setIndexFile(filename);
+					if (filename.indexOf('/') > -1) {
+						JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project-files.invalid-default-file"), null, JOptionPane.ERROR_MESSAGE);
+						checkBox.setSelected(false);
+					} else {
+						project.setIndexFile(filename);
+					}
 				} else {
-					project.setIndexFile(null);
+					if (filename.equals(project.getIndexFile())) {
+						project.setIndexFile(null);
+					}
 				}
 			} else if ("insert".equals(checkBox.getName())) {
 				boolean isInsert = checkBox.isSelected();

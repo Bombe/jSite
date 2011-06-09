@@ -332,7 +332,11 @@ public class Configuration {
 					Project project = new Project();
 					projects.add(project);
 					project.setDescription(projectNode.getNode("description").getValue(""));
-					project.setIndexFile(projectNode.getNode("index-file").getValue(""));
+					String indexFile = projectNode.getNode("index-file").getValue("");
+					if (indexFile.indexOf('/') > -1) {
+						indexFile = "";
+					}
+					project.setIndexFile(indexFile);
 					project.setLastInsertionTime(Long.parseLong(projectNode.getNode("last-insertion-time").getValue("0")));
 					project.setLocalPath(projectNode.getNode("local-path").getValue(""));
 					project.setName(projectNode.getNode("name").getValue(""));
