@@ -49,6 +49,27 @@ import de.todesbaum.util.xml.XML;
  */
 public class Configuration {
 
+	/**
+	 * The location of the configuration directory.
+	 *
+	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+	 */
+	public enum ConfigurationDirectory {
+
+		/** The configuration is in the same directory as the JAR file. */
+		NEXT_TO_JAR_FILE,
+
+		/**
+		 * The configuration is in the user’s home directory. This is the
+		 * pre-0.9.3 default.
+		 */
+		HOME_DIRECTORY;
+
+	}
+
+	/** The configuration directory. */
+	private ConfigurationDirectory configurationDirectory = ConfigurationDirectory.HOME_DIRECTORY;
+
 	/** The name of the file the configuration is stored to. */
 	private String filename;
 
