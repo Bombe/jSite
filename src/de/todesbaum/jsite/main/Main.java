@@ -353,7 +353,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		projectInsertPage.setFreenetInterface(freenetInterface);
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
 
-		PreferencesPage preferencesPage = new PreferencesPage(wizard);
+		PreferencesPage preferencesPage = new PreferencesPage(wizard, configuration);
 		preferencesPage.setName("page.preferences");
 		preferencesPage.setTempDirectory(configuration.getTempDirectory());
 		pages.put(PageType.PAGE_PREFERENCES, preferencesPage);
@@ -461,6 +461,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * Shows a dialog with general preferences.
 	 */
 	private void optionsPreferences() {
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setConfigurationDirectory(configuration.getConfigurationDirectory());
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);

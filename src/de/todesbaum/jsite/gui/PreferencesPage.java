@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -37,6 +38,8 @@ import javax.swing.JTextField;
 
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.jsite.main.Configuration;
+import de.todesbaum.jsite.main.Configuration.ConfigurationDirectory;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
@@ -56,11 +59,23 @@ public class PreferencesPage extends TWizardPage {
 	/** Action that chooses a new temp directory. */
 	private Action chooseTempDirectoryAction;
 
+	/** Action when selecting “next to JAR file.” */
+	private Action nextToJarFileAction;
+
+	/** Action when selecting “home directory.” */
+	private Action homeDirectoryAction;
+
 	/** The text field containing the directory. */
 	private JTextField tempDirectoryTextField;
 
 	/** The temp directory. */
 	private String tempDirectory;
+
+	/** The configuration. */
+	private Configuration configuration;
+
+	/** The configuration directory. */
+	private ConfigurationDirectory configurationDirectory;
 
 	/** The “default” button. */
 	private JRadioButton defaultTempDirectory;
@@ -68,13 +83,24 @@ public class PreferencesPage extends TWizardPage {
 	/** The “custom” button. */
 	private JRadioButton customTempDirectory;
 
+	/** The “next to JAR file” checkbox. */
+	private JRadioButton nextToJarFile;
+
+	/** The “current directory” checkbox. */
+	private JRadioButton currentDirectory;
+
+	/** The “home directory” checkbox. */
+	private JRadioButton homeDirectory;
+
 	/**
 	 * Creates a new “preferences” page.
 	 *
 	 * @param wizard
 	 *            The wizard this page belongs to
+	 * @param configuration
+	 *            The configuration that is controlled
 	 */
-	public PreferencesPage(TWizard wizard) {
+	public PreferencesPage(TWizard wizard, Configuration configuration) {
 		super(wizard);
 		pageInit();
 		setHeading(I18n.getMessage("jsite.preferences.heading"));
@@ -89,6 +115,7 @@ public class PreferencesPage extends TWizardPage {
 				setDescription(I18n.getMessage("jsite.preferences.description"));
 			}
 		});
+		this.configuration = configuration;
 	}
 
 	//
@@ -120,6 +147,34 @@ public class PreferencesPage extends TWizardPage {
 			chooseTempDirectoryAction.setEnabled(true);
 		} else {
 			defaultTempDirectory.setSelected(true);
+		}
+	}
+
+	/**
+	 * Returns the configuration directory.
+	 *
+	 * @return The configuration directory
+	 */
+	public ConfigurationDirectory getConfigurationDirectory() {
+		return configurationDirectory;
+	}
+
+	/**
+	 * Sets the configuration directory.
+	 *
+	 * @param configurationDirectory
+	 *            The configuration directory
+	 */
+	public void setConfigurationDirectory(ConfigurationDirectory configurationDirectory) {
+		this.configurationDirectory = configurationDirectory;
+		configuration.setConfigurationDirectory(configurationDirectory);
+		switch (configurationDirectory) {
+		case NEXT_TO_JAR_FILE:
+			nextToJarFile.setSelected(true);
+			break;
+		case HOME_DIRECTORY:
+			homeDirectory.setSelected(true);
+			break;
 		}
 	}
 
@@ -179,6 +234,20 @@ public class PreferencesPage extends TWizardPage {
 				chooseTempDirectory();
 			}
 		};
+		nextToJarFileAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.jar")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionevent) {
+				configurationDirectory = ConfigurationDirectory.NEXT_TO_JAR_FILE;
+			}
+		};
+		homeDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.home")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionevent) {
+				configurationDirectory = ConfigurationDirectory.HOME_DIRECTORY;
+			}
+		};
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -187,6 +256,8 @@ public class PreferencesPage extends TWizardPage {
 				selectDefaultTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.default"));
 				selectCustomTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.custom"));
 				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.choose"));
+				nextToJarFileAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.jar"));
+				homeDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.home"));
 			}
 		});
 	}
@@ -197,19 +268,17 @@ public class PreferencesPage extends TWizardPage {
 	 * @return The preferences panel
 	 */
 	private JPanel createPreferencesPanel() {
-		JPanel preferencesPanel = new JPanel(new BorderLayout(12, 12));
-
-		JPanel tempDirectoryPanel = new JPanel(new GridBagLayout());
-		preferencesPanel.add(tempDirectoryPanel, BorderLayout.CENTER);
+		JPanel preferencesPanel = new JPanel(new GridBagLayout());
+		preferencesPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
 		final JLabel tempDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
-		tempDirectoryPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		preferencesPanel.add(tempDirectoryLabel, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
 		defaultTempDirectory = new JRadioButton(selectDefaultTempDirectoryAction);
-		tempDirectoryPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
+		preferencesPanel.add(defaultTempDirectory, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
 
 		customTempDirectory = new JRadioButton(selectCustomTempDirectoryAction);
-		tempDirectoryPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+		preferencesPanel.add(customTempDirectory, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
 
 		ButtonGroup tempDirectoryButtonGroup = new ButtonGroup();
 		defaultTempDirectory.getModel().setGroup(tempDirectoryButtonGroup);
@@ -224,10 +293,24 @@ public class PreferencesPage extends TWizardPage {
 			defaultTempDirectory.setSelected(true);
 		}
 		chooseTempDirectoryAction.setEnabled(tempDirectory != null);
-		tempDirectoryPanel.add(tempDirectoryTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
+		preferencesPanel.add(tempDirectoryTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
 
 		JButton chooseButton = new JButton(chooseTempDirectoryAction);
-		tempDirectoryPanel.add(chooseButton, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
+		preferencesPanel.add(chooseButton, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.BOTH, new Insets(0, 6, 0, 0), 0, 0));
+
+		final JLabel configurationDirectoryLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");
+		preferencesPanel.add(configurationDirectoryLabel, new GridBagConstraints(0, 3, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(12, 0, 0, 0), 0, 0));
+
+		nextToJarFile = new JRadioButton(nextToJarFileAction);
+		preferencesPanel.add(nextToJarFile, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(6, 18, 0, 0), 0, 0));
+
+		homeDirectory = new JRadioButton(homeDirectoryAction);
+		preferencesPanel.add(homeDirectory, new GridBagConstraints(0, 5, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+
+		ButtonGroup configurationDirectoryButtonGroup = new ButtonGroup();
+		configurationDirectoryButtonGroup.add(nextToJarFile);
+		configurationDirectoryButtonGroup.add(currentDirectory);
+		configurationDirectoryButtonGroup.add(homeDirectory);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -236,6 +319,7 @@ public class PreferencesPage extends TWizardPage {
 			 */
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
+				configurationDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");
 			}
 		});
 
