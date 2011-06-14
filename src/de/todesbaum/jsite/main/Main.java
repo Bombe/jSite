@@ -22,6 +22,7 @@ package de.todesbaum.jsite.main;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -63,6 +64,7 @@ import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.jsite.main.Configuration.ConfigurationDirectory;
 import de.todesbaum.util.image.IconLoader;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -164,7 +166,20 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		if (configFilename != null) {
 			configuration = new Configuration(configFilename);
 		} else {
-			configuration = new Configuration();
+			/* are we executed from a JAR file? */
+			String resource = getClass().getResource("/de/todesbaum/jsite/i18n/jSite.properties").toString();
+			if (resource.startsWith("jar:")) {
+				String jarFileLocation = resource.substring(9, resource.indexOf(".jar!") + 4);
+				String jarFileDirectory = new File(jarFileLocation).getParent();
+				File configurationFile = new File(jarFileDirectory, "jSite.conf");
+				if (configurationFile.exists()) {
+					configuration = new Configuration(configurationFile.getAbsolutePath());
+					configuration.setConfigurationDirectory(ConfigurationDirectory.NEXT_TO_JAR_FILE);
+				}
+			}
+			if (configuration == null) {
+				configuration = new Configuration();
+			}
 		}
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
