@@ -113,6 +113,25 @@ public class Configuration {
 	}
 
 	/**
+	 * Returns the configuration directory.
+	 *
+	 * @return The configuration directory
+	 */
+	public ConfigurationDirectory getConfigurationDirectory() {
+		return configurationDirectory;
+	}
+
+	/**
+	 * Sets the configuration directory.
+	 *
+	 * @param configurationDirectory
+	 *            The configuration directory
+	 */
+	public void setConfigurationDirectory(ConfigurationDirectory configurationDirectory) {
+		this.configurationDirectory = configurationDirectory;
+	}
+
+	/**
 	 * Creates the directory of the configuration file.
 	 *
 	 * @return <code>true</code> if the directory exists, or if it could be
