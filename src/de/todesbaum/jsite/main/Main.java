@@ -595,10 +595,16 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
 			if (isOverwritingConfiguration()) {
-				if (JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quite.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
+				int overwriteConfigurationAnswer = JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quite.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (overwriteConfigurationAnswer == JOptionPane.YES_OPTION) {
 					if (saveConfiguration()) {
 						System.exit(0);
 					}
+				} else if (overwriteConfigurationAnswer == JOptionPane.CANCEL_OPTION) {
+					return;
+				}
+				if (overwriteConfigurationAnswer == JOptionPane.NO_OPTION) {
+					System.exit(0);
 				}
 			} else {
 				if (saveConfiguration()) {
