@@ -173,7 +173,10 @@ public class ConfigurationLocator {
 		if (hasFile(ConfigurationLocation.HOME_DIRECTORY)) {
 			return ConfigurationLocation.HOME_DIRECTORY;
 		}
-		return defaultLocation;
+		if (isValidLocation(defaultLocation)) {
+			return defaultLocation;
+		}
+		return ConfigurationLocation.HOME_DIRECTORY;
 	}
 
 }
