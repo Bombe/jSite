@@ -55,8 +55,8 @@ public class ConfigurationLocator {
 
 	/**
 	 * Creates a new configuration locator. If this class is loaded from a JAR
-	 * file, {@link ConfigurationLocation#NEXT_TO_JAR_FILE} is added to the
-	 * list of possible configuration file locations.
+	 * file, {@link ConfigurationLocation#NEXT_TO_JAR_FILE} is added to the list
+	 * of possible configuration file locations.
 	 * {@link ConfigurationLocation#HOME_DIRECTORY} is always added to this
 	 * list, {@link ConfigurationLocation#CUSTOM} has to be enabled by calling
 	 * {@link #setCustomLocation(String)}.
@@ -90,12 +90,11 @@ public class ConfigurationLocator {
 
 	/**
 	 * Returns whether the given location is valid. Certain locations (such as
-	 * {@link ConfigurationLocation#NEXT_TO_JAR_FILE}) may be invalid in
-	 * certain circumstances (such as the application not being run from a JAR
-	 * file). A location being valid does not imply that a configuration file
-	 * does exist at the given location, use
-	 * {@link #hasFile(ConfigurationLocation)} to check for a configuration
-	 * file at the desired location.
+	 * {@link ConfigurationLocation#NEXT_TO_JAR_FILE}) may be invalid in certain
+	 * circumstances (such as the application not being run from a JAR file). A
+	 * location being valid does not imply that a configuration file does exist
+	 * at the given location, use {@link #hasFile(ConfigurationLocation)} to
+	 * check for a configuration file at the desired location.
 	 *
 	 * @param configurationLocation
 	 *            The configuration location
