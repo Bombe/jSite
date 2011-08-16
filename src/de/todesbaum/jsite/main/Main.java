@@ -595,7 +595,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
 			if (isOverwritingConfiguration()) {
-				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quite.overwrite-configuration"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
+				if (JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quite.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 					if (saveConfiguration()) {
 						System.exit(0);
 					}
