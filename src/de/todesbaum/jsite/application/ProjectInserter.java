@@ -225,6 +225,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/**
 	 * Starts the insert.
+	 *
+	 * @param progressListener
+	 *            Listener to notify on progress events
 	 */
 	public void start(ProgressListener progressListener) {
 		cancelled = false;
