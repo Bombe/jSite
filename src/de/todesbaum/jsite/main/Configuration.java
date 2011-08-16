@@ -33,10 +33,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.xml.SimpleXML;
@@ -49,152 +52,92 @@ import de.todesbaum.util.xml.XML;
  */
 public class Configuration {
 
-	/**
-	 * The location of the configuration directory.
-	 *
-	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
-	 */
-	public enum ConfigurationDirectory {
-
-		/** The configuration is in the same directory as the JAR file. */
-		NEXT_TO_JAR_FILE,
-
-		/**
-		 * The configuration is in the user’s home directory. This is the
-		 * pre-0.9.3 default.
-		 */
-		HOME_DIRECTORY;
-
-	}
-
-	/** The configuration directory. */
-	private ConfigurationDirectory configurationDirectory = ConfigurationDirectory.HOME_DIRECTORY;
-
-	/** The name of the file the configuration is stored to. */
-	private String filename;
-
-	/** The name of the lock file. */
-	private String lockFilename;
-
 	/** The root node of the configuration. */
 	private SimpleXML rootNode;
 
-	/**
-	 * Creates a new configuration with the default name of the configuration
-	 * file.
-	 */
-	public Configuration() {
-		this(System.getProperty("user.home") + "/.jSite/config7");
-	}
+	/** The configuration locator. */
+	private final ConfigurationLocator configurationLocator;
+
+	/** Where the configuration resides. */
+	private ConfigurationLocation configurationLocation;
 
 	/**
 	 * Creates a new configuration that is read from the given file.
 	 *
-	 * @param filename
-	 *            The name of the configuration file
-	 */
-	public Configuration(String filename) {
-		this(filename, filename + ".lock");
-	}
-
-	/**
-	 * Creates a new configuration that is read from the given file and uses the
-	 * given lock file.
-	 *
-	 * @param filename
-	 *            The name of the configuration file
-	 * @param lockFilename
-	 *            The name of the lock file
-	 */
-	public Configuration(String filename, String lockFilename) {
-		this.filename = filename;
-		this.lockFilename = lockFilename;
-		readConfiguration();
-	}
-
-	/**
-	 * Returns the configuration directory.
-	 *
-	 * @return The configuration directory
-	 */
-	public ConfigurationDirectory getConfigurationDirectory() {
-		return configurationDirectory;
-	}
-
-	/**
-	 * Sets the configuration directory.
-	 *
-	 * @param configurationDirectory
+	 * @param configurationLocator
+	 *            The configuration locator
+	 * @param configurationLocation
 	 *            The configuration directory
 	 */
-	public void setConfigurationDirectory(ConfigurationDirectory configurationDirectory) {
-		this.configurationDirectory = configurationDirectory;
+	public Configuration(ConfigurationLocator configurationLocator, ConfigurationLocation configurationLocation) {
+		this.configurationLocator = configurationLocator;
+		this.configurationLocation = configurationLocation;
+		readConfiguration(configurationLocator.getFile(configurationLocation));
 	}
 
+	//
+	// ACCESSORS
+	//
+
 	/**
-	 * Creates the directory of the configuration file.
+	 * Returns the configuration locator.
 	 *
-	 * @return <code>true</code> if the directory exists, or if it could be
-	 *         created, <code>false</code> otherwise
+	 * @return The configuration locator
 	 */
-	private boolean createConfigDirectory() {
-		File configDirectory = new File(filename).getAbsoluteFile().getParentFile();
-		return (configDirectory.exists() && configDirectory.isDirectory()) || configDirectory.mkdirs();
+	public ConfigurationLocator getConfigurationLocator() {
+		return configurationLocator;
 	}
 
 	/**
-	 * Creates the lock file.
+	 * Returns the location the configuration will be written to when calling
+	 * {@link #save()}.
 	 *
-	 * @return <code>true</code> if the lock file did not already exist and
-	 *         could be created, <code>false</code> otherwise
+	 * @return The location the configuration will be written to
 	 */
-	public boolean createLockFile() {
-		if (!createConfigDirectory()) {
-			return false;
-		}
-		File lockFile = new File(lockFilename);
-		try {
-			boolean fileLocked = lockFile.createNewFile();
-			if (fileLocked) {
-				lockFile.deleteOnExit();
-			}
-			return fileLocked;
-		} catch (IOException e) {
-			/* ignore. */
-		}
-		return false;
+	public ConfigurationLocation getConfigurationDirectory() {
+		return configurationLocation;
 	}
 
 	/**
-	 * Tells the VM to remove the lock file on program exit.
+	 * Sets the location the configuration will be written to when calling
+	 * {@link #save()}.
+	 *
+	 * @param configurationLocation
+	 *            The location to write the configuration to
 	 */
-	public void removeLockfileOnExit() {
-		new File(lockFilename).deleteOnExit();
+	public void setConfigurationLocation(ConfigurationLocation configurationLocation) {
+		this.configurationLocation = configurationLocation;
 	}
 
 	/**
 	 * Reads the configuration from the file.
+	 *
+	 * @param filename
+	 *            The name of the file to read the configuration from
 	 */
-	private void readConfiguration() {
-		File configurationFile = new File(filename);
-		if (configurationFile.exists()) {
-			ByteArrayOutputStream fileByteOutputStream = null;
-			FileInputStream fileInputStream = null;
-			try {
-				fileByteOutputStream = new ByteArrayOutputStream();
-				fileInputStream = new FileInputStream(configurationFile);
-				StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
-				fileByteOutputStream.close();
-				byte[] fileBytes = fileByteOutputStream.toByteArray();
-				rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
-				return;
-			} catch (FileNotFoundException e) {
-				/* ignore. */
-			} catch (IOException e) {
-				/* ignore. */
-			} finally {
-				Closer.close(fileInputStream);
-				Closer.close(fileByteOutputStream);
+	private void readConfiguration(String filename) {
+		Logger.getLogger(Configuration.class.getName()).log(Level.CONFIG, "Reading configuration from: " + filename);
+		if (filename != null) {
+			File configurationFile = new File(filename);
+			if (configurationFile.exists()) {
+				ByteArrayOutputStream fileByteOutputStream = null;
+				FileInputStream fileInputStream = null;
+				try {
+					fileByteOutputStream = new ByteArrayOutputStream();
+					fileInputStream = new FileInputStream(configurationFile);
+					StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
+					fileByteOutputStream.close();
+					byte[] fileBytes = fileByteOutputStream.toByteArray();
+					rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
+					return;
+				} catch (FileNotFoundException e) {
+					/* ignore. */
+				} catch (IOException e) {
+					/* ignore. */
+				} finally {
+					Closer.close(fileInputStream);
+					Closer.close(fileByteOutputStream);
+				}
 			}
 		}
 		rootNode = new SimpleXML("configuration");
@@ -207,7 +150,8 @@ public class Configuration {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean save() {
-		File configurationFile = new File(filename);
+		Logger.getLogger(Configuration.class.getName()).log(Level.CONFIG, "Trying to save configuration to: " + configurationLocation);
+		File configurationFile = new File(configurationLocator.getFile(configurationLocation));
 		if (!configurationFile.exists()) {
 			File configurationFilePath = configurationFile.getAbsoluteFile().getParentFile();
 			if (!configurationFilePath.exists() && !configurationFilePath.mkdirs()) {

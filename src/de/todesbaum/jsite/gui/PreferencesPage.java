@@ -1,6 +1,5 @@
 /*
- * jSite - PreferencesPage.java -
- * Copyright © 2009 David Roden
+ * jSite - PreferencesPage.java - Copyright © 2009–2011 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +37,7 @@ import javax.swing.JTextField;
 
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
-import de.todesbaum.jsite.main.Configuration;
-import de.todesbaum.jsite.main.Configuration.ConfigurationDirectory;
+import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
@@ -65,17 +63,17 @@ public class PreferencesPage extends TWizardPage {
 	/** Action when selecting “home directory.” */
 	private Action homeDirectoryAction;
 
+	/** Action when selecting “custom directory.” */
+	private Action customDirectoryAction;
+
 	/** The text field containing the directory. */
 	private JTextField tempDirectoryTextField;
 
 	/** The temp directory. */
 	private String tempDirectory;
 
-	/** The configuration. */
-	private Configuration configuration;
-
-	/** The configuration directory. */
-	private ConfigurationDirectory configurationDirectory;
+	/** The configuration location. */
+	private ConfigurationLocation configurationLocation;
 
 	/** The “default” button. */
 	private JRadioButton defaultTempDirectory;
@@ -86,21 +84,19 @@ public class PreferencesPage extends TWizardPage {
 	/** The “next to JAR file” checkbox. */
 	private JRadioButton nextToJarFile;
 
-	/** The “current directory” checkbox. */
-	private JRadioButton currentDirectory;
-
 	/** The “home directory” checkbox. */
 	private JRadioButton homeDirectory;
+
+	/** The “custom directory” checkbox. */
+	private JRadioButton customDirectory;
 
 	/**
 	 * Creates a new “preferences” page.
 	 *
 	 * @param wizard
 	 *            The wizard this page belongs to
-	 * @param configuration
-	 *            The configuration that is controlled
 	 */
-	public PreferencesPage(TWizard wizard, Configuration configuration) {
+	public PreferencesPage(TWizard wizard) {
 		super(wizard);
 		pageInit();
 		setHeading(I18n.getMessage("jsite.preferences.heading"));
@@ -115,7 +111,6 @@ public class PreferencesPage extends TWizardPage {
 				setDescription(I18n.getMessage("jsite.preferences.description"));
 			}
 		});
-		this.configuration = configuration;
 	}
 
 	//
@@ -151,31 +146,57 @@ public class PreferencesPage extends TWizardPage {
 	}
 
 	/**
-	 * Returns the configuration directory.
+	 * Returns the configuration location.
 	 *
-	 * @return The configuration directory
+	 * @return The configuration location
 	 */
-	public ConfigurationDirectory getConfigurationDirectory() {
-		return configurationDirectory;
+	public ConfigurationLocation getConfigurationLocation() {
+		return configurationLocation;
 	}
 
 	/**
-	 * Sets the configuration directory.
+	 * Sets the configuration location.
 	 *
-	 * @param configurationDirectory
-	 *            The configuration directory
+	 * @param configurationLocation
+	 *            The configuration location
 	 */
-	public void setConfigurationDirectory(ConfigurationDirectory configurationDirectory) {
-		this.configurationDirectory = configurationDirectory;
-		configuration.setConfigurationDirectory(configurationDirectory);
-		switch (configurationDirectory) {
+	public void setConfigurationLocation(ConfigurationLocation configurationLocation) {
+		this.configurationLocation = configurationLocation;
+		switch (configurationLocation) {
 		case NEXT_TO_JAR_FILE:
 			nextToJarFile.setSelected(true);
 			break;
 		case HOME_DIRECTORY:
 			homeDirectory.setSelected(true);
 			break;
+		case CUSTOM:
+			customDirectory.setSelected(true);
+			break;
 		}
+	}
+
+	/**
+	 * Sets whether it is possible to select the “next to JAR file” option for
+	 * the configuration location.
+	 *
+	 * @param nextToJarFile
+	 *            {@code true} if the configuration file can be saved next to
+	 *            the JAR file, {@code false} otherwise
+	 */
+	public void setHasNextToJarConfiguration(boolean nextToJarFile) {
+		this.nextToJarFile.setEnabled(nextToJarFile);
+	}
+
+	/**
+	 * Sets whether it is possible to select the “custom location” option for
+	 * the configuration location.
+	 *
+	 * @param customDirectory
+	 *            {@code true} if the configuration file can be saved to a
+	 *            custom location, {@code false} otherwise
+	 */
+	public void setHasCustomConfiguration(boolean customDirectory) {
+		this.customDirectory.setEnabled(customDirectory);
 	}
 
 	/**
@@ -238,14 +259,21 @@ public class PreferencesPage extends TWizardPage {
 
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionevent) {
-				configurationDirectory = ConfigurationDirectory.NEXT_TO_JAR_FILE;
+				configurationLocation = ConfigurationLocation.NEXT_TO_JAR_FILE;
 			}
 		};
 		homeDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.home")) {
 
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionevent) {
-				configurationDirectory = ConfigurationDirectory.HOME_DIRECTORY;
+				configurationLocation = ConfigurationLocation.HOME_DIRECTORY;
+			}
+		};
+		customDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.custom")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				configurationLocation = ConfigurationLocation.CUSTOM;
 			}
 		};
 
@@ -258,6 +286,7 @@ public class PreferencesPage extends TWizardPage {
 				chooseTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.choose"));
 				nextToJarFileAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.jar"));
 				homeDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.home"));
+				customDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.custom"));
 			}
 		});
 	}
@@ -307,10 +336,13 @@ public class PreferencesPage extends TWizardPage {
 		homeDirectory = new JRadioButton(homeDirectoryAction);
 		preferencesPanel.add(homeDirectory, new GridBagConstraints(0, 5, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
 
+		customDirectory = new JRadioButton(customDirectoryAction);
+		preferencesPanel.add(customDirectory, new GridBagConstraints(0, 6, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 18, 0, 0), 0, 0));
+
 		ButtonGroup configurationDirectoryButtonGroup = new ButtonGroup();
 		configurationDirectoryButtonGroup.add(nextToJarFile);
-		configurationDirectoryButtonGroup.add(currentDirectory);
 		configurationDirectoryButtonGroup.add(homeDirectory);
+		configurationDirectoryButtonGroup.add(customDirectory);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 

@@ -1,6 +1,6 @@
 /*
  * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006-2009 David Roden
+ * Copyright © 2006–2011 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ package de.todesbaum.jsite.main;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -64,7 +63,7 @@ import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
-import de.todesbaum.jsite.main.Configuration.ConfigurationDirectory;
+import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.image.IconLoader;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -163,33 +162,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 *            The name of the configuration file
 	 */
 	private Main(String configFilename) {
+		/* collect all possible configuration file locations. */
+		ConfigurationLocator configurationLocator = new ConfigurationLocator();
 		if (configFilename != null) {
-			configuration = new Configuration(configFilename);
-		} else {
-			/* are we executed from a JAR file? */
-			String resource = getClass().getResource("/de/todesbaum/jsite/i18n/jSite.properties").toString();
-			if (resource.startsWith("jar:")) {
-				String jarFileLocation = resource.substring(9, resource.indexOf(".jar!") + 4);
-				String jarFileDirectory = new File(jarFileLocation).getParent();
-				File configurationFile = new File(jarFileDirectory, "jSite.conf");
-				if (configurationFile.exists()) {
-					configuration = new Configuration(configurationFile.getAbsolutePath());
-					configuration.setConfigurationDirectory(ConfigurationDirectory.NEXT_TO_JAR_FILE);
-				}
-			}
-			if (configuration == null) {
-				configuration = new Configuration();
-			}
+			configurationLocator.setCustomLocation(configFilename);
 		}
+
+		ConfigurationLocation preferredLocation = configurationLocator.findPreferredLocation();
+		logger.log(Level.CONFIG, "Using configuration from " + preferredLocation + ".");
+		configuration = new Configuration(configurationLocator, preferredLocation);
+
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
-		if (!configuration.createLockFile()) {
-			int option = JOptionPane.showOptionDialog(null, I18n.getMessage("jsite.main.already-running"), "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.main.already-running.override"), I18n.getMessage("jsite.wizard.quit") }, I18n.getMessage("jsite.wizard.quit"));
-			if (option != 0) {
-				throw new IllegalStateException("Lockfile override not active, refusing start.");
-			}
-			configuration.removeLockfileOnExit();
-		}
 		wizard = new TWizard();
 		createActions();
 		wizard.setJMenuBar(createMenuBar());
@@ -353,7 +337,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		projectInsertPage.setFreenetInterface(freenetInterface);
 		pages.put(PageType.PAGE_INSERT_PROJECT, projectInsertPage);
 
-		PreferencesPage preferencesPage = new PreferencesPage(wizard, configuration);
+		PreferencesPage preferencesPage = new PreferencesPage(wizard);
 		preferencesPage.setName("page.preferences");
 		preferencesPage.setTempDirectory(configuration.getTempDirectory());
 		pages.put(PageType.PAGE_PREFERENCES, preferencesPage);
@@ -370,6 +354,17 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		wizard.setNextEnabled(pageType.ordinal() < (pages.size() - 1));
 		wizard.setPage(pages.get(pageType));
 		wizard.setTitle(pages.get(pageType).getHeading() + " - jSite");
+	}
+
+	/**
+	 * Returns whether a configuration file would be overwritten when calling
+	 * {@link #saveConfiguration()}.
+	 *
+	 * @return {@code true} if {@link #saveConfiguration()} would overwrite an
+	 *         existing file, {@code false} otherwise
+	 */
+	private boolean isOverwritingConfiguration() {
+		return configuration.getConfigurationLocator().hasFile(configuration.getConfigurationDirectory());
 	}
 
 	/**
@@ -461,7 +456,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * Shows a dialog with general preferences.
 	 */
 	private void optionsPreferences() {
-		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setConfigurationDirectory(configuration.getConfigurationDirectory());
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setConfigurationLocation(configuration.getConfigurationDirectory());
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasNextToJarConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.NEXT_TO_JAR_FILE));
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasCustomConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.CUSTOM));
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);
@@ -567,8 +564,10 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				optionsPreferencesAction.setEnabled(true);
 			}
 		} else if ("page.preferences".equals(pageName)) {
+			PreferencesPage preferencesPage = (PreferencesPage) pages.get(PageType.PAGE_PREFERENCES);
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
+			configuration.setConfigurationLocation(preferencesPage.getConfigurationLocation());
 		}
 	}
 
@@ -595,8 +594,16 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.use-clipboard-now"));
 		}
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-			if (saveConfiguration()) {
-				System.exit(0);
+			if (isOverwritingConfiguration()) {
+				if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quite.overwrite-configuration"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
+					if (saveConfiguration()) {
+						System.exit(0);
+					}
+				}
+			} else {
+				if (saveConfiguration()) {
+					System.exit(0);
+				}
 			}
 			if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.config-not-saved"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 				System.exit(0);

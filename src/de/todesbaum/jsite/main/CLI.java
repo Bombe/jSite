@@ -89,11 +89,11 @@ public class CLI implements InsertListener {
 			}
 		}
 
-		Configuration configuration = new Configuration(configFile);
-		if (!configuration.createLockFile()) {
-			outputWriter.println("Lock file found!");
-			return;
+		ConfigurationLocator configurationLocator = new ConfigurationLocator();
+		if (configFile != null) {
+			configurationLocator.setCustomLocation(configFile);
 		}
+		Configuration configuration = new Configuration(configurationLocator, configurationLocator.findPreferredLocation());
 
 		projectInserter.addInsertListener(this);
 		projects = configuration.getProjects();
