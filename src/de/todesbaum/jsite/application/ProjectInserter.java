@@ -521,7 +521,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
-		putDir.setEarlyEncode(false);
+		putDir.setEarlyEncode(true);
 		for (String filename : files) {
 			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
 			if (fileEntry != null) {
