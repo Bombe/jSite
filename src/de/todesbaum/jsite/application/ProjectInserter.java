@@ -567,8 +567,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 					boolean finalized = Boolean.parseBoolean(message.get("FinalizedTotal"));
 					fireProjectInsertProgress(succeeded, failed, fatal, total, finalized);
 				}
-				success = "PutSuccessful".equals(messageName);
-				finished = success || "PutFailed".equals(messageName) || messageName.endsWith("Error");
+				success |= "PutSuccessful".equals(messageName);
+				finished = (success && (finalURI != null)) || "PutFailed".equals(messageName) || messageName.endsWith("Error");
 			}
 		}
 
