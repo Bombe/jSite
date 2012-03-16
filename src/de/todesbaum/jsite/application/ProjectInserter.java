@@ -43,6 +43,7 @@ import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientPutComplexDir;
+import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.Connection;
 import de.todesbaum.util.freenet.fcp2.DirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.FileEntry;
@@ -522,6 +523,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
 		putDir.setEarlyEncode(false);
+		putDir.setManifestPutter(ManifestPutter.DEFAULT);
 		for (String filename : files) {
 			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
 			if (fileEntry != null) {
