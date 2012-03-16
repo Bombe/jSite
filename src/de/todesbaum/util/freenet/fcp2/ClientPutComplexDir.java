@@ -38,7 +38,7 @@ import de.todesbaum.util.io.Closer;
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
-public class ClientPutComplexDir extends ClientPutDir {
+public class ClientPutComplexDir extends ClientPutDir<ClientPutComplexDir> {
 
 	/** The file entries of this directory. */
 	private List<FileEntry> fileEntries = new ArrayList<FileEntry>();
