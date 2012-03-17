@@ -283,7 +283,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			/* check if file was modified. */
 			if (file.getHash().equals(fileOption.getLastInsertHash())) {
 				/* only insert a redirect. */
-				return new RedirectFileEntry(filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + project.getEdition() + "/" + filename);
+				return new RedirectFileEntry(filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + filename);
 			}
 			fileOption.setCurrentHash(file.getHash());
 			try {
