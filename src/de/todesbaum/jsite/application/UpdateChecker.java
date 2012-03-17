@@ -215,6 +215,9 @@ public class UpdateChecker implements Runnable {
 				while (!stop) {
 					Message message = client.readMessage();
 					logger.log(Level.FINEST, "Received message: " + message);
+					if (message == null) {
+						break;
+					}
 					if ("GetFailed".equals(message.getName())) {
 						if ("27".equals(message.get("code"))) {
 							String editionString = message.get("redirecturi").split("/")[2];
