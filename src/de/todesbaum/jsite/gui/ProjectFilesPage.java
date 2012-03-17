@@ -20,7 +20,6 @@ package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +35,6 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -47,14 +44,9 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -76,22 +68,13 @@ import de.todesbaum.util.swing.TWizardPage;
  *
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
-public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener, ChangeListener {
+public class ProjectFilesPage extends TWizardPage implements ActionListener, ListSelectionListener, DocumentListener, FileScannerListener {
 
 	/** The project. */
 	private Project project;
 
 	/** The “scan files” action. */
 	private Action scanAction;
-
-	/** The “edit container” action. */
-	private Action editContainerAction;
-
-	/** The “add container” action. */
-	private Action addContainerAction;
-
-	/** The “delete container” action. */
-	protected Action deleteContainerAction;
 
 	/** The “ignore hidden files” checkbox. */
 	private JCheckBox ignoreHiddenFilesCheckBox;
@@ -119,18 +102,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 	/** The “mime type” combo box. */
 	private JComboBox fileOptionsMIMETypeComboBox;
-
-	/** The “mime type” combo box model. */
-	private DefaultComboBoxModel containerComboBoxModel;
-
-	/** The “container” combo box. */
-	private JComboBox fileOptionsContainerComboBox;
-
-	/** The “edition replacement range” spinner. */
-	private JSpinner replaceEditionRangeSpinner;
-
-	/** The “replacement” check box. */
-	private JCheckBox replacementCheckBox;
 
 	/**
 	 * Creates a new project file page.
@@ -166,48 +137,12 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		scanAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
 		scanAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.rescan.tooltip"));
 
-		addContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.add-container")) {
-
-			@SuppressWarnings("synthetic-access")
-			public void actionPerformed(ActionEvent actionEvent) {
-				actionAddContainer();
-			}
-		};
-		addContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.add-container.tooltip"));
-		addContainerAction.setEnabled(false);
-
-		editContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.edit-container")) {
-
-			@SuppressWarnings("synthetic-access")
-			public void actionPerformed(ActionEvent actionEvent) {
-				actionEditContainer();
-			}
-		};
-		editContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.edit-container.tooltip"));
-		editContainerAction.setEnabled(false);
-
-		deleteContainerAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.delete-container")) {
-
-			@SuppressWarnings("synthetic-access")
-			public void actionPerformed(ActionEvent actionEvent) {
-				actionDeleteContainer();
-			}
-		};
-		deleteContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.delete-container.tooltip"));
-		deleteContainerAction.setEnabled(false);
-
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				scanAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.rescan"));
 				scanAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.rescan.tooltip"));
-				addContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.add-container"));
-				addContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.add-container.tooltip"));
-				editContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.edit-container"));
-				editContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.edit-container.tooltip"));
-				deleteContainerAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.delete-container"));
-				deleteContainerAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.project-files.action.delete-container.tooltip"));
 			}
 		});
 	}
@@ -339,52 +274,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 7, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
-		containerComboBoxModel = new DefaultComboBoxModel();
-		fileOptionsContainerComboBox = new JComboBox(containerComboBoxModel);
-		fileOptionsContainerComboBox.setToolTipText(I18n.getMessage("jsite.project-files.container.tooltip"));
-		fileOptionsContainerComboBox.setName("project-files.container");
-		fileOptionsContainerComboBox.addActionListener(this);
-		fileOptionsContainerComboBox.setEnabled(false);
-		fileOptionsContainerComboBox.setVisible(false);
-
-		final TLabel containerLabel = new TLabel(I18n.getMessage("jsite.project-files.container") + ":", KeyEvent.VK_C, fileOptionsContainerComboBox);
-		containerLabel.setVisible(false);
-		JButton addContainerButton = new JButton(addContainerAction);
-		addContainerButton.setVisible(false);
-		JButton editContainerButton = new JButton(editContainerAction);
-		editContainerButton.setVisible(false);
-		JButton deleteContainerButton = new JButton(deleteContainerAction);
-		deleteContainerButton.setVisible(false);
-		fileOptionsPanel.add(containerLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsContainerComboBox, new GridBagConstraints(1, 8, 1, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(addContainerButton, new GridBagConstraints(2, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(editContainerButton, new GridBagConstraints(3, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(deleteContainerButton, new GridBagConstraints(4, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
-
-		JPanel fileOptionsReplacementPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 6, 6));
-		fileOptionsReplacementPanel.setBorder(new EmptyBorder(-6, -6, -6, -6));
-
-		replacementCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.replacement"));
-		replacementCheckBox.setName("project-files.replace-edition");
-		replacementCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.replacement.tooltip"));
-		replacementCheckBox.addActionListener(this);
-		replacementCheckBox.setEnabled(false);
-		replacementCheckBox.setVisible(false);
-		fileOptionsReplacementPanel.add(replacementCheckBox);
-
-		replaceEditionRangeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
-		replaceEditionRangeSpinner.setName("project-files.replace-edition-range");
-		replaceEditionRangeSpinner.setToolTipText(I18n.getMessage("jsite.project-files.replacement.edition-range.tooltip"));
-		replaceEditionRangeSpinner.addChangeListener(this);
-		replaceEditionRangeSpinner.setEnabled(false);
-		replaceEditionRangeSpinner.setVisible(false);
-		final JLabel editionRangeLabel = new JLabel(I18n.getMessage("jsite.project-files.replacement.edition-range"));
-		editionRangeLabel.setVisible(false);
-		fileOptionsReplacementPanel.add(editionRangeLabel);
-		fileOptionsReplacementPanel.add(replaceEditionRangeSpinner);
-
-		fileOptionsPanel.add(fileOptionsReplacementPanel, new GridBagConstraints(0, 9, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
-
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			@SuppressWarnings("synthetic-access")
@@ -404,12 +293,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				fileOptionsRenameCheckBox.setToolTipText("jsite.project-files.rename.tooltip");
 				fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 				mimeTypeLabel.setText(I18n.getMessage("jsite.project-files.mime-type") + ":");
-				fileOptionsContainerComboBox.setToolTipText(I18n.getMessage("jsite.project-files.container.tooltip"));
-				containerLabel.setText(I18n.getMessage("jsite.project-files.container") + ":");
-				replacementCheckBox.setText(I18n.getMessage("jsite.project-files.replacement"));
-				replacementCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.replacement.tooltip"));
-				replaceEditionRangeSpinner.setToolTipText(I18n.getMessage("jsite.project-files.replacement.edition-range.tooltip"));
-				editionRangeLabel.setText(I18n.getMessage("jsite.project-files.replacement.edition-range"));
 			}
 		});
 
@@ -449,29 +332,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		return files;
 	}
 
-	/**
-	 * Updates the container combo box model.
-	 */
-	private void rebuildContainerComboBox() {
-		/* scan files for containers */
-		List<String> files = getProjectFiles();
-		List<String> containers = new ArrayList<String>(); // ComboBoxModel
-		// sucks. No
-		// contains()!
-		containers.add("");
-		for (String filename : files) {
-			String container = project.getFileOption(filename).getContainer();
-			if (!containers.contains(container)) {
-				containers.add(container);
-			}
-		}
-		Collections.sort(containers);
-		containerComboBoxModel.removeAllElements();
-		for (String container : containers) {
-			containerComboBoxModel.addElement(container);
-		}
-	}
-
 	//
 	// ACTIONS
 	//
@@ -493,66 +353,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	}
 
 	/**
-	 * Adds a container.
-	 */
-	private void actionAddContainer() {
-		String containerName = JOptionPane.showInputDialog(wizard, I18n.getMessage("jsite.project-files.action.add-container.message") + ":", null, JOptionPane.INFORMATION_MESSAGE);
-		if (containerName == null) {
-			return;
-		}
-		containerName = containerName.trim();
-		String filename = (String) projectFileList.getSelectedValue();
-		FileOption fileOption = project.getFileOption(filename);
-		fileOption.setContainer(containerName);
-		rebuildContainerComboBox();
-		fileOptionsContainerComboBox.setSelectedItem(containerName);
-	}
-
-	/**
-	 * Edits the container.
-	 */
-	private void actionEditContainer() {
-		String selectedFilename = (String) projectFileList.getSelectedValue();
-		FileOption fileOption = project.getFileOption(selectedFilename);
-		String oldContainerName = fileOption.getContainer();
-		String containerName = JOptionPane.showInputDialog(wizard, I18n.getMessage("jsite.project-files.action.edit-container.message") + ":", oldContainerName);
-		if (containerName == null) {
-			return;
-		}
-		if (containerName.equals("")) {
-			fileOption.setContainer("");
-			fileOptionsContainerComboBox.setSelectedItem("");
-			return;
-		}
-		List<String> files = getProjectFiles();
-		for (String filename : files) {
-			fileOption = project.getFileOption(filename);
-			if (fileOption.getContainer().equals(oldContainerName)) {
-				fileOption.setContainer(containerName);
-			}
-		}
-		rebuildContainerComboBox();
-		fileOptionsContainerComboBox.setSelectedItem(containerName);
-	}
-
-	/**
-	 * Deletes the container.
-	 */
-	private void actionDeleteContainer() {
-		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.project-files.action.delete-container.message"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
-			String containerName = (String) fileOptionsContainerComboBox.getSelectedItem();
-			List<String> files = getProjectFiles();
-			for (String filename : files) {
-				FileOption fileOption = project.getFileOption(filename);
-				if (fileOption.getContainer().equals(containerName)) {
-					fileOption.setContainer("");
-				}
-			}
-			fileOptionsContainerComboBox.setSelectedItem("");
-		}
-	}
-
-	/**
 	 * {@inheritDoc}
 	 * <p>
 	 * Updates the file list.
@@ -567,7 +367,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				public void run() {
 					projectFileList.setListData(files.toArray(new String[files.size()]));
 					projectFileList.clearSelection();
-					rebuildContainerComboBox();
 				}
 			});
 			Set<String> entriesToRemove = new HashSet<String>();
@@ -647,9 +446,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			} else if ("insert".equals(checkBox.getName())) {
 				boolean isInsert = checkBox.isSelected();
 				fileOption.setInsert(isInsert);
-				if (!isInsert) {
-					fileOptionsContainerComboBox.setSelectedItem("");
-				}
 				fileOptionsInsertRedirectCheckBox.setEnabled(!isInsert);
 			} else if ("insert-redirect".equals(checkBox.getName())) {
 				boolean isInsertRedirect = checkBox.isSelected();
@@ -659,24 +455,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				boolean isRenamed = checkBox.isSelected();
 				fileOptionsRenameTextField.setEnabled(isRenamed);
 				fileOption.setChangedName(isRenamed ? fileOptionsRenameTextField.getText() : "");
-			} else if ("project-files.replace-edition".equals(checkBox.getName())) {
-				boolean replaceEdition = checkBox.isSelected();
-				fileOption.setReplaceEdition(replaceEdition);
-				replaceEditionRangeSpinner.setEnabled(replaceEdition);
 			}
 		} else if (source instanceof JComboBox) {
 			JComboBox comboBox = (JComboBox) source;
 			if ("project-files.mime-type".equals(comboBox.getName())) {
 				fileOption.setMimeType((String) comboBox.getSelectedItem());
-			} else if ("project-files.container".equals(comboBox.getName())) {
-				String containerName = (String) comboBox.getSelectedItem();
-				fileOption.setContainer(containerName);
-				boolean enabled = !"".equals(containerName);
-				editContainerAction.setEnabled(enabled);
-				deleteContainerAction.setEnabled(enabled);
-				if (enabled) {
-					fileOptionsInsertCheckBox.setSelected(true);
-				}
 			}
 		}
 	}
@@ -696,11 +479,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsInsertCheckBox.setEnabled(enabled);
 		fileOptionsRenameCheckBox.setEnabled(enabled);
 		fileOptionsMIMETypeComboBox.setEnabled(enabled);
-		fileOptionsContainerComboBox.setEnabled(enabled);
-		addContainerAction.setEnabled(enabled);
-		editContainerAction.setEnabled(enabled);
-		deleteContainerAction.setEnabled(enabled);
-		replacementCheckBox.setEnabled(enabled && insert);
 		if (filename != null) {
 			FileOption fileOption = project.getFileOption(filename);
 			defaultFileCheckBox.setSelected(filename.equals(project.getIndexFile()));
@@ -713,10 +491,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsRenameTextField.setEnabled(fileOption.hasChangedName());
 			fileOptionsRenameTextField.setText(fileOption.getChangedName());
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
-			fileOptionsContainerComboBox.setSelectedItem(fileOption.getContainer());
-			replacementCheckBox.setSelected(fileOption.getReplaceEdition());
-			replaceEditionRangeSpinner.setValue(fileOption.getEditionRange());
-			replaceEditionRangeSpinner.setEnabled(fileOption.getReplaceEdition());
 		} else {
 			defaultFileCheckBox.setSelected(false);
 			fileOptionsInsertCheckBox.setSelected(true);
@@ -729,9 +503,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsRenameTextField.setEnabled(false);
 			fileOptionsRenameTextField.setText("");
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(DefaultMIMETypes.DEFAULT_MIME_TYPE);
-			fileOptionsContainerComboBox.setSelectedItem("");
-			replacementCheckBox.setSelected(false);
-			replaceEditionRangeSpinner.setValue(0);
 		}
 	}
 
@@ -780,26 +551,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 */
 	public void removeUpdate(DocumentEvent documentEvent) {
 		processDocumentUpdate(documentEvent);
-	}
-
-	//
-	// INTERFACE ChangeListener
-	//
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void stateChanged(ChangeEvent changeEvent) {
-		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null) {
-			return;
-		}
-		FileOption fileOption = project.getFileOption(filename);
-		Object source = changeEvent.getSource();
-		if (source instanceof JSpinner) {
-			JSpinner spinner = (JSpinner) source;
-			fileOption.setEditionRange((Integer) spinner.getValue());
-		}
 	}
 
 }

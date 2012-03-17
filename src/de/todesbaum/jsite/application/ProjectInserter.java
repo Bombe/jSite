@@ -18,16 +18,12 @@
 
 package de.todesbaum.jsite.application;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,8 +32,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScannerListener;
@@ -50,9 +44,6 @@ import de.todesbaum.util.freenet.fcp2.FileEntry;
 import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.RedirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
-import de.todesbaum.util.io.Closer;
-import de.todesbaum.util.io.ReplacingOutputStream;
-import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
@@ -270,76 +261,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private InputStream createFileInputStream(String filename, FileOption fileOption, int edition, long[] length) throws IOException {
 		File file = new File(project.getLocalPath(), filename);
 		length[0] = file.length();
-		if (!fileOption.getReplaceEdition()) {
-			return new FileInputStream(file);
-		}
-		ByteArrayOutputStream filteredByteOutputStream = new ByteArrayOutputStream(Math.min(Integer.MAX_VALUE, (int) length[0]));
-		ReplacingOutputStream outputStream = new ReplacingOutputStream(filteredByteOutputStream);
-		FileInputStream fileInput = new FileInputStream(file);
-		try {
-			outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
-			outputStream.addReplacement("$[URI]", project.getFinalRequestURI(0));
-			for (int index = 1; index <= fileOption.getEditionRange(); index++) {
-				outputStream.addReplacement("$[URI+" + index + "]", project.getFinalRequestURI(index));
-				outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
-			}
-			StreamCopier.copy(fileInput, outputStream, length[0]);
-		} finally {
-			Closer.close(fileInput);
-			Closer.close(outputStream);
-			Closer.close(filteredByteOutputStream);
-		}
-		byte[] filteredBytes = filteredByteOutputStream.toByteArray();
-		length[0] = filteredBytes.length;
-		return new ByteArrayInputStream(filteredBytes);
-	}
-
-	/**
-	 * Creates an input stream for a container.
-	 *
-	 * @param containerFiles
-	 *            All container definitions
-	 * @param containerName
-	 *            The name of the container to create
-	 * @param edition
-	 *            The current edition
-	 * @param containerLength
-	 *            An array containing a single long which is used to
-	 *            <em>return</em> the final length of the container stream,
-	 *            after all replacements
-	 * @return The input stream for the container
-	 * @throws IOException
-	 *             if an I/O error occurs
-	 */
-	private InputStream createContainerInputStream(Map<String, List<String>> containerFiles, String containerName, int edition, long[] containerLength) throws IOException {
-		File tempFile = File.createTempFile("jsite", ".zip", (tempDirectory == null) ? null : new File(tempDirectory));
-		tempFile.deleteOnExit();
-		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-		try {
-			for (String filename : containerFiles.get(containerName)) {
-				File dataFile = new File(project.getLocalPath(), filename);
-				if (dataFile.exists()) {
-					ZipEntry zipEntry = new ZipEntry(filename);
-					long[] fileLength = new long[1];
-					InputStream wrappedInputStream = createFileInputStream(filename, project.getFileOption(filename), edition, fileLength);
-					try {
-						zipOutputStream.putNextEntry(zipEntry);
-						StreamCopier.copy(wrappedInputStream, zipOutputStream, fileLength[0]);
-					} finally {
-						zipOutputStream.closeEntry();
-						wrappedInputStream.close();
-					}
-				}
-			}
-		} finally {
-			zipOutputStream.closeEntry();
-			Closer.close(zipOutputStream);
-			Closer.close(fileOutputStream);
-		}
-
-		containerLength[0] = tempFile.length();
-		return new FileInputStream(tempFile);
+		return new FileInputStream(file);
 	}
 
 	/**
@@ -357,8 +279,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private FileEntry createFileEntry(String filename, int edition, Map<String, List<String>> containerFiles) {
 		FileEntry fileEntry = null;
 		FileOption fileOption = project.getFileOption(filename);
-		if (filename.startsWith("/container/:")) {
-			String containerName = filename.substring("/container/:".length());
 			try {
 				long[] containerLength = new long[1];
 				InputStream containerInputStream = createContainerInputStream(containerFiles, containerName, edition, containerLength);
@@ -382,33 +302,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			}
 		}
 		return fileEntry;
-	}
-
-	/**
-	 * Creates container definitions.
-	 *
-	 * @param files
-	 *            The list of all files
-	 * @param containers
-	 *            The list of all containers
-	 * @param containerFiles
-	 *            Empty map that will be filled with container definitions
-	 */
-	private void createContainers(List<String> files, List<String> containers, Map<String, List<String>> containerFiles) {
-		for (String filename : new ArrayList<String>(files)) {
-			FileOption fileOption = project.getFileOption(filename);
-			String containerName = fileOption.getContainer();
-			if (!containerName.equals("")) {
-				if (!containers.contains(containerName)) {
-					containers.add(containerName);
-					containerFiles.put(containerName, new ArrayList<String>());
-					/* hmm. looks like a hack to me. */
-					files.add("/container/:" + containerName);
-				}
-				containerFiles.get(containerName).add(filename);
-				files.remove(filename);
-			}
-		}
 	}
 
 	/**
@@ -438,9 +331,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		String indexFile = project.getIndexFile();
 		boolean hasIndexFile = (indexFile != null) && (indexFile.length() > 0);
-		if (hasIndexFile && !project.getFileOption(indexFile).getContainer().equals("")) {
-			checkReport.addIssue("warning.container-index", false);
-		}
 		List<String> allowedIndexContentTypes = Arrays.asList("text/html", "application/xhtml+xml");
 		if (hasIndexFile && !allowedIndexContentTypes.contains(project.getFileOption(indexFile).getMimeType())) {
 			checkReport.addIssue("warning.index-not-html", false);
@@ -507,11 +397,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 
 		Client client = new Client(connection);
-
-		/* create containers */
-		final List<String> containers = new ArrayList<String>();
-		final Map<String, List<String>> containerFiles = new HashMap<String, List<String>>();
-		createContainers(files, containers, containerFiles);
 
 		/* collect files */
 		int edition = project.getEdition();

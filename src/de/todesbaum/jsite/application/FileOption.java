@@ -37,15 +37,6 @@ public class FileOption {
 	/** The default changed name. */
 	private static final String DEFAULT_CHANGED_NAME = null;
 
-	/** The default container. */
-	private static final String DEFAULT_CONTAINER = "";
-
-	/** The default edition range. */
-	private static final int DEFAULT_EDITION_RANGE = 3;
-
-	/** The default for the replace edition state. */
-	private static final boolean DEFAULT_REPLACE_EDITION = false;
-
 	/** The insert state. */
 	private boolean insert;
 
@@ -64,15 +55,6 @@ public class FileOption {
 	/** The current MIME type. */
 	private String mimeType;
 
-	/** The container. */
-	private String container;
-
-	/** The edition range. */
-	private int editionRange;
-
-	/** The replace edition state. */
-	private boolean replaceEdition;
-
 	/**
 	 * Creates new file options.
 	 *
@@ -86,9 +68,6 @@ public class FileOption {
 		changedName = DEFAULT_CHANGED_NAME;
 		this.defaultMimeType = defaultMimeType;
 		mimeType = defaultMimeType;
-		container = DEFAULT_CONTAINER;
-		editionRange = DEFAULT_EDITION_RANGE;
-		replaceEdition = DEFAULT_REPLACE_EDITION;
 	}
 
 	/**
@@ -230,69 +209,6 @@ public class FileOption {
 	}
 
 	/**
-	 * Returns the name of the container this file should be put in.
-	 *
-	 * @return The name of the container
-	 */
-	public String getContainer() {
-		return container;
-	}
-
-	/**
-	 * Sets the name of the container this file should be put in.
-	 *
-	 * @param container
-	 *            The name of the container
-	 */
-	public void setContainer(String container) {
-		if (container == null) {
-			this.container = DEFAULT_CONTAINER;
-		} else {
-			this.container = container;
-		}
-	}
-
-	/**
-	 * Sets whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
-	 *
-	 * @param replaceEdition
-	 *            <code>true</code> to replace tags, <code>false</code> not to
-	 *            replace
-	 */
-	public void setReplaceEdition(boolean replaceEdition) {
-		this.replaceEdition = replaceEdition;
-	}
-
-	/**
-	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
-	 *
-	 * @return <code>true</code> if tags should be replaced, <code>false</code>
-	 *         otherwise
-	 */
-	public boolean getReplaceEdition() {
-		return replaceEdition;
-	}
-
-	/**
-	 * Sets the range of editions that should be replaced.
-	 *
-	 * @param editionRange
-	 *            The range editions to replace
-	 */
-	public void setEditionRange(int editionRange) {
-		this.editionRange = editionRange;
-	}
-
-	/**
-	 * Returns the range of editions that should be replaced.
-	 *
-	 * @return The range of editions to replace
-	 */
-	public int getEditionRange() {
-		return editionRange;
-	}
-
-	/**
 	 * Returns whether the options for this file have been modified, i.e. are
 	 * not at their default values.
 	 *
@@ -310,15 +226,6 @@ public class FileOption {
 			return true;
 		}
 		if (!defaultMimeType.equals(mimeType)) {
-			return true;
-		}
-		if (!DEFAULT_CONTAINER.equals(container)) {
-			return true;
-		}
-		if (replaceEdition != DEFAULT_REPLACE_EDITION) {
-			return true;
-		}
-		if (editionRange != DEFAULT_EDITION_RANGE) {
 			return true;
 		}
 		if (insertRedirect != DEFAULT_INSERT_REDIRECT) {

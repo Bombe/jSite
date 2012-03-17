@@ -351,11 +351,6 @@ public class Configuration {
 								fileOption.setChangedName(fileOptionNode.getNode("changed-name").getValue());
 							}
 							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
-							fileOption.setContainer(fileOptionNode.getNode("container").getValue());
-							if (fileOptionNode.getNode("replace-edition") != null) {
-								fileOption.setReplaceEdition(Boolean.parseBoolean(fileOptionNode.getNode("replace-edition").getValue()));
-								fileOption.setEditionRange(Integer.parseInt(fileOptionNode.getNode("edition-range").getValue()));
-							}
 							fileOptions.put(filename, fileOption);
 						}
 					}
@@ -401,9 +396,6 @@ public class Configuration {
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
 					fileOptionNode.append("changed-name", fileOption.getChangedName());
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
-					fileOptionNode.append("container", fileOption.getContainer());
-					fileOptionNode.append("replace-edition", String.valueOf(fileOption.getReplaceEdition()));
-					fileOptionNode.append("edition-range", String.valueOf(fileOption.getEditionRange()));
 				}
 			}
 		}
