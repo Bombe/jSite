@@ -22,8 +22,8 @@ package de.todesbaum.util.freenet.fcp2;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Contains replies sent by the Freenet node. A message always has a name, and
