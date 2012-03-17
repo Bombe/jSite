@@ -320,6 +320,14 @@ public class FileScanner implements Runnable {
 			return filename.equals(obj);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			return filename;
+		}
+
 		//
 		// COMPARABLE METHODS
 		//
