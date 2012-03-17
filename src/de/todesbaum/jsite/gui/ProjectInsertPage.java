@@ -387,6 +387,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 			@SuppressWarnings("synthetic-access")
 			public void run() {
+				if (total == 0) {
+					return;
+				}
 				progressBar.setMaximum(total);
 				progressBar.setValue(succeeded + failed + fatal);
 				int progress = (succeeded + failed + fatal) * 100 / total;
