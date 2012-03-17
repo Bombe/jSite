@@ -337,18 +337,20 @@ public class Configuration {
 					}
 
 					/* load last insert hashes. */
+					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					SimpleXML lastInsertHashesNode = projectNode.getNode("last-insert-hashes");
 					if (lastInsertHashesNode != null) {
 						for (SimpleXML fileNode : lastInsertHashesNode.getNodes("file")) {
 							String filename = fileNode.getNode("filename").getValue();
 							String lastInsertHash = fileNode.getNode("last-insert-hash").getValue();
 							int lastInsertEdition = Integer.valueOf(fileNode.getNode("last-insert-edition").getValue());
-							project.getFileOption(filename).setLastInsertHash(lastInsertHash).setLastInsertEdition(lastInsertEdition);
+							FileOption fileOption = project.getFileOption(filename);
+							fileOption.setLastInsertHash(lastInsertHash).setLastInsertEdition(lastInsertEdition);
+							fileOptions.put(filename, fileOption);
 						}
 					}
 
 					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
-					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					if (fileOptionsNode != null) {
 						SimpleXML[] fileOptionNodes = fileOptionsNode.getNodes("file-option");
 						for (SimpleXML fileOptionNode : fileOptionNodes) {
