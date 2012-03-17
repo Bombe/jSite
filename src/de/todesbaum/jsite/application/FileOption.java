@@ -43,6 +43,12 @@ public class FileOption {
 	/** Whether to insert a redirect. */
 	private boolean insertRedirect;
 
+	/** The hash of the last insert. */
+	private String lastInsertHash;
+
+	/** The current hash of the file. */
+	private String currentHash;
+
 	/** The custom key. */
 	private String customKey;
 
@@ -148,6 +154,51 @@ public class FileOption {
 	 */
 	public void setInsertRedirect(boolean insertRedirect) {
 		this.insertRedirect = insertRedirect;
+	}
+
+	/**
+	 * Returns the hash of the file when it was last inserted
+	 *
+	 * @return The last hash of the file
+	 */
+	public String getLastInsertHash() {
+		return lastInsertHash;
+	}
+
+	/**
+	 * Sets the hash of the file when it was last inserted.
+	 *
+	 * @param lastInsertHash
+	 *            The last hash of the file
+	 * @return These file options
+	 */
+	public FileOption setLastInsertHash(String lastInsertHash) {
+		this.lastInsertHash = lastInsertHash;
+		return this;
+	}
+
+	/**
+	 * Returns the current hash of the file. This value is ony a temporary value
+	 * that is copied to {@link #getLastInsertHash()} when a project has
+	 * finished inserting.
+	 *
+	 * @see Project#copyHashes()
+	 * @return The current hash of the file
+	 */
+	public String getCurrentHash() {
+		return currentHash;
+	}
+
+	/**
+	 * Sets the current hash of the file.
+	 *
+	 * @param currentHash
+	 *            The current hash of the file
+	 * @return These file options
+	 */
+	public FileOption setCurrentHash(String currentHash) {
+		this.currentHash = currentHash;
+		return this;
 	}
 
 	/**
