@@ -431,6 +431,7 @@ public class Project implements Comparable<Project> {
 				fileOption.setLastInsertEdition(edition);
 				fileOption.setLastInsertHash(fileOption.getCurrentHash());
 			}
+			fileOption.setForceInsert(false);
 		}
 	}
 
