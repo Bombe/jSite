@@ -342,7 +342,8 @@ public class Configuration {
 						for (SimpleXML fileNode : lastInsertHashesNode.getNodes("file")) {
 							String filename = fileNode.getNode("filename").getValue();
 							String lastInsertHash = fileNode.getNode("last-insert-hash").getValue();
-							project.getFileOption(filename).setLastInsertHash(lastInsertHash);
+							int lastInsertEdition = Integer.valueOf(fileNode.getNode("last-insert-edition").getValue());
+							project.getFileOption(filename).setLastInsertHash(lastInsertHash).setLastInsertEdition(lastInsertEdition);
 						}
 					}
 
@@ -404,6 +405,7 @@ public class Configuration {
 				SimpleXML fileNode = lastInsertHashesNode.append("file");
 				fileNode.append("filename", fileOption.getKey());
 				fileNode.append("last-insert-hash", fileOption.getValue().getLastInsertHash());
+				fileNode.append("last-insert-edition", String.valueOf(fileOption.getValue().getLastInsertEdition()));
 			}
 
 			SimpleXML fileOptionsNode = projectNode.append("file-options");
