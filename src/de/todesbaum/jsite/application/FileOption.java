@@ -206,7 +206,7 @@ public class FileOption {
 	 * that is copied to {@link #getLastInsertHash()} when a project has
 	 * finished inserting.
 	 *
-	 * @see Project#copyHashes()
+	 * @see Project#onSuccessfulInsert()
 	 * @return The current hash of the file
 	 */
 	public String getCurrentHash() {

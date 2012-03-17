@@ -420,11 +420,12 @@ public class Project implements Comparable<Project> {
 	}
 
 	/**
-	 * Copies the current hashes of all file options to the last insert hashes,
-	 * updating the hashes for the next insert. This method should only be
-	 * called after the insert has finished successfully.
+	 * Performs some post-processing on the project after it was inserted
+	 * successfully. At the moment it copies the current hashes of all file
+	 * options to the last insert hashes, updating the hashes for the next
+	 * insert.
 	 */
-	public void copyHashes() {
+	public void onSuccessfulInsert() {
 		for (FileOption fileOption : fileOptions.values()) {
 			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && !fileOption.getCurrentHash().equals(fileOption.getLastInsertHash())) {
 				fileOption.setLastInsertEdition(edition);

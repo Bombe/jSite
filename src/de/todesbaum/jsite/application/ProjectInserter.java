@@ -464,7 +464,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			int newEdition = Integer.parseInt(editionPart);
 			project.setEdition(newEdition);
 			project.setLastInsertionTime(System.currentTimeMillis());
-			project.copyHashes();
+			project.onSuccessfulInsert();
 		}
 		fireProjectInsertFinished(success, cancelled ? new AbortedException() : (disconnected ? new IOException("Connection terminated") : null));
 	}
