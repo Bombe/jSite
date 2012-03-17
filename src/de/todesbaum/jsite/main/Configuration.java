@@ -335,6 +335,17 @@ public class Configuration {
 					} else {
 						project.setIgnoreHiddenFiles(true);
 					}
+
+					/* load last insert hashes. */
+					SimpleXML lastInsertHashesNode = projectNode.getNode("last-insert-hashes");
+					if (lastInsertHashesNode != null) {
+						for (SimpleXML fileNode : lastInsertHashesNode.getNodes("file")) {
+							String filename = fileNode.getNode("filename").getValue();
+							String lastInsertHash = fileNode.getNode("last-insert-hash").getValue();
+							project.getFileOption(filename).setLastInsertHash(lastInsertHash);
+						}
+					}
+
 					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
 					if (fileOptionsNode != null) {
@@ -383,6 +394,18 @@ public class Configuration {
 			projectNode.append("insert-uri", project.getInsertURI());
 			projectNode.append("request-uri", project.getRequestURI());
 			projectNode.append("ignore-hidden-files", String.valueOf(project.isIgnoreHiddenFiles()));
+
+			/* store last insert hashes. */
+			SimpleXML lastInsertHashesNode = projectNode.append("last-insert-hashes");
+			for (Entry<String, FileOption> fileOption : project.getFileOptions().entrySet()) {
+				if ((fileOption.getValue().getLastInsertHash() == null) || (fileOption.getValue().getLastInsertHash().length() == 0)) {
+					continue;
+				}
+				SimpleXML fileNode = lastInsertHashesNode.append("file");
+				fileNode.append("filename", fileOption.getKey());
+				fileNode.append("last-insert-hash", fileOption.getValue().getLastInsertHash());
+			}
+
 			SimpleXML fileOptionsNode = projectNode.append("file-options");
 			Iterator<Entry<String, FileOption>> entries = project.getFileOptions().entrySet().iterator();
 			while (entries.hasNext()) {
