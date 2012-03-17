@@ -364,7 +364,14 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			Iterator<String> filenames = new HashSet<String>(project.getFileOptions().keySet()).iterator();
 			while (filenames.hasNext()) {
 				String filename = filenames.next();
-				if (!files.contains(filename)) {
+				boolean found = false;
+				for (ScannedFile scannedFile : files) {
+					if (scannedFile.getFilename().equals(filename)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
 					entriesToRemove.add(filename);
 				}
 			}
