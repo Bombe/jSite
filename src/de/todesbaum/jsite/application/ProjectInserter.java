@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.todesbaum.jsite.gui.FileScanner;
+import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientPutComplexDir;
@@ -268,37 +269,35 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * Creates a file entry suitable for handing in to
 	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
 	 *
-	 * @param filename
-	 *            The name of the file to insert
+	 * @param file
+	 *            The name and hash of the file to insert
 	 * @param edition
 	 *            The current edition
-	 * @param containerFiles
-	 *            The container definitions
 	 * @return A file entry for the given file
 	 */
-	private FileEntry createFileEntry(String filename, int edition, Map<String, List<String>> containerFiles) {
+	private FileEntry createFileEntry(ScannedFile file, int edition) {
 		FileEntry fileEntry = null;
+		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
+		if (fileOption.isInsert()) {
+			/* check if file was modified. */
+			if (file.getHash().equals(fileOption.getLastInsertHash())) {
+				/* only insert a redirect. */
+				return new RedirectFileEntry(filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + project.getEdition() + "/" + filename);
+			}
+			fileOption.setCurrentHash(file.getHash());
 			try {
-				long[] containerLength = new long[1];
-				InputStream containerInputStream = createContainerInputStream(containerFiles, containerName, edition, containerLength);
-				fileEntry = new DirectFileEntry(containerName + ".zip", "application/zip", containerInputStream, containerLength[0]);
+				long[] fileLength = new long[1];
+				InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
+				fileEntry = new DirectFileEntry(filename, fileOption.getMimeType(), fileEntryInputStream, fileLength[0]);
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
-			if (fileOption.isInsert()) {
-				try {
-					long[] fileLength = new long[1];
-					InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
-					fileEntry = new DirectFileEntry(filename, project.getFileOption(filename).getMimeType(), fileEntryInputStream, fileLength[0]);
-				} catch (IOException ioe1) {
-					/* ignore, null is returned. */
-				}
+			if (fileOption.isInsertRedirect()) {
+				fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
 			} else {
-				if (fileOption.isInsertRedirect()) {
-					fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
-				}
+				fileOption.setLastInsertHash("");
 			}
 		}
 		return fileEntry;
@@ -409,8 +408,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setMaxRetries(-1);
 		putDir.setEarlyEncode(false);
 		putDir.setManifestPutter(ManifestPutter.DEFAULT);
-		for (String filename : files) {
-			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
+		for (ScannedFile file : files) {
+			FileEntry fileEntry = createFileEntry(file, edition);
 			if (fileEntry != null) {
 				try {
 					putDir.addFileEntry(fileEntry);

@@ -56,6 +56,7 @@ import javax.swing.text.Document;
 
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.mime.DefaultMIMETypes;
@@ -360,12 +361,16 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	public void fileScannerFinished(FileScanner fileScanner) {
 		final boolean error = fileScanner.isError();
 		if (!error) {
-			final List<String> files = fileScanner.getFiles();
+			final List<ScannedFile> files = fileScanner.getFiles();
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@SuppressWarnings("synthetic-access")
 				public void run() {
-					projectFileList.setListData(files.toArray(new String[files.size()]));
+					String[] filenames = new String[files.size()];
+					for (int fileIndex = 0; fileIndex < files.size(); ++fileIndex) {
+						filenames[fileIndex] = files.get(fileIndex).getFilename();
+					}
+					projectFileList.setListData(filenames);
 					projectFileList.clearSelection();
 				}
 			});
