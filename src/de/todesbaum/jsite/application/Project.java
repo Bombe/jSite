@@ -426,7 +426,10 @@ public class Project implements Comparable<Project> {
 	 */
 	public void copyHashes() {
 		for (FileOption fileOption : fileOptions.values()) {
-			fileOption.setLastInsertHash(fileOption.getCurrentHash());
+			if (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash())) {
+				fileOption.setLastInsertEdition(edition);
+				fileOption.setLastInsertHash(fileOption.getCurrentHash());
+			}
 		}
 	}
 
