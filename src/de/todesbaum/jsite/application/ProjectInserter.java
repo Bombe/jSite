@@ -375,7 +375,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void run() {
 		fireProjectInsertStarted();
-		List<String> files = fileScanner.getFiles();
+		List<ScannedFile> files = fileScanner.getFiles();
 
 		/* create connection to node */
 		synchronized (lockObject) {
