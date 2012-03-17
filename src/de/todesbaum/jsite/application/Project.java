@@ -419,4 +419,15 @@ public class Project implements Comparable<Project> {
 		return "USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
 	}
 
+	/**
+	 * Copies the current hashes of all file options to the last insert hashes,
+	 * updating the hashes for the next insert. This method should only be
+	 * called after the insert has finished successfully.
+	 */
+	public void copyHashes() {
+		for (FileOption fileOption : fileOptions.values()) {
+			fileOption.setLastInsertHash(fileOption.getCurrentHash());
+		}
+	}
+
 }
