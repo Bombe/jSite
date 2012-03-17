@@ -280,13 +280,13 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (fileOption.isInsert()) {
+			fileOption.setCurrentHash(file.getHash());
 			/* check if file was modified. */
 			if (file.getHash().equals(fileOption.getLastInsertHash())) {
 				/* only insert a redirect. */
 				logger.log(Level.FINE, String.format("Inserting redirect to edition %d for %s.", fileOption.getLastInsertEdition(), filename));
 				return new RedirectFileEntry(filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + filename);
 			}
-			fileOption.setCurrentHash(file.getHash());
 			try {
 				long[] fileLength = new long[1];
 				InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
