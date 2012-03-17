@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -320,19 +319,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		});
 	}
 
-	/**
-	 * Returns a list of all project files.
-	 *
-	 * @return All project files
-	 */
-	private List<String> getProjectFiles() {
-		List<String> files = new ArrayList<String>();
-		for (int index = 0, size = projectFileList.getModel().getSize(); index < size; index++) {
-			files.add((String) projectFileList.getModel().getElementAt(index));
-		}
-		return files;
-	}
-
 	//
 	// ACTIONS
 	//
@@ -479,7 +465,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	public void valueChanged(ListSelectionEvent e) {
 		String filename = (String) projectFileList.getSelectedValue();
 		boolean enabled = filename != null;
-		boolean insert = fileOptionsInsertCheckBox.isSelected();
 		defaultFileCheckBox.setEnabled(enabled);
 		fileOptionsInsertCheckBox.setEnabled(enabled);
 		fileOptionsRenameCheckBox.setEnabled(enabled);
