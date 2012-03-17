@@ -297,8 +297,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		} else {
 			if (fileOption.isInsertRedirect()) {
 				fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
-			} else {
-				fileOption.setLastInsertHash("");
 			}
 		}
 		return fileEntry;
