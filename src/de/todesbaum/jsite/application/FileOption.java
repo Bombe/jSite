@@ -40,6 +40,9 @@ public class FileOption {
 	/** The insert state. */
 	private boolean insert;
 
+	/** Whether to force an insert. */
+	private boolean forceInsert;
+
 	/** Whether to insert a redirect. */
 	private boolean insertRedirect;
 
@@ -129,6 +132,31 @@ public class FileOption {
 	 */
 	public void setInsert(boolean insert) {
 		this.insert = insert;
+	}
+
+	/**
+	 * Returns whether the insert of this file should be forced, even if its
+	 * current hash matches the last insert hash.
+	 *
+	 * @return {@code true} to force the insert of this file, {@code false}
+	 *         otherwise
+	 */
+	public boolean isForceInsert() {
+		return forceInsert;
+	}
+
+	/**
+	 * Sets whether to force the insert of this file, even if its current hash
+	 * matches the last insert hash.
+	 *
+	 * @param forceInsert
+	 *            {@code true} to force the insert of this file, {@code false}
+	 *            otherwise
+	 * @return These file options
+	 */
+	public FileOption setForceInsert(boolean forceInsert) {
+		this.forceInsert = forceInsert;
+		return this;
 	}
 
 	/**
