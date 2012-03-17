@@ -352,11 +352,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 				@SuppressWarnings("synthetic-access")
 				public void run() {
-					String[] filenames = new String[files.size()];
-					for (int fileIndex = 0; fileIndex < files.size(); ++fileIndex) {
-						filenames[fileIndex] = files.get(fileIndex).getFilename();
-					}
-					projectFileList.setListData(filenames);
+					projectFileList.setListData(files.toArray());
 					projectFileList.clearSelection();
 				}
 			});
@@ -400,11 +396,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 *         no file is selected
 	 */
 	private FileOption getSelectedFile() {
-		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null) {
+		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
+		if (scannedFile == null) {
 			return null;
 		}
-		return project.getFileOption(filename);
+		return project.getFileOption(scannedFile.getFilename());
 	}
 
 	//
@@ -421,10 +417,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			actionScan();
 			return;
 		}
-		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null) {
+		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
+		if (scannedFile == null) {
 			return;
 		}
+		String filename = scannedFile.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (source instanceof JCheckBox) {
 			JCheckBox checkBox = (JCheckBox) source;
@@ -470,8 +467,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 * {@inheritDoc}
 	 */
 	public void valueChanged(ListSelectionEvent e) {
-		String filename = (String) projectFileList.getSelectedValue();
-		boolean enabled = filename != null;
+		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
+		boolean enabled = scannedFile != null;
+		String filename = (scannedFile == null) ? null : scannedFile.getFilename();
 		defaultFileCheckBox.setEnabled(enabled);
 		fileOptionsInsertCheckBox.setEnabled(enabled);
 		fileOptionsRenameCheckBox.setEnabled(enabled);
@@ -515,11 +513,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 *            The document event to process
 	 */
 	private void processDocumentUpdate(DocumentEvent documentEvent) {
-		String filename = (String) projectFileList.getSelectedValue();
-		if (filename == null) {
+		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
+		if (scannedFile == null) {
 			return;
 		}
-		FileOption fileOption = project.getFileOption(filename);
+		FileOption fileOption = project.getFileOption(scannedFile.getFilename());
 		Document document = documentEvent.getDocument();
 		try {
 			String text = document.getText(0, document.getLength());
