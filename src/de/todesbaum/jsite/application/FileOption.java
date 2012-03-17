@@ -46,6 +46,9 @@ public class FileOption {
 	/** The hash of the last insert. */
 	private String lastInsertHash;
 
+	/** The edition of the last insert. */
+	private int lastInsertEdition;
+
 	/** The current hash of the file. */
 	private String currentHash;
 
@@ -174,6 +177,27 @@ public class FileOption {
 	 */
 	public FileOption setLastInsertHash(String lastInsertHash) {
 		this.lastInsertHash = lastInsertHash;
+		return this;
+	}
+
+	/**
+	 * Returns the last edition at which this file was inserted.
+	 *
+	 * @return The last insert edition of this file
+	 */
+	public int getLastInsertEdition() {
+		return lastInsertEdition;
+	}
+
+	/**
+	 * Sets the last insert edition of this file.
+	 *
+	 * @param lastInsertEdition
+	 *            The last insert edition of this file
+	 * @return These file options
+	 */
+	public FileOption setLastInsertEdition(int lastInsertEdition) {
+		this.lastInsertEdition = lastInsertEdition;
 		return this;
 	}
 
