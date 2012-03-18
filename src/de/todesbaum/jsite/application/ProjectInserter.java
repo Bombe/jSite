@@ -43,6 +43,7 @@ import de.todesbaum.util.freenet.fcp2.Connection;
 import de.todesbaum.util.freenet.fcp2.DirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.FileEntry;
 import de.todesbaum.util.freenet.fcp2.Message;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.freenet.fcp2.RedirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
 import de.todesbaum.util.io.StreamCopier.ProgressListener;
@@ -92,6 +93,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/** Whether to use “early encode.” */
 	private boolean useEarlyEncode;
+
+	/** The insert priority. */
+	private PriorityClass priority;
 
 	/**
 	 * Adds a listener to the list of registered listeners.
@@ -227,6 +231,16 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void setUseEarlyEncode(boolean useEarlyEncode) {
 		this.useEarlyEncode = useEarlyEncode;
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 */
+	public void setPriority(PriorityClass priority) {
+		this.priority = priority;
 	}
 
 	/**
@@ -420,6 +434,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
 		putDir.setEarlyEncode(useEarlyEncode);
+		putDir.setPriorityClass(priority);
 		putDir.setManifestPutter(ManifestPutter.DEFAULT);
 		for (ScannedFile file : files) {
 			FileEntry fileEntry = createFileEntry(file, edition);
