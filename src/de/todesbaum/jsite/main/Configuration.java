@@ -570,4 +570,27 @@ public class Configuration {
 		}
 	}
 
+	/**
+	 * Returns whether to use the “early encode“ flag for the insert.
+	 *
+	 * @return {@code true} to set the “early encode” flag for the insert,
+	 *         {@code false} otherwise
+	 */
+	public boolean useEarlyEncode() {
+		return getNodeBooleanValue(new String[] { "use-early-encode" }, false);
+	}
+
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 * @return This configuration
+	 */
+	public Configuration setUseEarlyEncode(boolean useEarlyEncode) {
+		rootNode.replace("use-early-encode", String.valueOf(useEarlyEncode));
+		return this;
+	}
+
 }
