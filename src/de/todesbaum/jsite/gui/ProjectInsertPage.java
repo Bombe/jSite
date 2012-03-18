@@ -54,6 +54,7 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -321,6 +322,16 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void setUseEarlyEncode(boolean useEarlyEncode) {
 		projectInserter.setUseEarlyEncode(useEarlyEncode);
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 */
+	public void setPriority(PriorityClass priority) {
+		projectInserter.setPriority(priority);
 	}
 
 	//
