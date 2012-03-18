@@ -312,6 +312,17 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		return uriCopied;
 	}
 
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 */
+	public void setUseEarlyEncode(boolean useEarlyEncode) {
+		projectInserter.setUseEarlyEncode(useEarlyEncode);
+	}
+
 	//
 	// INTERFACE InsertListener
 	//
