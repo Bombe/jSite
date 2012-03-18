@@ -39,6 +39,7 @@ import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.xml.SimpleXML;
@@ -590,6 +591,27 @@ public class Configuration {
 	 */
 	public Configuration setUseEarlyEncode(boolean useEarlyEncode) {
 		rootNode.replace("use-early-encode", String.valueOf(useEarlyEncode));
+		return this;
+	}
+
+	/**
+	 * Returns the insert priority.
+	 *
+	 * @return The insert priority
+	 */
+	public PriorityClass getPriority() {
+		return PriorityClass.valueOf(getNodeValue(new String[] { "insert-priority" }, "interactive"));
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 * @return This configuration
+	 */
+	public Configuration setPriority(PriorityClass priority) {
+		rootNode.replace("insert-priority", priority.toString());
 		return this;
 	}
 
