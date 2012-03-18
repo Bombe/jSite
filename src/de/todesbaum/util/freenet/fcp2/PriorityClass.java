@@ -89,4 +89,25 @@ public final class PriorityClass {
 		return value;
 	}
 
+	//
+	// STATIC METHODS
+	//
+
+	/**
+	 * Returns the priority class with the given name, matched case-insensitive.
+	 *
+	 * @param value
+	 *            The name of the priority
+	 * @return The priority with the given name, or {@code null} if no priority
+	 *         matches the given name
+	 */
+	public static PriorityClass valueOf(String value) {
+		for (PriorityClass priorityClass : new PriorityClass[] { MINIMUM, PREFETCH, BULK, UPDATABLE, SEMI_INTERACTIVE, INTERACTIVE, MAXIMUM }) {
+			if (priorityClass.getName().equalsIgnoreCase(value)) {
+				return priorityClass;
+			}
+		}
+		return null;
+	}
+
 }
