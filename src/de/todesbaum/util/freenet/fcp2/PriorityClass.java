@@ -110,4 +110,16 @@ public final class PriorityClass {
 		return null;
 	}
 
+	//
+	// OBJECT METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }
