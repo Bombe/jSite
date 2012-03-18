@@ -30,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +40,7 @@ import javax.swing.JTextField;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
@@ -70,6 +72,9 @@ public class PreferencesPage extends TWizardPage {
 	/** Action when selecting “use early encode.” */
 	private Action useEarlyEncodeAction;
 
+	/** Action when a priority was selected. */
+	private Action priorityAction;
+
 	/** The text field containing the directory. */
 	private JTextField tempDirectoryTextField;
 
@@ -81,6 +86,9 @@ public class PreferencesPage extends TWizardPage {
 
 	/** Whether to use “early encode.” */
 	private boolean useEarlyEncode;
+
+	/** The prioriy for inserts. */
+	private PriorityClass priority;
 
 	/** The “default” button. */
 	private JRadioButton defaultTempDirectory;
@@ -99,6 +107,9 @@ public class PreferencesPage extends TWizardPage {
 
 	/** The “use early encode” checkbox. */
 	private JCheckBox useEarlyEncodeCheckBox;
+
+	/** The insert priority select box. */
+	private JComboBox insertPriorityComboBox;
 
 	/**
 	 * Creates a new “preferences” page.
@@ -231,6 +242,25 @@ public class PreferencesPage extends TWizardPage {
 	}
 
 	/**
+	 * Returns the configured insert priority.
+	 *
+	 * @return The insert priority
+	 */
+	public PriorityClass getPriority() {
+		return priority;
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 */
+	public void setPriority(PriorityClass priority) {
+		insertPriorityComboBox.setSelectedItem(priority);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -314,6 +344,13 @@ public class PreferencesPage extends TWizardPage {
 				useEarlyEncode = useEarlyEncodeCheckBox.isSelected();
 			}
 		};
+		priorityAction = new AbstractAction(I18n.getMessage("jsite.preferences.insert-options.priority")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				priority = (PriorityClass) insertPriorityComboBox.getSelectedItem();
+			}
+		};
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -389,6 +426,13 @@ public class PreferencesPage extends TWizardPage {
 		useEarlyEncodeCheckBox = new JCheckBox(useEarlyEncodeAction);
 		preferencesPanel.add(useEarlyEncodeCheckBox, new GridBagConstraints(0, 8, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 
+		final JLabel insertPriorityLabel = new JLabel(I18n.getMessage("jsite.preferences.insert-options.priority"));
+		preferencesPanel.add(insertPriorityLabel, new GridBagConstraints(0, 9, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+
+		insertPriorityComboBox = new JComboBox(new PriorityClass[] { PriorityClass.MINIMUM, PriorityClass.PREFETCH, PriorityClass.BULK, PriorityClass.UPDATABLE, PriorityClass.SEMI_INTERACTIVE, PriorityClass.INTERACTIVE, PriorityClass.MAXIMUM });
+		insertPriorityComboBox.setAction(priorityAction);
+		preferencesPanel.add(insertPriorityComboBox, new GridBagConstraints(1, 9, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.VERTICAL, new Insets(0, 18, 0, 0), 0, 0));
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			/**
@@ -398,6 +442,7 @@ public class PreferencesPage extends TWizardPage {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 				configurationDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");
 				insertOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.insert-options") + "</b></html>");
+				insertPriorityLabel.setText(I18n.getMessage("jsite.preferences.insert-options.priority"));
 			}
 		});
 
