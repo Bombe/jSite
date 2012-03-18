@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +67,9 @@ public class PreferencesPage extends TWizardPage {
 	/** Action when selecting “custom directory.” */
 	private Action customDirectoryAction;
 
+	/** Action when selecting “use early encode.” */
+	private Action useEarlyEncodeAction;
+
 	/** The text field containing the directory. */
 	private JTextField tempDirectoryTextField;
 
@@ -74,6 +78,9 @@ public class PreferencesPage extends TWizardPage {
 
 	/** The configuration location. */
 	private ConfigurationLocation configurationLocation;
+
+	/** Whether to use “early encode.” */
+	private boolean useEarlyEncode;
 
 	/** The “default” button. */
 	private JRadioButton defaultTempDirectory;
@@ -89,6 +96,9 @@ public class PreferencesPage extends TWizardPage {
 
 	/** The “custom directory” checkbox. */
 	private JRadioButton customDirectory;
+
+	/** The “use early encode” checkbox. */
+	private JCheckBox useEarlyEncodeCheckBox;
 
 	/**
 	 * Creates a new “preferences” page.
@@ -200,6 +210,27 @@ public class PreferencesPage extends TWizardPage {
 	}
 
 	/**
+	 * Returns whether to use the “early encode“ flag for the insert.
+	 *
+	 * @return {@code true} to set the “early encode” flag for the insert,
+	 *         {@code false} otherwise
+	 */
+	public boolean useEarlyEncode() {
+		return useEarlyEncode;
+	}
+
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 */
+	public void setUseEarlyEncode(boolean useEarlyEncode) {
+		useEarlyEncodeCheckBox.setSelected(useEarlyEncode);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -276,6 +307,13 @@ public class PreferencesPage extends TWizardPage {
 				configurationLocation = ConfigurationLocation.CUSTOM;
 			}
 		};
+		useEarlyEncodeAction = new AbstractAction(I18n.getMessage("jsite.preferences.insert-options.use-early-encode")) {
+
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionEvent) {
+				useEarlyEncode = useEarlyEncodeCheckBox.isSelected();
+			}
+		};
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
@@ -287,6 +325,7 @@ public class PreferencesPage extends TWizardPage {
 				nextToJarFileAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.jar"));
 				homeDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.home"));
 				customDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.config-directory.custom"));
+				useEarlyEncodeAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.insert-options.use-early-encode"));
 			}
 		});
 	}
@@ -344,6 +383,12 @@ public class PreferencesPage extends TWizardPage {
 		configurationDirectoryButtonGroup.add(homeDirectory);
 		configurationDirectoryButtonGroup.add(customDirectory);
 
+		final JLabel insertOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.preferences.insert-options") + "</b></html>");
+		preferencesPanel.add(insertOptionsLabel, new GridBagConstraints(0, 7, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+
+		useEarlyEncodeCheckBox = new JCheckBox(useEarlyEncodeAction);
+		preferencesPanel.add(useEarlyEncodeCheckBox, new GridBagConstraints(0, 8, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			/**
@@ -352,6 +397,7 @@ public class PreferencesPage extends TWizardPage {
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 				configurationDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");
+				insertOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.insert-options") + "</b></html>");
 			}
 		});
 
