@@ -458,6 +458,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setConfigurationLocation(configuration.getConfigurationDirectory());
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasNextToJarConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.NEXT_TO_JAR_FILE));
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasCustomConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.CUSTOM));
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setUseEarlyEncode(configuration.useEarlyEncode());
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);
@@ -550,6 +551,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			ProjectInsertPage projectInsertPage = (ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT);
 			String tempDirectory = ((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).getTempDirectory();
 			projectInsertPage.setTempDirectory(tempDirectory);
+			projectInsertPage.setUseEarlyEncode(configuration.useEarlyEncode());
 			projectInsertPage.startInsert();
 			nodeMenu.setEnabled(false);
 			optionsPreferencesAction.setEnabled(false);
@@ -566,6 +568,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			PreferencesPage preferencesPage = (PreferencesPage) pages.get(PageType.PAGE_PREFERENCES);
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
+			configuration.setUseEarlyEncode(preferencesPage.useEarlyEncode());
 			configuration.setConfigurationLocation(preferencesPage.getConfigurationLocation());
 		}
 	}
