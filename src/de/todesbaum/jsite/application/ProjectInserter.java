@@ -90,6 +90,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/** Progress listener for payload transfers. */
 	private ProgressListener progressListener;
 
+	/** Whether to use “early encode.” */
+	private boolean useEarlyEncode;
+
 	/**
 	 * Adds a listener to the list of registered listeners.
 	 *
@@ -213,6 +216,17 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void setTempDirectory(String tempDirectory) {
 		this.tempDirectory = tempDirectory;
+	}
+
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 */
+	public void setUseEarlyEncode(boolean useEarlyEncode) {
+		this.useEarlyEncode = useEarlyEncode;
 	}
 
 	/**
@@ -405,7 +419,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
-		putDir.setEarlyEncode(false);
+		putDir.setEarlyEncode(useEarlyEncode);
 		putDir.setManifestPutter(ManifestPutter.DEFAULT);
 		for (ScannedFile file : files) {
 			FileEntry fileEntry = createFileEntry(file, edition);
