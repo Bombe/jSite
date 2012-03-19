@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - FileScanner.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +20,23 @@ package de.todesbaum.jsite.gui;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
+import de.todesbaum.util.io.Closer;
+import de.todesbaum.util.io.StreamCopier;
 
 /**
  * Scans the local path of a project anychronously and returns the list of found
@@ -39,6 +48,9 @@ import de.todesbaum.jsite.i18n.I18n;
  */
 public class FileScanner implements Runnable {
 
+	/** The logger. */
+	private final static Logger logger = Logger.getLogger(FileScanner.class.getName());
+
 	/** The list of listeners. */
 	private final List<FileScannerListener> fileScannerListeners = new ArrayList<FileScannerListener>();
 
@@ -46,7 +58,7 @@ public class FileScanner implements Runnable {
 	private final Project project;
 
 	/** The list of found files. */
-	private List<String> files;
+	private List<ScannedFile> files;
 
 	/** Wether there was an error. */
 	private boolean error = false;
@@ -99,7 +111,7 @@ public class FileScanner implements Runnable {
 	 * @see FileScannerListener#fileScannerFinished(FileScanner)
 	 */
 	public void run() {
-		files = new ArrayList<String>();
+		files = new ArrayList<ScannedFile>();
 		error = false;
 		try {
 			scanFiles(new File(project.getLocalPath()), files);
@@ -125,7 +137,7 @@ public class FileScanner implements Runnable {
 	 *
 	 * @return The list of found files
 	 */
-	public List<String> getFiles() {
+	public List<ScannedFile> getFiles() {
 		return files;
 	}
 
@@ -139,7 +151,7 @@ public class FileScanner implements Runnable {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	private void scanFiles(File rootDir, List<String> fileList) throws IOException {
+	private void scanFiles(File rootDir, List<ScannedFile> fileList) throws IOException {
 		File[] files = rootDir.listFiles(new FileFilter() {
 
 			@SuppressWarnings("synthetic-access")
@@ -155,10 +167,178 @@ public class FileScanner implements Runnable {
 				scanFiles(file, fileList);
 				continue;
 			}
-			String filename = project.shortenFilename(file);
-			filename = filename.replace('\\', '/');
-			fileList.add(filename);
+			String filename = project.shortenFilename(file).replace('\\', '/');
+			String hash = hashFile(project.getLocalPath(), filename);
+			fileList.add(new ScannedFile(filename, hash));
 		}
+	}
+
+	/**
+	 * Hashes the given file.
+	 *
+	 * @param path
+	 *            The path of the project
+	 * @param filename
+	 *            The name of the file, relative to the project path
+	 * @return The hash of the file
+	 */
+	@SuppressWarnings("synthetic-access")
+	private static String hashFile(String path, String filename) {
+		InputStream fileInputStream = null;
+		DigestOutputStream digestOutputStream = null;
+		File file = new File(path, filename);
+		try {
+			fileInputStream = new FileInputStream(file);
+			digestOutputStream = new DigestOutputStream(new NullOutputStream(), MessageDigest.getInstance("SHA-256"));
+			StreamCopier.copy(fileInputStream, digestOutputStream, file.length());
+			return toHex(digestOutputStream.getMessageDigest().digest());
+		} catch (NoSuchAlgorithmException nsae1) {
+			logger.log(Level.WARNING, "Could not get SHA-256 digest!", nsae1);
+		} catch (IOException ioe1) {
+			logger.log(Level.WARNING, "Could not read file!", ioe1);
+		} finally {
+			Closer.close(digestOutputStream);
+			Closer.close(fileInputStream);
+		}
+		return toHex(new byte[32]);
+	}
+
+	/**
+	 * Converts the given byte array into a hexadecimal string.
+	 *
+	 * @param array
+	 *            The array to convert
+	 * @return The hexadecimal string
+	 */
+	private static String toHex(byte[] array) {
+		StringBuilder hexString = new StringBuilder(array.length * 2);
+		for (byte b : array) {
+			hexString.append("0123456789abcdef".charAt((b >>> 4) & 0x0f)).append("0123456789abcdef".charAt(b & 0xf));
+		}
+		return hexString.toString();
+	}
+
+	/**
+	 * {@link OutputStream} that discards all written bytes.
+	 *
+	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+	 */
+	private static class NullOutputStream extends OutputStream {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void write(int b) {
+			/* do nothing. */
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void write(byte[] b) {
+			/* do nothing. */
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void write(byte[] b, int off, int len) {
+			/* do nothing. */
+		}
+
+	}
+
+	/**
+	 * Container for a scanned file, consisting of the name of the file and its
+	 * hash.
+	 *
+	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+	 */
+	public static class ScannedFile implements Comparable<ScannedFile> {
+
+		/** The name of the file. */
+		private final String filename;
+
+		/** The hash of the file. */
+		private final String hash;
+
+		/**
+		 * Creates a new scanned file.
+		 *
+		 * @param filename
+		 *            The name of the file
+		 * @param hash
+		 *            The hash of the file
+		 */
+		public ScannedFile(String filename, String hash) {
+			this.filename = filename;
+			this.hash = hash;
+		}
+
+		//
+		// ACCESSORS
+		//
+
+		/**
+		 * Returns the name of the file.
+		 *
+		 * @return The name of the file
+		 */
+		public String getFilename() {
+			return filename;
+		}
+
+		/**
+		 * Returns the hash of the file.
+		 *
+		 * @return The hash of the file
+		 */
+		public String getHash() {
+			return hash;
+		}
+
+		//
+		// OBJECT METHODS
+		//
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int hashCode() {
+			return filename.hashCode();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			return filename.equals(obj);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			return filename;
+		}
+
+		//
+		// COMPARABLE METHODS
+		//
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public int compareTo(ScannedFile scannedFile) {
+			return filename.compareTo(scannedFile.filename);
+		}
+
 	}
 
 }

@@ -1,6 +1,5 @@
 /*
- * todesbaum-lib -
- * Copyright (C) 2006 David Roden
+ * jSite - Client.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +21,8 @@ package de.todesbaum.util.freenet.fcp2;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * A Client executes {@link Command}s over a {@link Connection} to a
@@ -113,6 +114,23 @@ public class Client implements ConnectionListener {
 	}
 
 	/**
+	 * Executes the specified command. This will also clear the queue of
+	 * messages, discarding all messages that resulted from the previous
+	 * command and have not yet been read.
+	 *
+	 * @param command
+	 *            The command to execute
+	 * @param progressListener
+	 *            The progress listener for payload transfers
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @see #execute(Command, boolean)
+	 */
+	public void execute(Command command, ProgressListener progressListener) throws IOException {
+		execute(command, true, progressListener);
+	}
+
+	/**
 	 * Executes the specified command and optionally clears the list of
 	 * identifiers this clients listens to before starting the command.
 	 *
@@ -125,6 +143,24 @@ public class Client implements ConnectionListener {
 	 *             if an I/O error occurs
 	 */
 	public void execute(Command command, boolean removeExistingIdentifiers) throws IOException {
+		execute(command, removeExistingIdentifiers, null);
+	}
+
+	/**
+	 * Executes the specified command and optionally clears the list of
+	 * identifiers this clients listens to before starting the command.
+	 *
+	 * @param command
+	 *            The command to execute
+	 * @param removeExistingIdentifiers
+	 *            If <code>true</code>, the list of identifiers that this
+	 *            clients listens to is cleared
+	 * @param progressListener
+	 *            The progress listener for payload transfers
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public void execute(Command command, boolean removeExistingIdentifiers, ProgressListener progressListener) throws IOException {
 		synchronized (messageQueue) {
 			messageQueue.clear();
 			if (removeExistingIdentifiers) {
@@ -132,7 +168,7 @@ public class Client implements ConnectionListener {
 			}
 			identifiers.add(command.getIdentifier());
 		}
-		connection.execute(command);
+		connection.execute(command, progressListener);
 	}
 
 	/**

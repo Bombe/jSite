@@ -1,6 +1,5 @@
 /*
- * jSite -
- * Copyright (C) 2006 David Roden
+ * jSite - Freenet7Interface.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +141,7 @@ public class Freenet7Interface {
 	 */
 	public String[] generateKeyPair() throws IOException {
 		if (!isNodePresent()) {
-			return null;
+			throw new IOException("Node is offline.");
 		}
 		GenerateSSK generateSSK = new GenerateSSK();
 		Client client = new Client(connection, generateSSK);

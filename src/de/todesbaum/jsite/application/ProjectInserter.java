@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - ProjectInserter.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,40 +18,35 @@
 
 package de.todesbaum.jsite.application;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import de.todesbaum.jsite.gui.FileScanner;
+import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientPutComplexDir;
+import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.Connection;
 import de.todesbaum.util.freenet.fcp2.DirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.FileEntry;
 import de.todesbaum.util.freenet.fcp2.Message;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.freenet.fcp2.RedirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
-import de.todesbaum.util.io.Closer;
-import de.todesbaum.util.io.ReplacingOutputStream;
-import de.todesbaum.util.io.StreamCopier;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * Manages project inserts.
@@ -93,6 +87,15 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/** Whether the insert is cancelled. */
 	private volatile boolean cancelled = false;
+
+	/** Progress listener for payload transfers. */
+	private ProgressListener progressListener;
+
+	/** Whether to use “early encode.” */
+	private boolean useEarlyEncode;
+
+	/** The insert priority. */
+	private PriorityClass priority;
 
 	/**
 	 * Adds a listener to the list of registered listeners.
@@ -220,10 +223,35 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	}
 
 	/**
-	 * Starts the insert.
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
 	 */
-	public void start() {
+	public void setUseEarlyEncode(boolean useEarlyEncode) {
+		this.useEarlyEncode = useEarlyEncode;
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 */
+	public void setPriority(PriorityClass priority) {
+		this.priority = priority;
+	}
+
+	/**
+	 * Starts the insert.
+	 *
+	 * @param progressListener
+	 *            Listener to notify on progress events
+	 */
+	public void start(ProgressListener progressListener) {
 		cancelled = false;
+		this.progressListener = progressListener;
 		fileScanner = new FileScanner(project);
 		fileScanner.addFileScannerListener(this);
 		new Thread(fileScanner).start();
@@ -262,145 +290,44 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private InputStream createFileInputStream(String filename, FileOption fileOption, int edition, long[] length) throws IOException {
 		File file = new File(project.getLocalPath(), filename);
 		length[0] = file.length();
-		if (!fileOption.getReplaceEdition()) {
-			return new FileInputStream(file);
-		}
-		ByteArrayOutputStream filteredByteOutputStream = new ByteArrayOutputStream(Math.min(Integer.MAX_VALUE, (int) length[0]));
-		ReplacingOutputStream outputStream = new ReplacingOutputStream(filteredByteOutputStream);
-		FileInputStream fileInput = new FileInputStream(file);
-		try {
-			outputStream.addReplacement("$[EDITION]", String.valueOf(edition));
-			outputStream.addReplacement("$[URI]", project.getFinalRequestURI(0));
-			for (int index = 1; index <= fileOption.getEditionRange(); index++) {
-				outputStream.addReplacement("$[URI+" + index + "]", project.getFinalRequestURI(index));
-				outputStream.addReplacement("$[EDITION+" + index + "]", String.valueOf(edition + index));
-			}
-			StreamCopier.copy(fileInput, outputStream, length[0]);
-		} finally {
-			Closer.close(fileInput);
-			Closer.close(outputStream);
-			Closer.close(filteredByteOutputStream);
-		}
-		byte[] filteredBytes = filteredByteOutputStream.toByteArray();
-		length[0] = filteredBytes.length;
-		return new ByteArrayInputStream(filteredBytes);
-	}
-
-	/**
-	 * Creates an input stream for a container.
-	 *
-	 * @param containerFiles
-	 *            All container definitions
-	 * @param containerName
-	 *            The name of the container to create
-	 * @param edition
-	 *            The current edition
-	 * @param containerLength
-	 *            An array containing a single long which is used to
-	 *            <em>return</em> the final length of the container stream,
-	 *            after all replacements
-	 * @return The input stream for the container
-	 * @throws IOException
-	 *             if an I/O error occurs
-	 */
-	private InputStream createContainerInputStream(Map<String, List<String>> containerFiles, String containerName, int edition, long[] containerLength) throws IOException {
-		File tempFile = File.createTempFile("jsite", ".zip", (tempDirectory == null) ? null : new File(tempDirectory));
-		tempFile.deleteOnExit();
-		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-		try {
-			for (String filename : containerFiles.get(containerName)) {
-				File dataFile = new File(project.getLocalPath(), filename);
-				if (dataFile.exists()) {
-					ZipEntry zipEntry = new ZipEntry(filename);
-					long[] fileLength = new long[1];
-					InputStream wrappedInputStream = createFileInputStream(filename, project.getFileOption(filename), edition, fileLength);
-					try {
-						zipOutputStream.putNextEntry(zipEntry);
-						StreamCopier.copy(wrappedInputStream, zipOutputStream, fileLength[0]);
-					} finally {
-						zipOutputStream.closeEntry();
-						wrappedInputStream.close();
-					}
-				}
-			}
-		} finally {
-			zipOutputStream.closeEntry();
-			Closer.close(zipOutputStream);
-			Closer.close(fileOutputStream);
-		}
-
-		containerLength[0] = tempFile.length();
-		return new FileInputStream(tempFile);
+		return new FileInputStream(file);
 	}
 
 	/**
 	 * Creates a file entry suitable for handing in to
 	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
 	 *
-	 * @param filename
-	 *            The name of the file to insert
+	 * @param file
+	 *            The name and hash of the file to insert
 	 * @param edition
 	 *            The current edition
-	 * @param containerFiles
-	 *            The container definitions
 	 * @return A file entry for the given file
 	 */
-	private FileEntry createFileEntry(String filename, int edition, Map<String, List<String>> containerFiles) {
+	private FileEntry createFileEntry(ScannedFile file, int edition) {
 		FileEntry fileEntry = null;
+		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
-		if (filename.startsWith("/container/:")) {
-			String containerName = filename.substring("/container/:".length());
+		if (fileOption.isInsert()) {
+			fileOption.setCurrentHash(file.getHash());
+			/* check if file was modified. */
+			if (!fileOption.isForceInsert() && file.getHash().equals(fileOption.getLastInsertHash())) {
+				/* only insert a redirect. */
+				logger.log(Level.FINE, String.format("Inserting redirect to edition %d for %s.", fileOption.getLastInsertEdition(), filename));
+				return new RedirectFileEntry(filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + filename);
+			}
 			try {
-				long[] containerLength = new long[1];
-				InputStream containerInputStream = createContainerInputStream(containerFiles, containerName, edition, containerLength);
-				fileEntry = new DirectFileEntry(containerName + ".zip", "application/zip", containerInputStream, containerLength[0]);
+				long[] fileLength = new long[1];
+				InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
+				fileEntry = new DirectFileEntry(filename, fileOption.getMimeType(), fileEntryInputStream, fileLength[0]);
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
-			if (fileOption.isInsert()) {
-				try {
-					long[] fileLength = new long[1];
-					InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
-					fileEntry = new DirectFileEntry(filename, project.getFileOption(filename).getMimeType(), fileEntryInputStream, fileLength[0]);
-				} catch (IOException ioe1) {
-					/* ignore, null is returned. */
-				}
-			} else {
-				if (fileOption.isInsertRedirect()) {
-					fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
-				}
+			if (fileOption.isInsertRedirect()) {
+				fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
 			}
 		}
 		return fileEntry;
-	}
-
-	/**
-	 * Creates container definitions.
-	 *
-	 * @param files
-	 *            The list of all files
-	 * @param containers
-	 *            The list of all containers
-	 * @param containerFiles
-	 *            Empty map that will be filled with container definitions
-	 */
-	private void createContainers(List<String> files, List<String> containers, Map<String, List<String>> containerFiles) {
-		for (String filename : new ArrayList<String>(files)) {
-			FileOption fileOption = project.getFileOption(filename);
-			String containerName = fileOption.getContainer();
-			if (!containerName.equals("")) {
-				if (!containers.contains(containerName)) {
-					containers.add(containerName);
-					containerFiles.put(containerName, new ArrayList<String>());
-					/* hmm. looks like a hack to me. */
-					files.add("/container/:" + containerName);
-				}
-				containerFiles.get(containerName).add(filename);
-				files.remove(filename);
-			}
-		}
 	}
 
 	/**
@@ -429,17 +356,14 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			}
 		}
 		String indexFile = project.getIndexFile();
-		boolean hasIndexFile = (indexFile != null);
-		if (hasIndexFile && !project.getFileOption(indexFile).getContainer().equals("")) {
-			checkReport.addIssue("warning.container-index", false);
-		}
+		boolean hasIndexFile = (indexFile != null) && (indexFile.length() > 0);
 		List<String> allowedIndexContentTypes = Arrays.asList("text/html", "application/xhtml+xml");
 		if (hasIndexFile && !allowedIndexContentTypes.contains(project.getFileOption(indexFile).getMimeType())) {
 			checkReport.addIssue("warning.index-not-html", false);
 		}
 		Map<String, FileOption> fileOptions = project.getFileOptions();
 		Set<Entry<String, FileOption>> fileOptionEntries = fileOptions.entrySet();
-		boolean insert = false;
+		boolean insert = fileOptionEntries.isEmpty();
 		for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 			String fileName = fileOptionEntry.getKey();
 			FileOption fileOption = fileOptionEntry.getValue();
@@ -478,7 +402,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void run() {
 		fireProjectInsertStarted();
-		List<String> files = fileScanner.getFiles();
+		List<ScannedFile> files = fileScanner.getFiles();
 
 		/* create connection to node */
 		synchronized (lockObject) {
@@ -500,11 +424,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		Client client = new Client(connection);
 
-		/* create containers */
-		final List<String> containers = new ArrayList<String>();
-		final Map<String, List<String>> containerFiles = new HashMap<String, List<String>>();
-		createContainers(files, containers, containerFiles);
-
 		/* collect files */
 		int edition = project.getEdition();
 		String dirURI = "USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
@@ -514,9 +433,11 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
-		putDir.setEarlyEncode(false);
-		for (String filename : files) {
-			FileEntry fileEntry = createFileEntry(filename, edition, containerFiles);
+		putDir.setEarlyEncode(useEarlyEncode);
+		putDir.setPriorityClass(priority);
+		putDir.setManifestPutter(ManifestPutter.DEFAULT);
+		for (ScannedFile file : files) {
+			FileEntry fileEntry = createFileEntry(file, edition);
 			if (fileEntry != null) {
 				try {
 					putDir.addFileEntry(fileEntry);
@@ -529,7 +450,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* start request */
 		try {
-			client.execute(putDir);
+			client.execute(putDir, progressListener);
+			fireProjectUploadFinished();
 		} catch (IOException ioe1) {
 			fireProjectInsertFinished(false, ioe1);
 			return;
@@ -537,17 +459,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* parse progress and success messages */
 		String finalURI = null;
-		boolean firstMessage = true;
 		boolean success = false;
 		boolean finished = false;
 		boolean disconnected = false;
 		while (!finished && !cancelled) {
 			Message message = client.readMessage();
 			finished = (message == null) || (disconnected = client.isDisconnected());
-			if (firstMessage) {
-				fireProjectUploadFinished();
-				firstMessage = false;
-			}
 			logger.log(Level.FINE, "Received message: " + message);
 			if (!finished) {
 				@SuppressWarnings("null")
@@ -564,8 +481,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 					boolean finalized = Boolean.parseBoolean(message.get("FinalizedTotal"));
 					fireProjectInsertProgress(succeeded, failed, fatal, total, finalized);
 				}
-				success = "PutSuccessful".equals(messageName);
-				finished = success || "PutFailed".equals(messageName) || messageName.endsWith("Error");
+				success |= "PutSuccessful".equals(messageName);
+				finished = (success && (finalURI != null)) || "PutFailed".equals(messageName) || messageName.endsWith("Error");
 			}
 		}
 
@@ -576,6 +493,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			int newEdition = Integer.parseInt(editionPart);
 			project.setEdition(newEdition);
 			project.setLastInsertionTime(System.currentTimeMillis());
+			project.onSuccessfulInsert();
 		}
 		fireProjectInsertFinished(success, cancelled ? new AbortedException() : (disconnected ? new IOException("Connection terminated") : null));
 	}

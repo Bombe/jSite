@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet Copyright (C) 2006 David
- * Roden
+ * jSite - FileOption.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -38,20 +37,23 @@ public class FileOption {
 	/** The default changed name. */
 	private static final String DEFAULT_CHANGED_NAME = null;
 
-	/** The default container. */
-	private static final String DEFAULT_CONTAINER = "";
-
-	/** The default edition range. */
-	private static final int DEFAULT_EDITION_RANGE = 3;
-
-	/** The default for the replace edition state. */
-	private static final boolean DEFAULT_REPLACE_EDITION = false;
-
 	/** The insert state. */
 	private boolean insert;
 
+	/** Whether to force an insert. */
+	private boolean forceInsert;
+
 	/** Whether to insert a redirect. */
 	private boolean insertRedirect;
+
+	/** The hash of the last insert. */
+	private String lastInsertHash;
+
+	/** The edition of the last insert. */
+	private int lastInsertEdition;
+
+	/** The current hash of the file. */
+	private String currentHash;
 
 	/** The custom key. */
 	private String customKey;
@@ -64,15 +66,6 @@ public class FileOption {
 
 	/** The current MIME type. */
 	private String mimeType;
-
-	/** The container. */
-	private String container;
-
-	/** The edition range. */
-	private int editionRange;
-
-	/** The replace edition state. */
-	private boolean replaceEdition;
 
 	/**
 	 * Creates new file options.
@@ -87,9 +80,6 @@ public class FileOption {
 		changedName = DEFAULT_CHANGED_NAME;
 		this.defaultMimeType = defaultMimeType;
 		mimeType = defaultMimeType;
-		container = DEFAULT_CONTAINER;
-		editionRange = DEFAULT_EDITION_RANGE;
-		replaceEdition = DEFAULT_REPLACE_EDITION;
 	}
 
 	/**
@@ -145,6 +135,31 @@ public class FileOption {
 	}
 
 	/**
+	 * Returns whether the insert of this file should be forced, even if its
+	 * current hash matches the last insert hash.
+	 *
+	 * @return {@code true} to force the insert of this file, {@code false}
+	 *         otherwise
+	 */
+	public boolean isForceInsert() {
+		return forceInsert;
+	}
+
+	/**
+	 * Sets whether to force the insert of this file, even if its current hash
+	 * matches the last insert hash.
+	 *
+	 * @param forceInsert
+	 *            {@code true} to force the insert of this file, {@code false}
+	 *            otherwise
+	 * @return These file options
+	 */
+	public FileOption setForceInsert(boolean forceInsert) {
+		this.forceInsert = forceInsert;
+		return this;
+	}
+
+	/**
 	 * Returns whether a redirect to a different key should be inserted. This
 	 * will only matter if {@link #isInsert()} returns {@code false}. The key
 	 * that should be redirected to still needs to be specified via
@@ -170,6 +185,72 @@ public class FileOption {
 	 */
 	public void setInsertRedirect(boolean insertRedirect) {
 		this.insertRedirect = insertRedirect;
+	}
+
+	/**
+	 * Returns the hash of the file when it was last inserted
+	 *
+	 * @return The last hash of the file
+	 */
+	public String getLastInsertHash() {
+		return lastInsertHash;
+	}
+
+	/**
+	 * Sets the hash of the file when it was last inserted.
+	 *
+	 * @param lastInsertHash
+	 *            The last hash of the file
+	 * @return These file options
+	 */
+	public FileOption setLastInsertHash(String lastInsertHash) {
+		this.lastInsertHash = lastInsertHash;
+		return this;
+	}
+
+	/**
+	 * Returns the last edition at which this file was inserted.
+	 *
+	 * @return The last insert edition of this file
+	 */
+	public int getLastInsertEdition() {
+		return lastInsertEdition;
+	}
+
+	/**
+	 * Sets the last insert edition of this file.
+	 *
+	 * @param lastInsertEdition
+	 *            The last insert edition of this file
+	 * @return These file options
+	 */
+	public FileOption setLastInsertEdition(int lastInsertEdition) {
+		this.lastInsertEdition = lastInsertEdition;
+		return this;
+	}
+
+	/**
+	 * Returns the current hash of the file. This value is ony a temporary value
+	 * that is copied to {@link #getLastInsertHash()} when a project has
+	 * finished inserting.
+	 *
+	 * @see Project#onSuccessfulInsert()
+	 * @return The current hash of the file
+	 */
+	public String getCurrentHash() {
+		return currentHash;
+	}
+
+	/**
+	 * Sets the current hash of the file.
+	 *
+	 * @param currentHash
+	 *            The current hash of the file
+	 * @return These file options
+	 */
+	public FileOption setCurrentHash(String currentHash) {
+		this.currentHash = currentHash;
+		return this;
 	}
 
 	/**
@@ -231,69 +312,6 @@ public class FileOption {
 	}
 
 	/**
-	 * Returns the name of the container this file should be put in.
-	 *
-	 * @return The name of the container
-	 */
-	public String getContainer() {
-		return container;
-	}
-
-	/**
-	 * Sets the name of the container this file should be put in.
-	 *
-	 * @param container
-	 *            The name of the container
-	 */
-	public void setContainer(String container) {
-		if (container == null) {
-			this.container = DEFAULT_CONTAINER;
-		} else {
-			this.container = container;
-		}
-	}
-
-	/**
-	 * Sets whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
-	 *
-	 * @param replaceEdition
-	 *            <code>true</code> to replace tags, <code>false</code> not to
-	 *            replace
-	 */
-	public void setReplaceEdition(boolean replaceEdition) {
-		this.replaceEdition = replaceEdition;
-	}
-
-	/**
-	 * Returns whether the file should have “$[EDITION+<i>n</i>]” tags replaced.
-	 *
-	 * @return <code>true</code> if tags should be replaced, <code>false</code>
-	 *         otherwise
-	 */
-	public boolean getReplaceEdition() {
-		return replaceEdition;
-	}
-
-	/**
-	 * Sets the range of editions that should be replaced.
-	 *
-	 * @param editionRange
-	 *            The range editions to replace
-	 */
-	public void setEditionRange(int editionRange) {
-		this.editionRange = editionRange;
-	}
-
-	/**
-	 * Returns the range of editions that should be replaced.
-	 *
-	 * @return The range of editions to replace
-	 */
-	public int getEditionRange() {
-		return editionRange;
-	}
-
-	/**
 	 * Returns whether the options for this file have been modified, i.e. are
 	 * not at their default values.
 	 *
@@ -311,15 +329,6 @@ public class FileOption {
 			return true;
 		}
 		if (!defaultMimeType.equals(mimeType)) {
-			return true;
-		}
-		if (!DEFAULT_CONTAINER.equals(container)) {
-			return true;
-		}
-		if (replaceEdition != DEFAULT_REPLACE_EDITION) {
-			return true;
-		}
-		if (editionRange != DEFAULT_EDITION_RANGE) {
 			return true;
 		}
 		if (insertRedirect != DEFAULT_INSERT_REDIRECT) {

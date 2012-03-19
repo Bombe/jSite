@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006-2009 David Roden
+ * jSite - Main.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +18,7 @@
 
 package de.todesbaum.jsite.main;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -39,6 +39,7 @@ import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
@@ -49,10 +50,10 @@ import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
-import de.todesbaum.jsite.application.UpdateChecker;
-import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
 import de.todesbaum.jsite.application.ProjectInserter.Issue;
+import de.todesbaum.jsite.application.UpdateChecker;
+import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -61,6 +62,7 @@ import de.todesbaum.jsite.gui.ProjectInsertPage;
 import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.image.IconLoader;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -159,20 +161,18 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 *            The name of the configuration file
 	 */
 	private Main(String configFilename) {
+		/* collect all possible configuration file locations. */
+		ConfigurationLocator configurationLocator = new ConfigurationLocator();
 		if (configFilename != null) {
-			configuration = new Configuration(configFilename);
-		} else {
-			configuration = new Configuration();
+			configurationLocator.setCustomLocation(configFilename);
 		}
+
+		ConfigurationLocation preferredLocation = configurationLocator.findPreferredLocation();
+		logger.log(Level.CONFIG, "Using configuration from " + preferredLocation + ".");
+		configuration = new Configuration(configurationLocator, preferredLocation);
+
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
-		if (!configuration.createLockFile()) {
-			int option = JOptionPane.showOptionDialog(null, I18n.getMessage("jsite.main.already-running"), "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { I18n.getMessage("jsite.main.already-running.override"), I18n.getMessage("jsite.wizard.quit") }, I18n.getMessage("jsite.wizard.quit"));
-			if (option != 0) {
-				throw new IllegalStateException("Lockfile override not active, refusing start.");
-			}
-			configuration.removeLockfileOnExit();
-		}
 		wizard = new TWizard();
 		createActions();
 		wizard.setJMenuBar(createMenuBar());
@@ -356,6 +356,17 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	/**
+	 * Returns whether a configuration file would be overwritten when calling
+	 * {@link #saveConfiguration()}.
+	 *
+	 * @return {@code true} if {@link #saveConfiguration()} would overwrite an
+	 *         existing file, {@code false} otherwise
+	 */
+	private boolean isOverwritingConfiguration() {
+		return configuration.getConfigurationLocator().hasFile(configuration.getConfigurationDirectory());
+	}
+
+	/**
 	 * Saves the configuration.
 	 *
 	 * @return <code>true</code> if the configuration could be saved,
@@ -444,6 +455,11 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * Shows a dialog with general preferences.
 	 */
 	private void optionsPreferences() {
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setConfigurationLocation(configuration.getConfigurationDirectory());
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasNextToJarConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.NEXT_TO_JAR_FILE));
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasCustomConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.CUSTOM));
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setUseEarlyEncode(configuration.useEarlyEncode());
+		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setPriority(configuration.getPriority());
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);
@@ -536,6 +552,8 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			ProjectInsertPage projectInsertPage = (ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT);
 			String tempDirectory = ((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).getTempDirectory();
 			projectInsertPage.setTempDirectory(tempDirectory);
+			projectInsertPage.setUseEarlyEncode(configuration.useEarlyEncode());
+			projectInsertPage.setPriority(configuration.getPriority());
 			projectInsertPage.startInsert();
 			nodeMenu.setEnabled(false);
 			optionsPreferencesAction.setEnabled(false);
@@ -549,8 +567,12 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				optionsPreferencesAction.setEnabled(true);
 			}
 		} else if ("page.preferences".equals(pageName)) {
+			PreferencesPage preferencesPage = (PreferencesPage) pages.get(PageType.PAGE_PREFERENCES);
 			showPage(PageType.PAGE_PROJECTS);
 			optionsPreferencesAction.setEnabled(true);
+			configuration.setUseEarlyEncode(preferencesPage.useEarlyEncode());
+			configuration.setPriority(preferencesPage.getPriority());
+			configuration.setConfigurationLocation(preferencesPage.getConfigurationLocation());
 		}
 	}
 
@@ -576,9 +598,23 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		if (((ProjectPage) pages.get(PageType.PAGE_PROJECTS)).wasUriCopied() || ((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).wasUriCopied()) {
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.use-clipboard-now"));
 		}
-		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-			if (saveConfiguration()) {
-				System.exit(0);
+		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), I18n.getMessage("jsite.quit.question.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+			if (isOverwritingConfiguration()) {
+				int overwriteConfigurationAnswer = JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quit.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), I18n.getMessage("jsite.quit.overwrite-configuration.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (overwriteConfigurationAnswer == JOptionPane.YES_OPTION) {
+					if (saveConfiguration()) {
+						System.exit(0);
+					}
+				} else if (overwriteConfigurationAnswer == JOptionPane.CANCEL_OPTION) {
+					return;
+				}
+				if (overwriteConfigurationAnswer == JOptionPane.NO_OPTION) {
+					System.exit(0);
+				}
+			} else {
+				if (saveConfiguration()) {
+					System.exit(0);
+				}
 			}
 			if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.config-not-saved"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 				System.exit(0);
@@ -613,6 +649,25 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		selectedNode = newSelectedNode;
 		freenetInterface.setNode(selectedNode);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void nodeSelected(Node node) {
+		for (Component menuItem : nodeMenu.getMenuComponents()) {
+			if (menuItem instanceof JMenuItem) {
+				if (node.equals(((JMenuItem) menuItem).getClientProperty("Node"))) {
+					((JMenuItem) menuItem).setSelected(true);
+				}
+			}
+		}
+		freenetInterface.setNode(node);
+		selectedNode = node;
+	}
+
+	//
+	// INTERFACE ActionListener
+	//
 
 	/**
 	 * {@inheritDoc}

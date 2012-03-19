@@ -1,6 +1,5 @@
 /*
- * todesbaum-lib -
- * Copyright (C) 2006 David Roden
+ * jSite - Connection.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +33,7 @@ import java.util.List;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.LineInputStream;
 import de.todesbaum.util.io.StreamCopier;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.io.TempFileInputStream;
 
 /**
@@ -215,34 +215,15 @@ public class Connection {
 	 * Disconnects from the node.
 	 */
 	public void disconnect() {
-		if (nodeWriter != null) {
-			try {
-				nodeWriter.close();
-			} catch (IOException ioe1) {
-			}
-			nodeWriter = null;
-		}
-		if (nodeOutputStream != null) {
-			try {
-				nodeOutputStream.close();
-			} catch (IOException ioe1) {
-			}
-			nodeOutputStream = null;
-		}
-		if (nodeInputStream != null) {
-			try {
-				nodeInputStream.close();
-			} catch (IOException ioe1) {
-			}
-			nodeInputStream = null;
-		}
-		if (nodeSocket != null) {
-			try {
-				nodeSocket.close();
-			} catch (IOException ioe1) {
-			}
-			nodeSocket = null;
-		}
+		Closer.close(nodeWriter);
+		nodeWriter = null;
+		Closer.close(nodeOutputStream);
+		nodeOutputStream = null;
+		Closer.close(nodeInputStream);
+		nodeInputStream = null;
+		nodeInputStream = null;
+		Closer.close(nodeSocket);
+		nodeSocket = null;
 		synchronized (this) {
 			notify();
 		}
@@ -260,6 +241,22 @@ public class Connection {
 	 *             if an I/O error occurs
 	 */
 	public synchronized void execute(Command command) throws IllegalStateException, IOException {
+		execute(command, null);
+	}
+
+	/**
+	 * Executes the specified command.
+	 *
+	 * @param command
+	 *            The command to execute
+	 * @param progressListener
+	 *            A progress listener for a payload transfer
+	 * @throws IllegalStateException
+	 *             if the connection is not connected
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public synchronized void execute(Command command, ProgressListener progressListener) throws IllegalStateException, IOException {
 		if (nodeSocket == null) {
 			throw new IllegalStateException("connection is not connected");
 		}
@@ -271,7 +268,7 @@ public class Connection {
 			InputStream payloadInputStream = null;
 			try {
 				payloadInputStream = command.getPayload();
-				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength());
+				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength(), progressListener);
 			} finally {
 				Closer.close(payloadInputStream);
 			}
@@ -307,6 +304,7 @@ public class Connection {
 		 * Main loop of the reader. Lines are read and converted into
 		 * {@link Message} objects.
 		 */
+		@SuppressWarnings("synthetic-access")
 		public void run() {
 			LineInputStream nodeReader = null;
 			try {

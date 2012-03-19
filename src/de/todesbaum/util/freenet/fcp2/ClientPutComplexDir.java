@@ -1,6 +1,5 @@
 /*
- * todesbaum-lib -
- * Copyright (C) 2006 David Roden
+ * jSite - ClientPutComplexDir.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +37,7 @@ import de.todesbaum.util.io.Closer;
  * @author David Roden &lt;droden@gmail.com&gt;
  * @version $Id$
  */
-public class ClientPutComplexDir extends ClientPutDir {
+public class ClientPutComplexDir extends ClientPutDir<ClientPutComplexDir> {
 
 	/** The file entries of this directory. */
 	private List<FileEntry> fileEntries = new ArrayList<FileEntry>();
