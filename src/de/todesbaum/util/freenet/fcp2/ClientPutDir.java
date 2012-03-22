@@ -70,6 +70,18 @@ public class ClientPutDir<C extends ClientPutDir<?>> extends ClientPut {
 			return name;
 		}
 
+		//
+		// OBJECT METHODS
+		//
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			return name.substring(0, 1).toUpperCase() + name.substring(1);
+		}
+
 	}
 
 	/** The default file of the directory. */
