@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.todesbaum.util.mime.DefaultMIMETypes;
 
@@ -426,10 +427,12 @@ public class Project implements Comparable<Project> {
 	 * insert.
 	 */
 	public void onSuccessfulInsert() {
-		for (FileOption fileOption : fileOptions.values()) {
-			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && !fileOption.getCurrentHash().equals(fileOption.getLastInsertHash())) {
+		for (Entry<String, FileOption> fileOptionEntry : fileOptions.entrySet()) {
+			FileOption fileOption = fileOptionEntry.getValue();
+			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash()) || fileOption.isForceInsert())) {
 				fileOption.setLastInsertEdition(edition);
 				fileOption.setLastInsertHash(fileOption.getCurrentHash());
+				fileOption.setLastInsertFilename(fileOption.hasChangedName() ? fileOption.getChangedName() : fileOptionEntry.getKey());
 			}
 			fileOption.setForceInsert(false);
 		}
