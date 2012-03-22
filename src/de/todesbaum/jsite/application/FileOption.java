@@ -52,6 +52,9 @@ public class FileOption {
 	/** The edition of the last insert. */
 	private int lastInsertEdition;
 
+	/** The filename of the last insert. */
+	private String lastInsertFilename;
+
 	/** The current hash of the file. */
 	private String currentHash;
 
@@ -226,6 +229,27 @@ public class FileOption {
 	 */
 	public FileOption setLastInsertEdition(int lastInsertEdition) {
 		this.lastInsertEdition = lastInsertEdition;
+		return this;
+	}
+
+	/**
+	 * Returns the name of the file when it was last inserted.
+	 *
+	 * @return The name of the file at the last insert
+	 */
+	public String getLastInsertFilename() {
+		return lastInsertFilename;
+	}
+
+	/**
+	 * Sets the name of the file when it was last inserted.
+	 *
+	 * @param lastInsertFilename
+	 *            The name of the file at the last insert.
+	 * @return These file options
+	 */
+	public FileOption setLastInsertFilename(String lastInsertFilename) {
+		this.lastInsertFilename = lastInsertFilename;
 		return this;
 	}
 
