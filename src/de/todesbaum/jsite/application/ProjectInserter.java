@@ -97,6 +97,9 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/** The insert priority. */
 	private PriorityClass priority;
 
+	/** The manifest putter. */
+	private ManifestPutter manifestPutter;
+
 	/**
 	 * Adds a listener to the list of registered listeners.
 	 *
@@ -241,6 +244,16 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 */
 	public void setPriority(PriorityClass priority) {
 		this.priority = priority;
+	}
+
+	/**
+	 * Sets the manifest putter to use for inserts.
+	 *
+	 * @param manifestPutter
+	 *            The manifest putter to use
+	 */
+	public void setManifestPutter(ManifestPutter manifestPutter) {
+		this.manifestPutter = manifestPutter;
 	}
 
 	/**
@@ -435,7 +448,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setMaxRetries(-1);
 		putDir.setEarlyEncode(useEarlyEncode);
 		putDir.setPriorityClass(priority);
-		putDir.setManifestPutter(ManifestPutter.DEFAULT);
+		putDir.setManifestPutter(manifestPutter);
 		for (ScannedFile file : files) {
 			FileEntry fileEntry = createFileEntry(file, edition);
 			if (fileEntry != null) {
