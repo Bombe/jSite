@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet Copyright (C) 2006 David
- * Roden
+ * jSite - Project.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -418,6 +417,22 @@ public class Project implements Comparable<Project> {
 	 */
 	public String getFinalRequestURI(int offset) {
 		return "USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
+	}
+
+	/**
+	 * Performs some post-processing on the project after it was inserted
+	 * successfully. At the moment it copies the current hashes of all file
+	 * options to the last insert hashes, updating the hashes for the next
+	 * insert.
+	 */
+	public void onSuccessfulInsert() {
+		for (FileOption fileOption : fileOptions.values()) {
+			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && !fileOption.getCurrentHash().equals(fileOption.getLastInsertHash())) {
+				fileOption.setLastInsertEdition(edition);
+				fileOption.setLastInsertHash(fileOption.getCurrentHash());
+			}
+			fileOption.setForceInsert(false);
+		}
 	}
 
 }

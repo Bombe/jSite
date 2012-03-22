@@ -1,6 +1,5 @@
 /*
- * jSite-0.7 -
- * Copyright (C) 2006 David Roden
+ * jSite - NodeManagerListener.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,5 +37,13 @@ public interface NodeManagerListener extends EventListener {
 	 *            The new list of nodes
 	 */
 	public void nodesUpdated(Node[] nodes);
+
+	/**
+	 * Notifies a listener that the selected node has changed.
+	 *
+	 * @param node
+	 *            The new selected node
+	 */
+	public void nodeSelected(Node node);
 
 }

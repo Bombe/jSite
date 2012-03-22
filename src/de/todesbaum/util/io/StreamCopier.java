@@ -1,4 +1,6 @@
 /*
+ * jSite - StreamCopier.java - Copyright © 2006–2012 David Roden
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
@@ -20,6 +22,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.EventListener;
 
 /**
  * Copies input from an {@link InputStream} to an {@link OutputStream}.
@@ -105,6 +108,23 @@ public class StreamCopier {
 	}
 
 	/**
+	 * Copies the stream data. If the input stream is depleted before the
+	 * requested number of bytes have been read an {@link EOFException} is
+	 * thrown.
+	 *
+	 * @param progressListener
+	 *            The progress listener (may be {@code null})
+	 * @throws EOFException
+	 *             if the input stream is depleted before the requested number
+	 *             of bytes has been read
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public void copy(ProgressListener progressListener) throws EOFException, IOException {
+		copy(inputStream, outputStream, length, bufferSize, progressListener);
+	}
+
+	/**
 	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
 	 * the <code>outputStream</code>.
 	 *
@@ -123,6 +143,25 @@ public class StreamCopier {
 
 	/**
 	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
+	 * the <code>outputStream</code>.
+	 *
+	 * @param inputStream
+	 *            The input stream to read from
+	 * @param outputStream
+	 *            The output stream to write to
+	 * @param length
+	 *            The number of bytes to copy
+	 * @param progressListener
+	 *            The progress listener (may be {@code null})
+	 * @throws IOException
+	 *             if an I/O exception occurs
+	 */
+	public static void copy(InputStream inputStream, OutputStream outputStream, long length, ProgressListener progressListener) throws IOException {
+		copy(inputStream, outputStream, length, BUFFER_SIZE, progressListener);
+	}
+
+	/**
+	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
 	 * the <code>outputStream</code> using a buffer with the specified size
 	 *
 	 * @param inputStream
@@ -137,6 +176,27 @@ public class StreamCopier {
 	 *             if an I/O exception occurs
 	 */
 	public static void copy(InputStream inputStream, OutputStream outputStream, long length, int bufferSize) throws IOException {
+		copy(inputStream, outputStream, length, bufferSize, null);
+	}
+
+	/**
+	 * Copies <code>length</code> bytes from the <code>inputStream</code> to
+	 * the <code>outputStream</code> using a buffer with the specified size
+	 *
+	 * @param inputStream
+	 *            The input stream to read from
+	 * @param outputStream
+	 *            The output stream to write to
+	 * @param length
+	 *            The number of bytes to copy
+	 * @param bufferSize
+	 *            The size of the copy buffer
+	 * @param progressListener
+	 *            The progress listener (may be {@code null})
+	 * @throws IOException
+	 *             if an I/O exception occurs
+	 */
+	public static void copy(InputStream inputStream, OutputStream outputStream, long length, int bufferSize, ProgressListener progressListener) throws IOException {
 		long remaining = length;
 		byte[] buffer = new byte[bufferSize];
 		while (remaining > 0) {
@@ -146,7 +206,30 @@ public class StreamCopier {
 			}
 			outputStream.write(buffer, 0, read);
 			remaining -= read;
+			if (progressListener != null) {
+				progressListener.onProgress(length - remaining, length);
+			}
 		}
+	}
+
+	/**
+	 * Interface for objects that want to be notified about the progress of a
+	 * {@link StreamCopier#copy()} operation.
+	 *
+	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
+	 */
+	public static interface ProgressListener extends EventListener {
+
+		/**
+		 * Notifiies a listener that a copy process made some progress.
+		 *
+		 * @param copied
+		 *            The number of bytes that have already been copied
+		 * @param length
+		 *            The total number of bytes that will be copied
+		 */
+		public void onProgress(long copied, long length);
+
 	}
 
 }

@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - Configuration.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +32,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.xml.SimpleXML;
@@ -49,112 +52,92 @@ import de.todesbaum.util.xml.XML;
  */
 public class Configuration {
 
-	/** The name of the file the configuration is stored to. */
-	private String filename;
-
-	/** The name of the lock file. */
-	private String lockFilename;
-
 	/** The root node of the configuration. */
 	private SimpleXML rootNode;
 
-	/**
-	 * Creates a new configuration with the default name of the configuration
-	 * file.
-	 */
-	public Configuration() {
-		this(System.getProperty("user.home") + "/.jSite/config7");
-	}
+	/** The configuration locator. */
+	private final ConfigurationLocator configurationLocator;
+
+	/** Where the configuration resides. */
+	private ConfigurationLocation configurationLocation;
 
 	/**
 	 * Creates a new configuration that is read from the given file.
 	 *
-	 * @param filename
-	 *            The name of the configuration file
+	 * @param configurationLocator
+	 *            The configuration locator
+	 * @param configurationLocation
+	 *            The configuration directory
 	 */
-	public Configuration(String filename) {
-		this(filename, filename + ".lock");
+	public Configuration(ConfigurationLocator configurationLocator, ConfigurationLocation configurationLocation) {
+		this.configurationLocator = configurationLocator;
+		this.configurationLocation = configurationLocation;
+		readConfiguration(configurationLocator.getFile(configurationLocation));
 	}
 
+	//
+	// ACCESSORS
+	//
+
 	/**
-	 * Creates a new configuration that is read from the given file and uses the
-	 * given lock file.
+	 * Returns the configuration locator.
 	 *
-	 * @param filename
-	 *            The name of the configuration file
-	 * @param lockFilename
-	 *            The name of the lock file
+	 * @return The configuration locator
 	 */
-	public Configuration(String filename, String lockFilename) {
-		this.filename = filename;
-		this.lockFilename = lockFilename;
-		readConfiguration();
+	public ConfigurationLocator getConfigurationLocator() {
+		return configurationLocator;
 	}
 
 	/**
-	 * Creates the directory of the configuration file.
+	 * Returns the location the configuration will be written to when calling
+	 * {@link #save()}.
 	 *
-	 * @return <code>true</code> if the directory exists, or if it could be
-	 *         created, <code>false</code> otherwise
+	 * @return The location the configuration will be written to
 	 */
-	private boolean createConfigDirectory() {
-		File configDirectory = new File(filename).getAbsoluteFile().getParentFile();
-		return (configDirectory.exists() && configDirectory.isDirectory()) || configDirectory.mkdirs();
+	public ConfigurationLocation getConfigurationDirectory() {
+		return configurationLocation;
 	}
 
 	/**
-	 * Creates the lock file.
+	 * Sets the location the configuration will be written to when calling
+	 * {@link #save()}.
 	 *
-	 * @return <code>true</code> if the lock file did not already exist and
-	 *         could be created, <code>false</code> otherwise
+	 * @param configurationLocation
+	 *            The location to write the configuration to
 	 */
-	public boolean createLockFile() {
-		if (!createConfigDirectory()) {
-			return false;
-		}
-		File lockFile = new File(lockFilename);
-		try {
-			boolean fileLocked = lockFile.createNewFile();
-			if (fileLocked) {
-				lockFile.deleteOnExit();
-			}
-			return fileLocked;
-		} catch (IOException e) {
-			/* ignore. */
-		}
-		return false;
-	}
-
-	/**
-	 * Tells the VM to remove the lock file on program exit.
-	 */
-	public void removeLockfileOnExit() {
-		new File(lockFilename).deleteOnExit();
+	public void setConfigurationLocation(ConfigurationLocation configurationLocation) {
+		this.configurationLocation = configurationLocation;
 	}
 
 	/**
 	 * Reads the configuration from the file.
+	 *
+	 * @param filename
+	 *            The name of the file to read the configuration from
 	 */
-	private void readConfiguration() {
-		File configurationFile = new File(filename);
-		if (configurationFile.exists()) {
-			ByteArrayOutputStream fileByteOutputStream = null;
-			FileInputStream fileInputStream = null;
-			try {
-				fileByteOutputStream = new ByteArrayOutputStream();
-				fileInputStream = new FileInputStream(configurationFile);
-				StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
-				fileByteOutputStream.close();
-				byte[] fileBytes = fileByteOutputStream.toByteArray();
-				rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
-				return;
-			} catch (FileNotFoundException e) {
-				/* ignore. */
-			} catch (IOException e) {
-				/* ignore. */
-			} finally {
-				Closer.close(fileInputStream);
-				Closer.close(fileByteOutputStream);
+	private void readConfiguration(String filename) {
+		Logger.getLogger(Configuration.class.getName()).log(Level.CONFIG, "Reading configuration from: " + filename);
+		if (filename != null) {
+			File configurationFile = new File(filename);
+			if (configurationFile.exists()) {
+				ByteArrayOutputStream fileByteOutputStream = null;
+				FileInputStream fileInputStream = null;
+				try {
+					fileByteOutputStream = new ByteArrayOutputStream();
+					fileInputStream = new FileInputStream(configurationFile);
+					StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
+					fileByteOutputStream.close();
+					byte[] fileBytes = fileByteOutputStream.toByteArray();
+					rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
+					return;
+				} catch (FileNotFoundException e) {
+					/* ignore. */
+				} catch (IOException e) {
+					/* ignore. */
+				} finally {
+					Closer.close(fileInputStream);
+					Closer.close(fileByteOutputStream);
+				}
 			}
 		}
 		rootNode = new SimpleXML("configuration");
@@ -167,7 +150,8 @@ public class Configuration {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean save() {
-		File configurationFile = new File(filename);
+		Logger.getLogger(Configuration.class.getName()).log(Level.CONFIG, "Trying to save configuration to: " + configurationLocation);
+		File configurationFile = new File(configurationLocator.getFile(configurationLocation));
 		if (!configurationFile.exists()) {
 			File configurationFilePath = configurationFile.getAbsoluteFile().getParentFile();
 			if (!configurationFilePath.exists() && !configurationFilePath.mkdirs()) {
@@ -332,7 +316,11 @@ public class Configuration {
 					Project project = new Project();
 					projects.add(project);
 					project.setDescription(projectNode.getNode("description").getValue(""));
-					project.setIndexFile(projectNode.getNode("index-file").getValue(""));
+					String indexFile = projectNode.getNode("index-file").getValue("");
+					if (indexFile.indexOf('/') > -1) {
+						indexFile = "";
+					}
+					project.setIndexFile(indexFile);
 					project.setLastInsertionTime(Long.parseLong(projectNode.getNode("last-insertion-time").getValue("0")));
 					project.setLocalPath(projectNode.getNode("local-path").getValue(""));
 					project.setName(projectNode.getNode("name").getValue(""));
@@ -348,8 +336,22 @@ public class Configuration {
 					} else {
 						project.setIgnoreHiddenFiles(true);
 					}
-					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
+
+					/* load last insert hashes. */
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
+					SimpleXML lastInsertHashesNode = projectNode.getNode("last-insert-hashes");
+					if (lastInsertHashesNode != null) {
+						for (SimpleXML fileNode : lastInsertHashesNode.getNodes("file")) {
+							String filename = fileNode.getNode("filename").getValue();
+							String lastInsertHash = fileNode.getNode("last-insert-hash").getValue();
+							int lastInsertEdition = Integer.valueOf(fileNode.getNode("last-insert-edition").getValue());
+							FileOption fileOption = project.getFileOption(filename);
+							fileOption.setLastInsertHash(lastInsertHash).setLastInsertEdition(lastInsertEdition);
+							fileOptions.put(filename, fileOption);
+						}
+					}
+
+					SimpleXML fileOptionsNode = projectNode.getNode("file-options");
 					if (fileOptionsNode != null) {
 						SimpleXML[] fileOptionNodes = fileOptionsNode.getNodes("file-option");
 						for (SimpleXML fileOptionNode : fileOptionNodes) {
@@ -364,11 +366,6 @@ public class Configuration {
 								fileOption.setChangedName(fileOptionNode.getNode("changed-name").getValue());
 							}
 							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
-							fileOption.setContainer(fileOptionNode.getNode("container").getValue());
-							if (fileOptionNode.getNode("replace-edition") != null) {
-								fileOption.setReplaceEdition(Boolean.parseBoolean(fileOptionNode.getNode("replace-edition").getValue()));
-								fileOption.setEditionRange(Integer.parseInt(fileOptionNode.getNode("edition-range").getValue()));
-							}
 							fileOptions.put(filename, fileOption);
 						}
 					}
@@ -401,6 +398,19 @@ public class Configuration {
 			projectNode.append("insert-uri", project.getInsertURI());
 			projectNode.append("request-uri", project.getRequestURI());
 			projectNode.append("ignore-hidden-files", String.valueOf(project.isIgnoreHiddenFiles()));
+
+			/* store last insert hashes. */
+			SimpleXML lastInsertHashesNode = projectNode.append("last-insert-hashes");
+			for (Entry<String, FileOption> fileOption : project.getFileOptions().entrySet()) {
+				if ((fileOption.getValue().getLastInsertHash() == null) || (fileOption.getValue().getLastInsertHash().length() == 0)) {
+					continue;
+				}
+				SimpleXML fileNode = lastInsertHashesNode.append("file");
+				fileNode.append("filename", fileOption.getKey());
+				fileNode.append("last-insert-hash", fileOption.getValue().getLastInsertHash());
+				fileNode.append("last-insert-edition", String.valueOf(fileOption.getValue().getLastInsertEdition()));
+			}
+
 			SimpleXML fileOptionsNode = projectNode.append("file-options");
 			Iterator<Entry<String, FileOption>> entries = project.getFileOptions().entrySet().iterator();
 			while (entries.hasNext()) {
@@ -414,9 +424,6 @@ public class Configuration {
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
 					fileOptionNode.append("changed-name", fileOption.getChangedName());
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
-					fileOptionNode.append("container", fileOption.getContainer());
-					fileOptionNode.append("replace-edition", String.valueOf(fileOption.getReplaceEdition()));
-					fileOptionNode.append("edition-range", String.valueOf(fileOption.getEditionRange()));
 				}
 			}
 		}
@@ -562,6 +569,50 @@ public class Configuration {
 		} else {
 			rootNode.remove("temp-directory");
 		}
+	}
+
+	/**
+	 * Returns whether to use the “early encode“ flag for the insert.
+	 *
+	 * @return {@code true} to set the “early encode” flag for the insert,
+	 *         {@code false} otherwise
+	 */
+	public boolean useEarlyEncode() {
+		return getNodeBooleanValue(new String[] { "use-early-encode" }, false);
+	}
+
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 * @return This configuration
+	 */
+	public Configuration setUseEarlyEncode(boolean useEarlyEncode) {
+		rootNode.replace("use-early-encode", String.valueOf(useEarlyEncode));
+		return this;
+	}
+
+	/**
+	 * Returns the insert priority.
+	 *
+	 * @return The insert priority
+	 */
+	public PriorityClass getPriority() {
+		return PriorityClass.valueOf(getNodeValue(new String[] { "insert-priority" }, "interactive"));
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 * @return This configuration
+	 */
+	public Configuration setPriority(PriorityClass priority) {
+		rootNode.replace("insert-priority", priority.toString());
+		return this;
 	}
 
 }

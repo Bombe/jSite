@@ -1,6 +1,5 @@
 /*
- * todesbaum-lib -
- * Copyright (C) 2006 David Roden
+ * jSite - Message.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +21,8 @@ package de.todesbaum.util.freenet.fcp2;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Contains replies sent by the Freenet node. A message always has a name, and

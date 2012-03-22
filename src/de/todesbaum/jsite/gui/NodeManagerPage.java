@@ -1,6 +1,5 @@
 /*
- * jSite-0.7 -
- * Copyright (C) 2006 David Roden
+ * jSite - NodeManagerPage.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,6 +139,18 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	protected void fireNodesUpdated(Node[] nodes) {
 		for (NodeManagerListener nodeManagerListener : nodeManagerListeners) {
 			nodeManagerListener.nodesUpdated(nodes);
+		}
+	}
+
+	/**
+	 * Notifies all listeners that a new node was selected.
+	 *
+	 * @param node
+	 *            The newly selected node
+	 */
+	protected void fireNodeSelected(Node node) {
+		for (NodeManagerListener nodeManagerListener : nodeManagerListeners) {
+			nodeManagerListener.nodeSelected(node);
 		}
 	}
 
@@ -331,6 +342,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
+		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(true);
 		fireNodesUpdated(getNodes());
 	}
@@ -346,9 +358,12 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.node-manager.delete-node.warning"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.CANCEL_OPTION) {
 			return;
 		}
+		int nodeIndex = nodeListModel.indexOf(node);
 		nodeListModel.removeElement(node);
 		nodeList.repaint();
+		fireNodeSelected((Node) nodeListModel.get(Math.min(nodeIndex, nodeListModel.size() - 1)));
 		fireNodesUpdated(getNodes());
+		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(nodeListModel.size() > 0);
 	}
 
@@ -370,7 +385,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 				nodeNameTextField.setEnabled(enabled);
 				nodeHostnameTextField.setEnabled(enabled);
 				nodePortSpinner.setEnabled(enabled);
-				deleteNodeAction.setEnabled(enabled);
+				deleteNodeAction.setEnabled(enabled && (nodeListModel.size() > 1));
 				if (enabled) {
 					nodeNameTextField.setText(node.getName());
 					nodeHostnameTextField.setText(node.getHostname());
@@ -426,6 +441,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 			JSpinner sourceSpinner = (JSpinner) source;
 			if ("node-port".equals(sourceSpinner.getName())) {
 				selectedNode.setPort((Integer) sourceSpinner.getValue());
+				fireNodeSelected(selectedNode);
 				nodeList.repaint();
 			}
 		}
