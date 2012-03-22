@@ -249,6 +249,11 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			@SuppressWarnings("synthetic-access")
 			private void storeText(DocumentEvent documentEvent) {
 				FileOption fileOption = getSelectedFile();
+				if (fileOption == null) {
+					/* no file selected. */
+					System.out.println("yfwdasd");
+					return;
+				}
 				Document document = documentEvent.getDocument();
 				int documentLength = document.getLength();
 				try {
