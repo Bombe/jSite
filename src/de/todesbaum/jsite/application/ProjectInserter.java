@@ -331,13 +331,13 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			try {
 				long[] fileLength = new long[1];
 				InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
-				fileEntry = new DirectFileEntry(filename, fileOption.getMimeType(), fileEntryInputStream, fileLength[0]);
+				fileEntry = new DirectFileEntry(fileOption.hasChangedName() ? fileOption.getChangedName() : filename, fileOption.getMimeType(), fileEntryInputStream, fileLength[0]);
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
 			if (fileOption.isInsertRedirect()) {
-				fileEntry = new RedirectFileEntry(filename, fileOption.getMimeType(), fileOption.getCustomKey());
+				fileEntry = new RedirectFileEntry(fileOption.hasChangedName() ? fileOption.getChangedName() : filename, fileOption.getMimeType(), fileOption.getCustomKey());
 			}
 		}
 		return fileEntry;
