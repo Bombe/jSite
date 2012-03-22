@@ -605,7 +605,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.use-clipboard-now"));
 		}
 		if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.question"), I18n.getMessage("jsite.quit.question.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-			if (isOverwritingConfiguration()) {
+			if (isOverwritingConfiguration() && !originalLocation.equals(configuration.getConfigurationDirectory())) {
 				int overwriteConfigurationAnswer = JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quit.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), I18n.getMessage("jsite.quit.overwrite-configuration.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (overwriteConfigurationAnswer == JOptionPane.YES_OPTION) {
 					if (saveConfiguration()) {
