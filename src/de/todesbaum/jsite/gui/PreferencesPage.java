@@ -454,7 +454,7 @@ public class PreferencesPage extends TWizardPage {
 
 		insertPriorityComboBox = new JComboBox(new PriorityClass[] { PriorityClass.MINIMUM, PriorityClass.PREFETCH, PriorityClass.BULK, PriorityClass.UPDATABLE, PriorityClass.SEMI_INTERACTIVE, PriorityClass.INTERACTIVE, PriorityClass.MAXIMUM });
 		insertPriorityComboBox.setAction(priorityAction);
-		preferencesPanel.add(insertPriorityComboBox, new GridBagConstraints(1, 9, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.VERTICAL, new Insets(0, 18, 0, 0), 0, 0));
+		preferencesPanel.add(insertPriorityComboBox, new GridBagConstraints(1, 9, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 18, 0, 0), 0, 0));
 
 		final JLabel manifestPutterLabel = new JLabel(I18n.getMessage("jsite.preferences.insert-options.manifest-putter"));
 		preferencesPanel.add(manifestPutterLabel, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
