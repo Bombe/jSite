@@ -147,6 +147,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/** Mapping from page type to page. */
 	private final Map<PageType, TWizardPage> pages = new HashMap<PageType, TWizardPage>();
 
+	/** The original location of the configuration file. */
+	private ConfigurationLocation originalLocation;
+
 	/**
 	 * Creates a new core with the default configuration file.
 	 */
@@ -167,9 +170,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			configurationLocator.setCustomLocation(configFilename);
 		}
 
-		ConfigurationLocation preferredLocation = configurationLocator.findPreferredLocation();
-		logger.log(Level.CONFIG, "Using configuration from " + preferredLocation + ".");
-		configuration = new Configuration(configurationLocator, preferredLocation);
+		originalLocation = configurationLocator.findPreferredLocation();
+		logger.log(Level.CONFIG, "Using configuration from " + originalLocation + ".");
+		configuration = new Configuration(configurationLocator, originalLocation);
 
 		Locale.setDefault(configuration.getLocale());
 		I18n.setLocale(configuration.getLocale());
