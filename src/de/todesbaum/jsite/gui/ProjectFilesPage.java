@@ -251,7 +251,6 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				FileOption fileOption = getSelectedFile();
 				if (fileOption == null) {
 					/* no file selected. */
-					System.out.println("yfwdasd");
 					return;
 				}
 				Document document = documentEvent.getDocument();
