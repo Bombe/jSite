@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - ProjectPage.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -609,8 +608,13 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			keyDialog.setPublicKey(selectedProject.getRequestURI());
 			keyDialog.setVisible(true);
 			if (!keyDialog.wasCancelled()) {
+				String originalPublicKey = selectedProject.getRequestURI();
+				String originalPrivateKey = selectedProject.getInsertURI();
 				selectedProject.setInsertURI(keyDialog.getPrivateKey());
 				selectedProject.setRequestURI(keyDialog.getPublicKey());
+				if (!originalPublicKey.equals(selectedProject.getRequestURI()) || !originalPrivateKey.equals(selectedProject.getInsertURI())) {
+					selectedProject.setEdition(-1);
+				}
 				updateCompleteURI();
 			}
 		}

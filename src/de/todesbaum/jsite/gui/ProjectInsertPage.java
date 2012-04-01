@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet
- * Copyright (C) 2006 David Roden
+ * jSite - ProjectInsertPage.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +54,9 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
+import de.todesbaum.util.freenet.fcp2.PriorityClass;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 
@@ -220,7 +222,27 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		progressBar.setValue(0);
 		progressBar.setString(I18n.getMessage("jsite.insert.starting"));
 		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
-		projectInserter.start();
+		projectInserter.start(new ProgressListener() {
+
+			public void onProgress(final long copied, final long length) {
+				SwingUtilities.invokeLater(new Runnable() {
+
+					/**
+					 * {@inheritDoc}
+					 */
+					@SuppressWarnings("synthetic-access")
+					public void run() {
+						int divisor = 1;
+						while (((copied / divisor) > Integer.MAX_VALUE) || ((length / divisor) > Integer.MAX_VALUE)) {
+							divisor *= 10;
+						}
+						progressBar.setMaximum((int) (length / divisor));
+						progressBar.setValue((int) (copied / divisor));
+						progressBar.setString("Uploaded: " + copied + " / " + length);
+					}
+				});
+			}
+		});
 	}
 
 	/**
@@ -292,6 +314,38 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		return uriCopied;
 	}
 
+	/**
+	 * Sets whether to use the “early encode“ flag for the insert.
+	 *
+	 * @param useEarlyEncode
+	 *            {@code true} to set the “early encode” flag for the insert,
+	 *            {@code false} otherwise
+	 */
+	public void setUseEarlyEncode(boolean useEarlyEncode) {
+		projectInserter.setUseEarlyEncode(useEarlyEncode);
+	}
+
+	/**
+	 * Sets the insert priority.
+	 *
+	 * @param priority
+	 *            The insert priority
+	 */
+	public void setPriority(PriorityClass priority) {
+		projectInserter.setPriority(priority);
+	}
+
+	/**
+	 * Sets the manifest putter to use for the insert.
+	 *
+	 * @see ProjectInserter#setManifestPutter(ManifestPutter)
+	 * @param manifestPutter
+	 *            The manifest putter
+	 */
+	public void setManifestPutter(ManifestPutter manifestPutter) {
+		projectInserter.setManifestPutter(manifestPutter);
+	}
+
 	//
 	// INTERFACE InsertListener
 	//
@@ -315,6 +369,14 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void projectUploadFinished(Project project) {
 		startTime = System.currentTimeMillis();
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@SuppressWarnings("synthetic-access")
+			public void run() {
+				progressBar.setString(I18n.getMessage("jsite.insert.starting"));
+				progressBar.setValue(0);
+			}
+		});
 	}
 
 	/**
@@ -359,6 +421,9 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 			@SuppressWarnings("synthetic-access")
 			public void run() {
+				if (total == 0) {
+					return;
+				}
 				progressBar.setMaximum(total);
 				progressBar.setValue(succeeded + failed + fatal);
 				int progress = (succeeded + failed + fatal) * 100 / total;

@@ -1,6 +1,5 @@
 /*
- * todesbaum-lib -
- * Copyright (C) 2006 David Roden
+ * jSite - PriorityClass.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +87,39 @@ public final class PriorityClass {
 	 */
 	public int getValue() {
 		return value;
+	}
+
+	//
+	// STATIC METHODS
+	//
+
+	/**
+	 * Returns the priority class with the given name, matched case-insensitive.
+	 *
+	 * @param value
+	 *            The name of the priority
+	 * @return The priority with the given name, or {@code null} if no priority
+	 *         matches the given name
+	 */
+	public static PriorityClass valueOf(String value) {
+		for (PriorityClass priorityClass : new PriorityClass[] { MINIMUM, PREFETCH, BULK, UPDATABLE, SEMI_INTERACTIVE, INTERACTIVE, MAXIMUM }) {
+			if (priorityClass.getName().equalsIgnoreCase(value)) {
+				return priorityClass;
+			}
+		}
+		return null;
+	}
+
+	//
+	// OBJECT METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return name;
 	}
 
 }

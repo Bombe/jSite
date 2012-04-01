@@ -1,5 +1,5 @@
 /*
- * jSite-remote - I18nContainer.java Copyright © 2007 David Roden
+ * jSite - I18nContainer.java - Copyright © 2007–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

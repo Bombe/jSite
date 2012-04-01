@@ -1,6 +1,5 @@
 /*
- * jSite-remote - UpdateChecker.java -
- * Copyright © 2008 David Roden
+ * jSite - UpdateChecker.java - Copyright © 2008–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +51,7 @@ public class UpdateChecker implements Runnable {
 	private static int counter = 0;
 
 	/** The edition for the update check URL. */
-	private static final int UPDATE_EDITION = 11;
+	private static final int UPDATE_EDITION = 17;
 
 	/** The URL for update checks. */
 	private static final String UPDATE_KEY = "USK@e3myoFyp5avg6WYN16ImHri6J7Nj8980Fm~aQe4EX1U,QvbWT0ImE0TwLODTl7EoJx2NBnwDxTbLTE6zkB-eGPs,AQACAAE";
@@ -216,6 +215,9 @@ public class UpdateChecker implements Runnable {
 				while (!stop) {
 					Message message = client.readMessage();
 					logger.log(Level.FINEST, "Received message: " + message);
+					if (message == null) {
+						break;
+					}
 					if ("GetFailed".equals(message.getName())) {
 						if ("27".equals(message.get("code"))) {
 							String editionString = message.get("redirecturi").split("/")[2];

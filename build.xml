@@ -26,14 +26,14 @@
 	</target>
 
 	<target name="compile-maintainer" depends="prepare" if="maintainer-build">
-		<javac destdir="${bin.dir}" debug="false" optimize="true">
+		<javac destdir="${bin.dir}" debug="${javac.debug}" optimize="true">
 			<src path="${src.dir}" />
 			<sourcepath path="${todesbaum.src}" />
 		</javac>
 	</target>
 	
 	<target name="compile-non-maintainer" depends="prepare" unless="maintainer-build">
-		<javac destdir="${bin.dir}" debug="false" optimize="true">
+		<javac destdir="${bin.dir}" debug="${javac.debug}" optimize="true">
 			<src path="${src.dir}" />
 			<sourcepath path="${todesbaum.src}" />
 		</javac>

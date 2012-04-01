@@ -1,6 +1,5 @@
 /*
- * jSite - a tool for uploading websites into Freenet Copyright (C) 2006 David
- * Roden
+ * jSite - Project.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -23,6 +22,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.todesbaum.util.mime.DefaultMIMETypes;
 
@@ -418,6 +418,24 @@ public class Project implements Comparable<Project> {
 	 */
 	public String getFinalRequestURI(int offset) {
 		return "USK@" + requestURI + "/" + path + "/" + (edition + offset) + "/";
+	}
+
+	/**
+	 * Performs some post-processing on the project after it was inserted
+	 * successfully. At the moment it copies the current hashes of all file
+	 * options to the last insert hashes, updating the hashes for the next
+	 * insert.
+	 */
+	public void onSuccessfulInsert() {
+		for (Entry<String, FileOption> fileOptionEntry : fileOptions.entrySet()) {
+			FileOption fileOption = fileOptionEntry.getValue();
+			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash()) || fileOption.isForceInsert())) {
+				fileOption.setLastInsertEdition(edition);
+				fileOption.setLastInsertHash(fileOption.getCurrentHash());
+				fileOption.setLastInsertFilename(fileOption.hasChangedName() ? fileOption.getChangedName() : fileOptionEntry.getKey());
+			}
+			fileOption.setForceInsert(false);
+		}
 	}
 
 }

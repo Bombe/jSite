@@ -1,6 +1,5 @@
 /*
- * jSite -
- * Copyright (C) 2006 David Roden
+ * jSite - CLI.java - Copyright © 2006–2012 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +25,7 @@ import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
+import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * Command-line interface for jSite.
@@ -68,6 +68,7 @@ public class CLI implements InsertListener {
 
 		if ((args.length == 0) || args[0].equals("-h") || args[0].equals("--help")) {
 			outputWriter.println("\nParameters:\n");
+			outputWriter.println("  --config-file=<configuration file>");
 			outputWriter.println("  --node=<node name>");
 			outputWriter.println("  --project=<project name>");
 			outputWriter.println("  --local-directory=<local directory>");
@@ -79,11 +80,19 @@ public class CLI implements InsertListener {
 			return;
 		}
 
-		Configuration configuration = new Configuration();
-		if (!configuration.createLockFile()) {
-			outputWriter.println("Lock file found!");
-			return;
+		String configFile = System.getProperty("user.home") + "/.jSite/config7";
+		for (String argument : args) {
+			String value = argument.substring(argument.indexOf('=') + 1).trim();
+			if (argument.startsWith("--config-file=")) {
+				configFile = value;
+			}
 		}
+
+		ConfigurationLocator configurationLocator = new ConfigurationLocator();
+		if (configFile != null) {
+			configurationLocator.setCustomLocation(configFile);
+		}
+		Configuration configuration = new Configuration(configurationLocator, configurationLocator.findPreferredLocation());
 
 		projectInserter.addInsertListener(this);
 		projects = configuration.getProjects();
@@ -97,6 +106,10 @@ public class CLI implements InsertListener {
 
 		Project currentProject = null;
 		for (String argument : args) {
+			if (argument.startsWith("--config-file=")) {
+				/* we already parsed this one. */
+				continue;
+			}
 			String value = argument.substring(argument.indexOf('=') + 1).trim();
 			if (argument.startsWith("--node=")) {
 				Node newNode = getNode(value);
@@ -143,9 +156,11 @@ public class CLI implements InsertListener {
 			}
 		}
 
+		int errorCode = 1;
 		if (currentProject != null) {
 			if (insertProject(currentProject)) {
 				outputWriter.println("Project \"" + currentProject.getName() + "\" successfully inserted.");
+				errorCode = 0;
 			} else {
 				outputWriter.println("Project \"" + currentProject.getName() + "\" was not successfully inserted.");
 			}
@@ -153,6 +168,8 @@ public class CLI implements InsertListener {
 
 		configuration.setProjects(projects);
 		configuration.save();
+
+		System.exit(errorCode);
 	}
 
 	/**
@@ -201,7 +218,12 @@ public class CLI implements InsertListener {
 			return false;
 		}
 		projectInserter.setProject(currentProject);
-		projectInserter.start();
+		projectInserter.start(new ProgressListener() {
+
+			public void onProgress(long copied, long length) {
+				System.out.print("Uploaded: " + copied + " / " + length + " bytes...\r");
+			}
+		});
 		synchronized (lockObject) {
 			while (!finished) {
 				try {
@@ -229,7 +251,7 @@ public class CLI implements InsertListener {
 	 * {@inheritDoc}
 	 */
 	public void projectUploadFinished(Project project) {
-		outputWriter.println("Project \"" + project.getName() + "\" has ben uploaded, starting insert...");
+		outputWriter.println("Project \"" + project.getName() + "\" has been uploaded, starting insert...");
 	}
 
 	/**
