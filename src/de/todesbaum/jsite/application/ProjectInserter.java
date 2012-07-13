@@ -392,6 +392,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			checkReport.addIssue("error.no-files-to-insert", true);
 		}
 		Set<String> fileNames = new HashSet<String>();
+		long totalSize = 0;
 		for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 			FileOption fileOption = fileOptionEntry.getValue();
 			if (!fileOption.isInsert() && !fileOption.isInsertRedirect()) {
@@ -406,6 +407,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!fileNames.add(fileName)) {
 				checkReport.addIssue("error.duplicate-file", true, fileName);
 			}
+			if (fileOption.isInsert()) {
+				totalSize += new File(project.getLocalPath(), fileName).length();
+			}
+		}
+		if (totalSize > 2 * 1024 * 1024) {
+			checkReport.addIssue("warning.site-larger-than-2-mib", false);
 		}
 		return checkReport;
 	}
