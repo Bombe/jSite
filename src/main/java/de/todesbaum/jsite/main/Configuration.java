@@ -35,6 +35,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.pterodactylus.util.xml.SimpleXML;
+import net.pterodactylus.util.xml.XML;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
@@ -43,8 +45,6 @@ import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
-import de.todesbaum.util.xml.SimpleXML;
-import de.todesbaum.util.xml.XML;
 
 /**
  * The configuration.
@@ -316,24 +316,24 @@ public class Configuration {
 				try {
 					Project project = new Project();
 					projects.add(project);
-					project.setDescription(projectNode.getNode("description").getValue(""));
-					String indexFile = projectNode.getNode("index-file").getValue("");
+					project.setDescription(projectNode.getValue("description", ""));
+					String indexFile = projectNode.getValue("index-file", "");
 					if (indexFile.indexOf('/') > -1) {
 						indexFile = "";
 					}
 					project.setIndexFile(indexFile);
-					project.setLastInsertionTime(Long.parseLong(projectNode.getNode("last-insertion-time").getValue("0")));
-					project.setLocalPath(projectNode.getNode("local-path").getValue(""));
-					project.setName(projectNode.getNode("name").getValue(""));
-					project.setPath(projectNode.getNode("path").getValue(""));
+					project.setLastInsertionTime(Long.parseLong(projectNode.getValue("last-insertion-time", "0")));
+					project.setLocalPath(projectNode.getValue("local-path", ""));
+					project.setName(projectNode.getValue("name", ""));
+					project.setPath(projectNode.getValue("path", ""));
 					if ((project.getPath() != null) && (project.getPath().indexOf("/") != -1)) {
 						project.setPath(project.getPath().replaceAll("/", ""));
 					}
-					project.setEdition(Integer.parseInt(projectNode.getNode("edition").getValue("0")));
-					project.setInsertURI(projectNode.getNode("insert-uri").getValue(""));
-					project.setRequestURI(projectNode.getNode("request-uri").getValue(""));
+					project.setEdition(Integer.parseInt(projectNode.getValue("edition", "0")));
+					project.setInsertURI(projectNode.getValue("insert-uri", ""));
+					project.setRequestURI(projectNode.getValue("request-uri", ""));
 					if (projectNode.getNode("ignore-hidden-files") != null) {
-						project.setIgnoreHiddenFiles(Boolean.parseBoolean(projectNode.getNode("ignore-hidden-files").getValue("true")));
+						project.setIgnoreHiddenFiles(Boolean.parseBoolean(projectNode.getValue("ignore-hidden-files", "true")));
 					} else {
 						project.setIgnoreHiddenFiles(true);
 					}
@@ -366,11 +366,11 @@ public class Configuration {
 							if (fileOptionNode.getNode("insert-redirect") != null) {
 								fileOption.setInsertRedirect(Boolean.parseBoolean(fileOptionNode.getNode("insert-redirect").getValue()));
 							}
-							fileOption.setCustomKey(fileOptionNode.getNode("custom-key").getValue(""));
+							fileOption.setCustomKey(fileOptionNode.getValue("custom-key", ""));
 							if (fileOptionNode.getNode("changed-name") != null) {
 								fileOption.setChangedName(fileOptionNode.getNode("changed-name").getValue());
 							}
-							fileOption.setMimeType(fileOptionNode.getNode("mime-type").getValue(""));
+							fileOption.setMimeType(fileOptionNode.getValue("mime-type", ""));
 							fileOptions.put(filename, fileOption);
 						}
 					}
