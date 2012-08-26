@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.pterodactylus.util.io.Closer;
 import de.todesbaum.jsite.main.Main;
 import de.todesbaum.jsite.main.Version;
 import de.todesbaum.util.freenet.fcp2.Client;
@@ -35,7 +36,6 @@ import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.Persistence;
 import de.todesbaum.util.freenet.fcp2.ReturnType;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
-import de.todesbaum.util.io.Closer;
 
 /**
  * Checks for newer versions of jSite.

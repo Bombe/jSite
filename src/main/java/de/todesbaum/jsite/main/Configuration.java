@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.pterodactylus.util.io.Closer;
 import net.pterodactylus.util.xml.SimpleXML;
 import net.pterodactylus.util.xml.XML;
 import de.todesbaum.jsite.application.FileOption;
@@ -43,7 +44,6 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
-import de.todesbaum.util.io.Closer;
 import de.todesbaum.util.io.StreamCopier;
 
 /**
