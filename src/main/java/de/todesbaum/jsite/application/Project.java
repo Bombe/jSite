@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.todesbaum.util.mime.DefaultMIMETypes;
+import net.pterodactylus.util.io.MimeTypes;
 
 /**
  * Container for project information.
@@ -337,7 +337,7 @@ public class Project implements Comparable<Project> {
 	public FileOption getFileOption(String filename) {
 		FileOption fileOption = fileOptions.get(filename);
 		if (fileOption == null) {
-			fileOption = new FileOption(DefaultMIMETypes.guessMIMEType(filename));
+			fileOption = new FileOption(MimeTypes.getMimeType(filename.substring(filename.lastIndexOf('.') + 1)));
 			fileOptions.put(filename, fileOption);
 		}
 		return fileOption;

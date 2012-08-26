@@ -53,12 +53,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import net.pterodactylus.util.io.MimeTypes;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
-import de.todesbaum.util.mime.DefaultMIMETypes;
 import de.todesbaum.util.swing.TLabel;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -279,7 +279,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsPanel.add(fileOptionsRenameCheckBox, new GridBagConstraints(0, 7, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsRenameTextField, new GridBagConstraints(2, 7, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
-		fileOptionsMIMETypeComboBox = new JComboBox(DefaultMIMETypes.getAllMIMETypes());
+		fileOptionsMIMETypeComboBox = new JComboBox(MimeTypes.getAllMimeTypes().toArray());
 		fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 		fileOptionsMIMETypeComboBox.setName("project-files.mime-type");
 		fileOptionsMIMETypeComboBox.addActionListener(this);
@@ -523,7 +523,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsRenameCheckBox.setSelected(false);
 			fileOptionsRenameTextField.setEnabled(false);
 			fileOptionsRenameTextField.setText("");
-			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(DefaultMIMETypes.DEFAULT_MIME_TYPE);
+			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(MimeTypes.DEFAULT_CONTENT_TYPE);
 		}
 	}
 
