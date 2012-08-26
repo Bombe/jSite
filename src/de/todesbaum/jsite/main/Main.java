@@ -406,7 +406,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 * @return The supported locale that was found, or the default locale if no
 	 *         supported locale could be found
 	 */
-	private Locale findSupportedLocale(Locale forLocale) {
+	private static Locale findSupportedLocale(Locale forLocale) {
 		for (Locale locale : SUPPORTED_LOCALES) {
 			if (locale.equals(forLocale)) {
 				return locale;

@@ -516,7 +516,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 *            The number of fractional digits
 	 * @return The formatted number
 	 */
-	private String formatNumber(double number, int digits) {
+	private static String formatNumber(double number, int digits) {
 		int multiplier = (int) Math.pow(10, digits);
 		String formattedNumber = String.valueOf((int) (number * multiplier) / (double) multiplier);
 		if (formattedNumber.indexOf('.') == -1) {

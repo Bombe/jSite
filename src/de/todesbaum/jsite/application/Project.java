@@ -289,7 +289,7 @@ public class Project implements Comparable<Project> {
 	 *            The URI to shorten
 	 * @return The shortened URI
 	 */
-	private String shortenURI(String uri) {
+	private static String shortenURI(String uri) {
 		String shortUri = uri;
 		if (shortUri.startsWith("freenet:")) {
 			shortUri = shortUri.substring("freenet:".length());

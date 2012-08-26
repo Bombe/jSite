@@ -180,7 +180,7 @@ public class UpdateChecker implements Runnable {
 	 *            The edition number
 	 * @return The URI for the update file for the given edition
 	 */
-	private String constructUpdateKey(int edition) {
+	private static String constructUpdateKey(int edition) {
 		return UPDATE_KEY + "/jSite/" + edition + "/jSite.properties";
 	}
 
