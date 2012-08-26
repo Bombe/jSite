@@ -191,6 +191,7 @@ public class UpdateChecker implements Runnable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void run() {
 		Connection connection = freenetInterface.getConnection("jSite-" + ++counter + "-UpdateChecker");
 		try {

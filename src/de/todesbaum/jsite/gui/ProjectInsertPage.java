@@ -111,6 +111,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		setDescription(I18n.getMessage("jsite.insert.description"));
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				setHeading(I18n.getMessage("jsite.insert.heading"));
 				setDescription(I18n.getMessage("jsite.insert.description"));
@@ -126,6 +127,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	private void createActions() {
 		copyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCopyURI();
@@ -137,6 +139,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				copyURIAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.copy-uri"));
@@ -185,6 +188,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				projectInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.insert.project-information") + "</b></html>");
@@ -224,12 +228,14 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		progressBar.setFont(progressBar.getFont().deriveFont(Font.PLAIN));
 		projectInserter.start(new ProgressListener() {
 
+			@Override
 			public void onProgress(final long copied, final long length) {
 				SwingUtilities.invokeLater(new Runnable() {
 
 					/**
 					 * {@inheritDoc}
 					 */
+					@Override
 					@SuppressWarnings("synthetic-access")
 					public void run() {
 						int divisor = 1;
@@ -275,6 +281,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		projectInserter.setProject(project);
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				requestURITextField.setText(project.getFinalRequestURI(1));
@@ -353,10 +360,12 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertStarted(final Project project) {
 
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				startTimeLabel.setText(DateFormat.getDateTimeInstance().format(new Date()));
@@ -367,10 +376,12 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectUploadFinished(Project project) {
 		startTime = System.currentTimeMillis();
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				progressBar.setString(I18n.getMessage("jsite.insert.starting"));
@@ -382,9 +393,11 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectURIGenerated(Project project, final String uri) {
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				copyURIAction.setEnabled(true);
@@ -415,10 +428,12 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertProgress(Project project, final int succeeded, final int failed, final int fatal, final int total, final boolean finalized) {
 		insertedBlocks = succeeded;
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				if (total == 0) {
@@ -444,6 +459,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
 		running = false;
 		if (success) {
@@ -465,6 +481,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				progressBar.setValue(progressBar.getMaximum());
@@ -527,6 +544,7 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 		/* ignore. */
 	}

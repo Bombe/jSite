@@ -132,6 +132,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	private void createActions() {
 		scanAction = new AbstractAction(I18n.getMessage("jsite.project-files.action.rescan")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionScan();
@@ -142,6 +143,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				scanAction.putValue(Action.NAME, I18n.getMessage("jsite.project-files.action.rescan"));
@@ -262,14 +264,17 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				}
 			}
 
+			@Override
 			public void changedUpdate(DocumentEvent documentEvent) {
 				storeText(documentEvent);
 			}
 
+			@Override
 			public void insertUpdate(DocumentEvent documentEvent) {
 				storeText(documentEvent);
 			}
 
+			@Override
 			public void removeUpdate(DocumentEvent documentEvent) {
 				storeText(documentEvent);
 			}
@@ -292,6 +297,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				ignoreHiddenFilesCheckBox.setText(I18n.getMessage("jsite.project-files.ignore-hidden-files"));
@@ -330,6 +336,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		ignoreHiddenFilesCheckBox.setSelected(project.isIgnoreHiddenFiles());
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				setHeading(MessageFormat.format(I18n.getMessage("jsite.project-files.heading"), project.getName()));
 				setDescription(I18n.getMessage("jsite.project-files.description"));
@@ -362,12 +369,14 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 * <p>
 	 * Updates the file list.
 	 */
+	@Override
 	public void fileScannerFinished(FileScanner fileScanner) {
 		final boolean error = fileScanner.isError();
 		if (!error) {
 			final List<ScannedFile> files = fileScanner.getFiles();
 			SwingUtilities.invokeLater(new Runnable() {
 
+				@Override
 				@SuppressWarnings("synthetic-access")
 				public void run() {
 					projectFileList.setListData(files.toArray());
@@ -397,6 +406,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				wizard.setPreviousEnabled(true);
@@ -428,6 +438,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		Object source = actionEvent.getSource();
 		if ((source instanceof JCheckBox) && ("ignore-hidden-files".equals(((JCheckBox) source).getName()))) {
@@ -487,6 +498,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@SuppressWarnings("null")
 	public void valueChanged(ListSelectionEvent e) {
 		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
@@ -556,6 +568,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void changedUpdate(DocumentEvent documentEvent) {
 		processDocumentUpdate(documentEvent);
 	}
@@ -563,6 +576,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void insertUpdate(DocumentEvent documentEvent) {
 		processDocumentUpdate(documentEvent);
 	}
@@ -570,6 +584,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void removeUpdate(DocumentEvent documentEvent) {
 		processDocumentUpdate(documentEvent);
 	}

@@ -386,6 +386,7 @@ public class Project implements Comparable<Project> {
 	 * <p>
 	 * Projects are compared by their name only.
 	 */
+	@Override
 	public int compareTo(Project project) {
 		return name.compareToIgnoreCase(project.name);
 	}

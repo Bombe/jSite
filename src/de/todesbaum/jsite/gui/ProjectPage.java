@@ -143,6 +143,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				setHeading(I18n.getMessage("jsite.project.heading"));
 				setDescription(I18n.getMessage("jsite.project.description"));
@@ -206,6 +207,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	private void createActions() {
 		projectLocalPathBrowseAction = new AbstractAction(I18n.getMessage("jsite.project.action.browse")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionLocalPathBrowse();
@@ -217,6 +219,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectAddAction = new AbstractAction(I18n.getMessage("jsite.project.action.add-project")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionAdd();
@@ -227,6 +230,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectDeleteAction = new AbstractAction(I18n.getMessage("jsite.project.action.delete-project")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionDelete();
@@ -238,6 +242,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectCloneAction = new AbstractAction(I18n.getMessage("jsite.project.action.clone-project")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionClone();
@@ -249,6 +254,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectCopyURIAction = new AbstractAction(I18n.getMessage("jsite.project.action.copy-uri")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCopyURI();
@@ -260,6 +266,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectManageKeysAction = new AbstractAction(I18n.getMessage("jsite.project.action.manage-keys")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionManageKeys();
@@ -271,6 +278,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		projectResetEditionAction = new AbstractAction(I18n.getMessage("jsite.project.action.reset-edition")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionResetEdition();
@@ -282,6 +290,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				projectLocalPathBrowseAction.putValue(Action.NAME, I18n.getMessage("jsite.project.action.browse"));
@@ -407,6 +416,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				projectInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.project.project.information") + "</b></html>");
 				projectNameLabel.setText(I18n.getMessage("jsite.project.project.name") + ":");
@@ -653,6 +663,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void valueChanged(ListSelectionEvent listSelectionEvent) {
 		int selectedRow = projectList.getSelectedIndex();
 		Project selectedProject = (Project) projectList.getSelectedValue();
@@ -692,6 +703,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void insertUpdate(DocumentEvent documentEvent) {
 		setTextField(documentEvent);
 	}
@@ -699,6 +711,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void removeUpdate(DocumentEvent documentEvent) {
 		setTextField(documentEvent);
 	}
@@ -706,6 +719,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void changedUpdate(DocumentEvent documentEvent) {
 		setTextField(documentEvent);
 	}
@@ -717,6 +731,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 		/* ignore. */
 	}

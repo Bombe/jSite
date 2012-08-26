@@ -110,6 +110,7 @@ public class FileScanner implements Runnable {
 	 *
 	 * @see FileScannerListener#fileScannerFinished(FileScanner)
 	 */
+	@Override
 	public void run() {
 		files = new ArrayList<ScannedFile>();
 		error = false;
@@ -154,6 +155,7 @@ public class FileScanner implements Runnable {
 	private void scanFiles(File rootDir, List<ScannedFile> fileList) throws IOException {
 		File[] files = rootDir.listFiles(new FileFilter() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public boolean accept(File file) {
 				return !project.isIgnoreHiddenFiles() || !file.isHidden();
@@ -335,6 +337,7 @@ public class FileScanner implements Runnable {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public int compareTo(ScannedFile scannedFile) {
 			return filename.compareTo(scannedFile.filename);
 		}

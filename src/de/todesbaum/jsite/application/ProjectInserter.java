@@ -443,6 +443,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void run() {
 		fireProjectInsertStarted();
 		List<ScannedFile> files = fileScanner.getFiles();
@@ -548,6 +549,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void fileScannerFinished(FileScanner fileScanner) {
 		if (!fileScanner.isError()) {
 			new Thread(this).start();
@@ -597,6 +599,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Iterator<Issue> iterator() {
 			return issues.iterator();
 		}

@@ -201,6 +201,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		for (final Locale locale : SUPPORTED_LOCALES) {
 			languageActions.put(locale, new AbstractAction(I18n.getMessage("jsite.menu.language." + locale.getLanguage()), IconLoader.loadIcon("/flag-" + locale.getLanguage() + ".png")) {
 
+				@Override
 				@SuppressWarnings("synthetic-access")
 				public void actionPerformed(ActionEvent actionEvent) {
 					switchLanguage(locale);
@@ -209,6 +210,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 		manageNodeAction = new AbstractAction(I18n.getMessage("jsite.menu.nodes.manage-nodes")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				showPage(PageType.PAGE_NODE_MANAGER);
@@ -222,6 +224,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				optionsPreferences();
@@ -232,6 +235,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				showLatestUpdate();
@@ -239,6 +243,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		};
 		aboutAction = new AbstractAction(I18n.getMessage("jsite.menu.help.about")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.about.message"), getVersion().toString()), null, JOptionPane.INFORMATION_MESSAGE, jSiteIcon);
@@ -247,6 +252,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				manageNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.menu.nodes.manage-nodes"));
@@ -298,6 +304,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				languageMenu.setText(I18n.getMessage("jsite.menu.languages"));
@@ -493,6 +500,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		JList list = (JList) e.getSource();
 		int selectedRow = list.getSelectedIndex();
@@ -506,6 +514,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void wizardNextPressed(TWizard wizard) {
 		String pageName = wizard.getPage().getName();
 		if ("page.node-manager".equals(pageName)) {
@@ -585,6 +594,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void wizardPreviousPressed(TWizard wizard) {
 		String pageName = wizard.getPage().getName();
 		if ("page.project".equals(pageName) || "page.preferences".equals(pageName)) {
@@ -600,6 +610,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void wizardQuitPressed(TWizard wizard) {
 		if (((ProjectPage) pages.get(PageType.PAGE_PROJECTS)).wasUriCopied() || ((ProjectInsertPage) pages.get(PageType.PAGE_INSERT_PROJECT)).wasUriCopied()) {
 			JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.project.warning.use-clipboard-now"));
@@ -635,6 +646,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void nodesUpdated(Node[] nodes) {
 		nodeMenu.removeAll();
 		ButtonGroup nodeButtonGroup = new ButtonGroup();
@@ -659,6 +671,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void nodeSelected(Node node) {
 		for (Component menuItem : nodeMenu.getMenuComponents()) {
 			if (menuItem instanceof JMenuItem) {
@@ -678,6 +691,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source instanceof JRadioButtonMenuItem) {
@@ -695,6 +709,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void foundUpdateData(Version foundVersion, long versionTimestamp) {
 		logger.log(Level.FINEST, "Found version {0} from {1,date}.", new Object[] { foundVersion, versionTimestamp });
 		if (foundVersion.compareTo(VERSION) > 0) {

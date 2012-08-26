@@ -103,6 +103,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		setDescription(I18n.getMessage("jsite.node-manager.description"));
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				setHeading(I18n.getMessage("jsite.node-manager.heading"));
 				setDescription(I18n.getMessage("jsite.node-manager.description"));
@@ -160,6 +161,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void createActions() {
 		addNodeAction = new AbstractAction(I18n.getMessage("jsite.node-manager.add-node")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				addNode();
@@ -168,6 +170,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 		deleteNodeAction = new AbstractAction(I18n.getMessage("jsite.node-manager.delete-node")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				deleteNode();
@@ -177,6 +180,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				addNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.node-manager.add-node"));
 				deleteNodeAction.putValue(Action.NAME, I18n.getMessage("jsite.node-manager.delete-node"));
@@ -238,6 +242,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				nodeInformationLabel.setText("<html><b>" + I18n.getMessage("jsite.node-manager.node-information") + "</b></html>");
 				nodeNameLabel.setText(I18n.getMessage("jsite.node-manager.name") + ":");
@@ -374,6 +379,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@SuppressWarnings("null")
 	public void valueChanged(ListSelectionEvent e) {
 		Object source = e.getSource();
@@ -406,6 +412,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void insertUpdate(DocumentEvent e) {
 		updateTextField(e);
 	}
@@ -413,6 +420,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void removeUpdate(DocumentEvent e) {
 		updateTextField(e);
 	}
@@ -420,6 +428,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void changedUpdate(DocumentEvent e) {
 		updateTextField(e);
 	}
@@ -431,6 +440,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
 		Node selectedNode = getSelectedNode();

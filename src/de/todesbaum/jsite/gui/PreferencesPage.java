@@ -131,6 +131,7 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			public void run() {
 				setHeading(I18n.getMessage("jsite.preferences.heading"));
 				setDescription(I18n.getMessage("jsite.preferences.description"));
@@ -317,6 +318,7 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				selectDefaultTempDirectory();
@@ -327,6 +329,7 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				selectCustomTempDirectory();
@@ -334,6 +337,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		chooseTempDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.temp-directory.choose")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent e) {
 				chooseTempDirectory();
@@ -341,6 +345,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		nextToJarFileAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.jar")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionevent) {
 				configurationLocation = ConfigurationLocation.NEXT_TO_JAR_FILE;
@@ -348,6 +353,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		homeDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.home")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionevent) {
 				configurationLocation = ConfigurationLocation.HOME_DIRECTORY;
@@ -355,6 +361,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		customDirectoryAction = new AbstractAction(I18n.getMessage("jsite.preferences.config-directory.custom")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				configurationLocation = ConfigurationLocation.CUSTOM;
@@ -362,6 +369,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		useEarlyEncodeAction = new AbstractAction(I18n.getMessage("jsite.preferences.insert-options.use-early-encode")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				useEarlyEncode = useEarlyEncodeCheckBox.isSelected();
@@ -369,6 +377,7 @@ public class PreferencesPage extends TWizardPage {
 		};
 		priorityAction = new AbstractAction(I18n.getMessage("jsite.preferences.insert-options.priority")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				priority = (PriorityClass) insertPriorityComboBox.getSelectedItem();
@@ -377,6 +386,7 @@ public class PreferencesPage extends TWizardPage {
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
 				selectDefaultTempDirectoryAction.putValue(Action.NAME, I18n.getMessage("jsite.preferences.temp-directory.default"));
@@ -467,6 +477,7 @@ public class PreferencesPage extends TWizardPage {
 			/**
 			 * {@inheritDoc}
 			 */
+			@Override
 			public void run() {
 				tempDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.temp-directory") + "</b></html>");
 				configurationDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");

@@ -80,6 +80,7 @@ public class I18nContainer implements Iterable<Runnable> {
 	 * Returns a combined list of {@link #i18nRunnables} and
 	 * {@link #i18nPostRunnables}, in that order.
 	 */
+	@Override
 	public Iterator<Runnable> iterator() {
 		List<Runnable> allRunnables = new ArrayList<Runnable>();
 		allRunnables.addAll(i18nRunnables);

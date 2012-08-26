@@ -220,6 +220,7 @@ public class CLI implements InsertListener {
 		projectInserter.setProject(currentProject);
 		projectInserter.start(new ProgressListener() {
 
+			@Override
 			public void onProgress(long copied, long length) {
 				System.out.print("Uploaded: " + copied + " / " + length + " bytes...\r");
 			}
@@ -243,6 +244,7 @@ public class CLI implements InsertListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertStarted(Project project) {
 		outputWriter.println("Starting Insert of project \"" + project.getName() + "\".");
 	}
@@ -250,6 +252,7 @@ public class CLI implements InsertListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectUploadFinished(Project project) {
 		outputWriter.println("Project \"" + project.getName() + "\" has been uploaded, starting insert...");
 	}
@@ -257,6 +260,7 @@ public class CLI implements InsertListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectURIGenerated(Project project, String uri) {
 		outputWriter.println("URI: " + uri);
 	}
@@ -264,6 +268,7 @@ public class CLI implements InsertListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertProgress(Project project, int succeeded, int failed, int fatal, int total, boolean finalized) {
 		outputWriter.println("Progress: " + succeeded + " done, " + failed + " failed, " + fatal + " fatal, " + total + " total" + (finalized ? " (finalized)" : "") + ", " + ((succeeded + failed + fatal) * 100 / total) + "%");
 	}
@@ -271,6 +276,7 @@ public class CLI implements InsertListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void projectInsertFinished(Project project, boolean success, Throwable cause) {
 		outputWriter.println("Request URI: " + project.getFinalRequestURI(0));
 		finished = true;

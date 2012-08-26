@@ -185,6 +185,7 @@ public class KeyDialog extends JDialog {
 	private void createActions() {
 		okAction = new AbstractAction(I18n.getMessage("jsite.general.ok")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionOk();
@@ -195,6 +196,7 @@ public class KeyDialog extends JDialog {
 
 		cancelAction = new AbstractAction(I18n.getMessage("jsite.general.cancel")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionCancel();
@@ -205,6 +207,7 @@ public class KeyDialog extends JDialog {
 
 		generateAction = new AbstractAction(I18n.getMessage("jsite.key-dialog.button.generate")) {
 
+			@Override
 			@SuppressWarnings("synthetic-access")
 			public void actionPerformed(ActionEvent actionEvent) {
 				actionGenerate();
@@ -261,6 +264,7 @@ public class KeyDialog extends JDialog {
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
+			@Override
 			public void run() {
 				keysLabel.setText(I18n.getMessage("jsite.key-dialog.label.keys"));
 				privateKeyLabel.setText(I18n.getMessage("jsite.key-dialog.label.private-key"));

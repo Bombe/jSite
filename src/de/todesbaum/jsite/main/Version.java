@@ -99,6 +99,7 @@ public class Version implements Comparable<Version> {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public int compareTo(Version version) {
 		int lessComponents = Math.min(components.length, version.components.length);
 		for (int index = 0; index < lessComponents; index++) {
