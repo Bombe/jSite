@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -392,7 +393,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			checkReport.addIssue("error.no-files-to-insert", true);
 		}
 		Set<String> fileNames = new HashSet<String>();
-		long totalSize = 0;
 		for (Entry<String, FileOption> fileOptionEntry : fileOptionEntries) {
 			FileOption fileOption = fileOptionEntry.getValue();
 			if (!fileOption.isInsert() && !fileOption.isInsertRedirect()) {
@@ -407,9 +407,32 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!fileNames.add(fileName)) {
 				checkReport.addIssue("error.duplicate-file", true, fileName);
 			}
-			if (fileOption.isInsert()) {
-				totalSize += new File(project.getLocalPath(), fileName).length();
+		}
+		long totalSize = 0;
+		FileScanner fileScanner = new FileScanner(project);
+		final CountDownLatch completionLatch = new CountDownLatch(1);
+		fileScanner.addFileScannerListener(new FileScannerListener() {
+
+			@Override
+			public void fileScannerFinished(FileScanner fileScanner) {
+				completionLatch.countDown();
 			}
+		});
+		new Thread(fileScanner).start();
+		while (completionLatch.getCount() > 0) {
+			try {
+				completionLatch.await();
+			} catch (InterruptedException ie1) {
+				/* TODO: logging */
+			}
+		}
+		for (ScannedFile scannedFile : fileScanner.getFiles()) {
+			String fileName = scannedFile.getFilename();
+			FileOption fileOption = project.getFileOption(fileName);
+			if ((fileOption != null) && !fileOption.isInsert()) {
+				continue;
+			}
+			totalSize += new File(project.getLocalPath(), fileName).length();
 		}
 		if (totalSize > 2 * 1024 * 1024) {
 			checkReport.addIssue("warning.site-larger-than-2-mib", false);
