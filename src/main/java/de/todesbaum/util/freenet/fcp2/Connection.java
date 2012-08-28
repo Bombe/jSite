@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.todesbaum.util.io.Closer;
+import net.pterodactylus.util.io.Closer;
 import de.todesbaum.util.io.LineInputStream;
 import de.todesbaum.util.io.StreamCopier;
 import de.todesbaum.util.io.StreamCopier.ProgressListener;

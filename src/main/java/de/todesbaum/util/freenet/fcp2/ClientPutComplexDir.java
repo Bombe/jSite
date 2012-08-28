@@ -28,7 +28,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.todesbaum.util.io.Closer;
+import net.pterodactylus.util.io.Closer;
 
 /**
  * Implementation of the <code>ClientPutComplexDir</code> command. This command
