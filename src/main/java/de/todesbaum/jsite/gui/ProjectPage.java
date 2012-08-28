@@ -57,12 +57,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
+import net.pterodactylus.util.swing.SortedListModel;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.KeyDialog;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
-import de.todesbaum.util.swing.SortedListModel;
 import de.todesbaum.util.swing.TLabel;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
