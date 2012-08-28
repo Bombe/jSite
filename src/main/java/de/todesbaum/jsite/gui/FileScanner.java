@@ -63,6 +63,9 @@ public class FileScanner implements Runnable {
 	/** Wether there was an error. */
 	private boolean error = false;
 
+	/** The name of the last file scanned. */
+	private String lastFilename;
+
 	/**
 	 * Creates a new file scanner for the given project.
 	 *
@@ -103,6 +106,16 @@ public class FileScanner implements Runnable {
 	}
 
 	/**
+	 * Returns the name of the last file scanned.
+	 *
+	 * @return The name of the last file scanned, or {@code null} if there was
+	 *         no file scanned yet
+	 */
+	public String getLastFilename() {
+		return lastFilename;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * <p>
 	 * Scans all available files in the project’s local path and emits an event
@@ -114,6 +127,7 @@ public class FileScanner implements Runnable {
 	public void run() {
 		files = new ArrayList<ScannedFile>();
 		error = false;
+		lastFilename = null;
 		try {
 			scanFiles(new File(project.getLocalPath()), files);
 			Collections.sort(files);
@@ -172,6 +186,7 @@ public class FileScanner implements Runnable {
 			String filename = project.shortenFilename(file).replace('\\', '/');
 			String hash = hashFile(project.getLocalPath(), filename);
 			fileList.add(new ScannedFile(filename, hash));
+			lastFilename = filename;
 		}
 	}
 
