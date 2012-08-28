@@ -26,6 +26,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,18 +36,23 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -54,6 +61,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import net.pterodactylus.util.io.MimeTypes;
+import net.pterodactylus.util.swing.DelayedNotification;
+import net.pterodactylus.util.swing.SwingUtils;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
@@ -106,6 +115,18 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/** The “mime type” combo box. */
 	private JComboBox fileOptionsMIMETypeComboBox;
 
+	/** Delayed notification for file scanning. */
+	private DelayedNotification delayedNotification;
+
+	/** Dialog to display while scanning. */
+	private JDialog scanningFilesDialog;
+
+	/** The file scanner. */
+	private FileScanner fileScanner;
+
+	/** The progress bar. */
+	private JProgressBar progressBar;
+
 	/**
 	 * Creates a new project file page.
 	 *
@@ -157,6 +178,10 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 */
 	@Override
 	public void pageAdded(TWizard wizard) {
+		/* create file scanner. */
+		fileScanner = new FileScanner(project);
+		fileScanner.addFileScannerListener(this);
+
 		actionScan();
 		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
 		this.wizard.setNextName(I18n.getMessage("jsite.project-files.insert-now"));
@@ -295,6 +320,36 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 8, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
+		/* create dialog to show while scanning. */
+		scanningFilesDialog = new JDialog(wizard);
+		scanningFilesDialog.setModal(true);
+		scanningFilesDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+		JPanel progressPanel = new JPanel(new BorderLayout(12, 12));
+		scanningFilesDialog.getContentPane().add(progressPanel, BorderLayout.CENTER);
+		progressPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+
+		final TLabel scanningLabel = new TLabel(I18n.getMessage("jsite.project-files.scanning"), SwingConstants.CENTER);
+		progressPanel.add(scanningLabel, BorderLayout.NORTH);
+		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
+		progressPanel.add(progressBar, BorderLayout.SOUTH);
+		progressBar.setIndeterminate(true);
+		progressBar.setStringPainted(true);
+		progressBar.setPreferredSize(new Dimension(progressBar.getPreferredSize().width * 2, progressBar.getPreferredSize().height));
+
+		scanningFilesDialog.pack();
+		scanningFilesDialog.addWindowListener(new WindowAdapter() {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void windowOpened(WindowEvent e) {
+				SwingUtils.center(scanningFilesDialog, wizard);
+			}
+		});
+
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			@Override
@@ -317,6 +372,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				fileOptionsRenameCheckBox.setToolTipText("jsite.project-files.rename.tooltip");
 				fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
 				mimeTypeLabel.setText(I18n.getMessage("jsite.project-files.mime-type") + ":");
+				scanningLabel.setText(I18n.getMessage("jsite.project-files.scanning"));
 			}
 		});
 
@@ -359,9 +415,24 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		wizard.setPreviousEnabled(false);
 		wizard.setQuitEnabled(false);
 
-		FileScanner fileScanner = new FileScanner(project);
-		fileScanner.addFileScannerListener(this);
+		delayedNotification = new DelayedNotification(scanningFilesDialog, 2000);
 		new Thread(fileScanner).start();
+		new Thread(delayedNotification).start();
+		new Thread(new Runnable() {
+
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void run() {
+				while (!delayedNotification.isFinished()) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException ie1) {
+						/* ignore. */
+					}
+					progressBar.setString(fileScanner.getLastFilename());
+				}
+			}
+		}).start();
 	}
 
 	/**
@@ -371,6 +442,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 */
 	@Override
 	public void fileScannerFinished(FileScanner fileScanner) {
+		delayedNotification.finish();
 		final boolean error = fileScanner.isError();
 		if (!error) {
 			final List<ScannedFile> files = fileScanner.getFiles();
