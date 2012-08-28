@@ -34,9 +34,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.Closer;
+import net.pterodactylus.util.io.StreamCopier;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
-import de.todesbaum.util.io.StreamCopier;
 
 /**
  * Scans the local path of a project anychronously and returns the list of found

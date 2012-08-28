@@ -20,12 +20,12 @@ package de.todesbaum.jsite.main;
 
 import java.io.PrintWriter;
 
+import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
-import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * Command-line interface for jSite.

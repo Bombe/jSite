@@ -34,6 +34,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
@@ -47,7 +48,6 @@ import de.todesbaum.util.freenet.fcp2.Message;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.freenet.fcp2.RedirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.Verbosity;
-import de.todesbaum.util.io.StreamCopier.ProgressListener;
 
 /**
  * Manages project inserts.

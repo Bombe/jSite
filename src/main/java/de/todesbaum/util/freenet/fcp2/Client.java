@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.todesbaum.util.io.StreamCopier.ProgressListener;
+import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 
 /**
  * A Client executes {@link Command}s over a {@link Connection} to a

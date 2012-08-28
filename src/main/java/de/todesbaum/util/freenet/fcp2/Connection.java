@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.pterodactylus.util.io.Closer;
+import net.pterodactylus.util.io.StreamCopier;
+import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.io.LineInputStream;
-import de.todesbaum.util.io.StreamCopier;
-import de.todesbaum.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.util.io.TempFileInputStream;
 
 /**
@@ -268,7 +268,7 @@ public class Connection {
 			InputStream payloadInputStream = null;
 			try {
 				payloadInputStream = command.getPayload();
-				StreamCopier.copy(payloadInputStream, nodeOutputStream, command.getPayloadLength(), progressListener);
+				StreamCopier.copy(payloadInputStream, nodeOutputStream, progressListener, command.getPayloadLength());
 			} finally {
 				Closer.close(payloadInputStream);
 			}
