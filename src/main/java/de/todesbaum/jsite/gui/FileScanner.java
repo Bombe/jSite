@@ -23,7 +23,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -34,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.Closer;
+import net.pterodactylus.util.io.NullOutputStream;
 import net.pterodactylus.util.io.StreamCopier;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
@@ -184,7 +184,6 @@ public class FileScanner implements Runnable {
 	 *            The name of the file, relative to the project path
 	 * @return The hash of the file
 	 */
-	@SuppressWarnings("synthetic-access")
 	private static String hashFile(String path, String filename) {
 		InputStream fileInputStream = null;
 		DigestOutputStream digestOutputStream = null;
@@ -218,39 +217,6 @@ public class FileScanner implements Runnable {
 			hexString.append("0123456789abcdef".charAt((b >>> 4) & 0x0f)).append("0123456789abcdef".charAt(b & 0xf));
 		}
 		return hexString.toString();
-	}
-
-	/**
-	 * {@link OutputStream} that discards all written bytes.
-	 *
-	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
-	 */
-	private static class NullOutputStream extends OutputStream {
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void write(int b) {
-			/* do nothing. */
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void write(byte[] b) {
-			/* do nothing. */
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void write(byte[] b, int off, int len) {
-			/* do nothing. */
-		}
-
 	}
 
 	/**
