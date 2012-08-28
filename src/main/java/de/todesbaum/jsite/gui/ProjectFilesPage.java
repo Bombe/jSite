@@ -415,6 +415,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		wizard.setPreviousEnabled(false);
 		wizard.setQuitEnabled(false);
 
+		ignoreHiddenFilesCheckBox.setEnabled(false);
+		scanAction.setEnabled(false);
+
 		delayedNotification = new DelayedNotification(scanningFilesDialog, 2000);
 		new Thread(fileScanner).start();
 		new Thread(delayedNotification).start();
@@ -484,6 +487,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				wizard.setPreviousEnabled(true);
 				wizard.setNextEnabled(!error);
 				wizard.setQuitEnabled(true);
+				ignoreHiddenFilesCheckBox.setEnabled(true);
+				scanAction.setEnabled(true);
 			}
 		});
 	}
