@@ -61,8 +61,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import net.pterodactylus.util.io.MimeTypes;
-import net.pterodactylus.util.swing.DelayedNotification;
 import net.pterodactylus.util.swing.SwingUtils;
+import net.pterodactylus.util.thread.StoppableDelay;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
@@ -116,7 +116,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	private JComboBox fileOptionsMIMETypeComboBox;
 
 	/** Delayed notification for file scanning. */
-	private DelayedNotification delayedNotification;
+	private StoppableDelay delayedNotification;
 
 	/** Dialog to display while scanning. */
 	private JDialog scanningFilesDialog;
@@ -418,7 +418,21 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		ignoreHiddenFilesCheckBox.setEnabled(false);
 		scanAction.setEnabled(false);
 
-		delayedNotification = new DelayedNotification(scanningFilesDialog, 2000);
+		delayedNotification = new StoppableDelay(new Runnable() {
+
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void run() {
+				scanningFilesDialog.setVisible(true);
+			}
+		}, new Runnable() {
+
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void run() {
+				scanningFilesDialog.setVisible(false);
+			}
+		}, 2000);
 		new Thread(fileScanner).start();
 		new Thread(delayedNotification).start();
 		new Thread(new Runnable() {
