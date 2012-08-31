@@ -193,17 +193,31 @@ public class UpdateChecker implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Connection connection = freenetInterface.getConnection("jSite-" + ++counter + "-UpdateChecker");
-		try {
-			connection.connect();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		Client client = new Client(connection);
-		boolean checkNow = false;
 		int currentEdition = lastUpdateEdition;
 		while (!shouldStop()) {
-			checkNow = false;
+
+			/* try to connect. */
+			Client client;
+			while (true) {
+				Connection connection = freenetInterface.getConnection("jSite-" + ++counter + "-UpdateChecker");
+				try {
+					connection.connect();
+					logger.log(Level.INFO, "Connected to " + freenetInterface.getNode() + ".");
+					client = new Client(connection);
+					break;
+				} catch (IOException ioe1) {
+					logger.log(Level.INFO, "Could not connect to " + freenetInterface.getNode() + ".", ioe1);
+				}
+				if (!connection.isConnected()) {
+					try {
+						Thread.sleep(60 * 1000);
+					} catch (InterruptedException ie1) {
+						/* ignore, we’re looping. */
+					}
+				}
+			}
+
+			boolean checkNow = false;
 			logger.log(Level.FINE, "Trying " + constructUpdateKey(currentEdition));
 			ClientGet clientGet = new ClientGet("get-update-key");
 			clientGet.setUri(constructUpdateKey(currentEdition));
