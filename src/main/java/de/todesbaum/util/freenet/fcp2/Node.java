@@ -78,4 +78,16 @@ public class Node {
 		return port;
 	}
 
+	//
+	// OBJECT METHODS
+	//
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return String.format("%s[hostname=%s,port=%d]", getClass().getName(), getHostname(), getPort());
+	}
+
 }
