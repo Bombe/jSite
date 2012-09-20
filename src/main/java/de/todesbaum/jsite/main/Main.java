@@ -55,6 +55,7 @@ import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
 import de.todesbaum.jsite.application.ProjectInserter.Issue;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
+import de.todesbaum.jsite.application.WebOfTrustInterface;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -89,6 +90,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/** The update checker. */
 	private final UpdateChecker updateChecker;
+
+	/** The web of trust interface. */
+	private final WebOfTrustInterface webOfTrustInterface;
 
 	/** The jSite icon. */
 	private Icon jSiteIcon;
@@ -189,6 +193,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		updateChecker = new UpdateChecker(freenetInterface);
 		updateChecker.addUpdateListener(this);
 		updateChecker.start();
+
+		webOfTrustInterface = new WebOfTrustInterface(freenetInterface);
+		webOfTrustInterface.start();
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
