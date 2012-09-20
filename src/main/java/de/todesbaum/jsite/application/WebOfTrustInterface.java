@@ -205,7 +205,7 @@ public class WebOfTrustInterface implements Runnable {
 					int identityCounter = -1;
 					while (message.get("Replies.Identity" + ++identityCounter) != null) {
 						String id = message.get("Replies.Identity" + identityCounter);
-						String nickname = message.get("Replies.Nickname " + identityCounter);
+						String nickname = message.get("Replies.Nickname" + identityCounter);
 						String requestUri = message.get("Replies.RequestURI" + identityCounter);
 						String insertUri = message.get("Replies.InsertURI" + identityCounter);
 						DefaultOwnIdentity ownIdentity = new DefaultOwnIdentity(id, nickname, requestUri, insertUri);
