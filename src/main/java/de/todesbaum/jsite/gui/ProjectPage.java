@@ -60,6 +60,7 @@ import javax.swing.text.DocumentFilter;
 import net.pterodactylus.util.swing.SortedListModel;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.application.WebOfTrustInterface;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TLabel;
@@ -75,6 +76,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/** The freenet interface. */
 	private Freenet7Interface freenetInterface;
+
+	/** The web of trust interface. */
+	private WebOfTrustInterface webOfTrustInterface;
 
 	/** The “browse” action. */
 	private Action projectLocalPathBrowseAction;
@@ -460,6 +464,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	 */
 	public void setFreenetInterface(Freenet7Interface freenetInterface) {
 		this.freenetInterface = freenetInterface;
+	}
+
+	/**
+	 * Sets the web of trust interface to use.
+	 *
+	 * @param webOfTrustInterface
+	 *            The web of trust interface to use
+	 */
+	public void setWebOfTrustInterface(WebOfTrustInterface webOfTrustInterface) {
+		this.webOfTrustInterface = webOfTrustInterface;
 	}
 
 	/**
