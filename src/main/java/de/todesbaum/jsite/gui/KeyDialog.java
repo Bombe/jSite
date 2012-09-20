@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -191,6 +193,13 @@ public class KeyDialog extends JDialog {
 		synchronized (this.ownIdentities) {
 			this.ownIdentities.clear();
 			this.ownIdentities.addAll(ownIdentities);
+			Collections.sort(this.ownIdentities, new Comparator<OwnIdentity>() {
+
+				@Override
+				public int compare(OwnIdentity leftOwnIdentity, OwnIdentity rightOwnIdentity) {
+					return leftOwnIdentity.getNickname().compareToIgnoreCase(rightOwnIdentity.getNickname());
+				}
+			});
 		}
 		int selectedIndex = -1;
 		int index = 0;
