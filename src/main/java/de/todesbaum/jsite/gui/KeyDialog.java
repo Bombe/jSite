@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-package de.todesbaum.jsite.application;
+package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -47,6 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 

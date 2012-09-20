@@ -59,7 +59,6 @@ import javax.swing.text.DocumentFilter;
 
 import net.pterodactylus.util.swing.SortedListModel;
 import de.todesbaum.jsite.application.Freenet7Interface;
-import de.todesbaum.jsite.application.KeyDialog;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
