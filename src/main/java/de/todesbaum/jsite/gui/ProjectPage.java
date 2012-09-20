@@ -59,8 +59,8 @@ import javax.swing.text.DocumentFilter;
 
 import net.pterodactylus.util.swing.SortedListModel;
 import de.todesbaum.jsite.application.Freenet7Interface;
-import de.todesbaum.jsite.application.KeyDialog;
 import de.todesbaum.jsite.application.Project;
+import de.todesbaum.jsite.application.WebOfTrustInterface;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TLabel;
@@ -76,6 +76,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 
 	/** The freenet interface. */
 	private Freenet7Interface freenetInterface;
+
+	/** The web of trust interface. */
+	private WebOfTrustInterface webOfTrustInterface;
 
 	/** The “browse” action. */
 	private Action projectLocalPathBrowseAction;
@@ -464,6 +467,16 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	}
 
 	/**
+	 * Sets the web of trust interface to use.
+	 *
+	 * @param webOfTrustInterface
+	 *            The web of trust interface to use
+	 */
+	public void setWebOfTrustInterface(WebOfTrustInterface webOfTrustInterface) {
+		this.webOfTrustInterface = webOfTrustInterface;
+	}
+
+	/**
 	 * Returns the currently selected project.
 	 *
 	 * @return The currently selected project
@@ -616,6 +629,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			KeyDialog keyDialog = new KeyDialog(freenetInterface, wizard);
 			keyDialog.setPrivateKey(selectedProject.getInsertURI());
 			keyDialog.setPublicKey(selectedProject.getRequestURI());
+			keyDialog.setOwnIdentities(webOfTrustInterface.getOwnIdentities());
 			keyDialog.setVisible(true);
 			if (!keyDialog.wasCancelled()) {
 				String originalPublicKey = selectedProject.getRequestURI();

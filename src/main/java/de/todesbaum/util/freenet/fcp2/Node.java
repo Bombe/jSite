@@ -87,7 +87,7 @@ public class Node {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s[hostname=%s,port=%d]", getClass().getName(), getHostname(), getPort());
+		return String.format("%s:%d", getHostname(), getPort());
 	}
 
 }

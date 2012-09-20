@@ -55,6 +55,7 @@ import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
 import de.todesbaum.jsite.application.ProjectInserter.Issue;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
+import de.todesbaum.jsite.application.WebOfTrustInterface;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -89,6 +90,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 
 	/** The update checker. */
 	private final UpdateChecker updateChecker;
+
+	/** The web of trust interface. */
+	private final WebOfTrustInterface webOfTrustInterface;
 
 	/** The jSite icon. */
 	private Icon jSiteIcon;
@@ -189,6 +193,9 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		updateChecker = new UpdateChecker(freenetInterface);
 		updateChecker.addUpdateListener(this);
 		updateChecker.start();
+
+		webOfTrustInterface = new WebOfTrustInterface(freenetInterface);
+		webOfTrustInterface.start();
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
@@ -334,6 +341,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		projectPage.setName("page.project");
 		projectPage.setProjects(configuration.getProjects());
 		projectPage.setFreenetInterface(freenetInterface);
+		projectPage.setWebOfTrustInterface(webOfTrustInterface);
 		projectPage.addListSelectionListener(this);
 		pages.put(PageType.PAGE_PROJECTS, projectPage);
 
@@ -493,6 +501,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 	}
 
+	/**
+	 * Quits jSite, stopping all background services.
+	 */
+	private void quit() {
+		updateChecker.stop();
+		webOfTrustInterface.stop();
+		System.exit(0);
+	}
+
 	//
 	// INTERFACE ListSelectionListener
 	//
@@ -620,21 +637,21 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				int overwriteConfigurationAnswer = JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quit.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), I18n.getMessage("jsite.quit.overwrite-configuration.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (overwriteConfigurationAnswer == JOptionPane.YES_OPTION) {
 					if (saveConfiguration()) {
-						System.exit(0);
+						quit();
 					}
 				} else if (overwriteConfigurationAnswer == JOptionPane.CANCEL_OPTION) {
 					return;
 				}
 				if (overwriteConfigurationAnswer == JOptionPane.NO_OPTION) {
-					System.exit(0);
+					quit();
 				}
 			} else {
 				if (saveConfiguration()) {
-					System.exit(0);
+					quit();
 				}
 			}
 			if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.config-not-saved"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
-				System.exit(0);
+				quit();
 			}
 		}
 	}
