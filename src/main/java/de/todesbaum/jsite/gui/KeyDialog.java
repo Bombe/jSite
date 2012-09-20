@@ -203,7 +203,7 @@ public class KeyDialog extends JDialog {
 		}
 		int selectedIndex = -1;
 		int index = 0;
-		for (OwnIdentity ownIdentity : ownIdentities) {
+		for (OwnIdentity ownIdentity : this.ownIdentities) {
 			if (ownIdentity.getInsertUri().equals(privateKey) && ownIdentity.getRequestUri().equals(publicKey)) {
 				selectedIndex = index;
 			}
