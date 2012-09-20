@@ -19,6 +19,7 @@
 package de.todesbaum.jsite.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -26,20 +27,27 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -47,9 +55,11 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+import net.pterodactylus.util.swing.ComboBoxModelList;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
+import de.todesbaum.util.freenet.fcp2.wot.OwnIdentity;
 
 /**
  * A dialog that lets the user edit the private and public key for a project.
@@ -76,14 +86,23 @@ public class KeyDialog extends JDialog {
 	/** The “Regenerate” button’s action. */
 	private Action generateAction;
 
+	/** The “Copy from Identity” action. */
+	private Action copyFromIdentityAction;
+
 	/** The text field for the private key. */
 	private JTextField privateKeyTextField;
 
 	/** The text field for the public key. */
 	private JTextField publicKeyTextField;
 
+	/** The select box for the own identities. */
+	private JComboBox ownIdentitiesComboBox;
+
 	/** Whether the dialog was cancelled. */
 	private boolean cancelled;
+
+	/** The list of own identities. */
+	private final List<OwnIdentity> ownIdentities = new ArrayList<OwnIdentity>();
 
 	/**
 	 * Creates a new key dialog.
@@ -162,6 +181,28 @@ public class KeyDialog extends JDialog {
 		pack();
 	}
 
+	/**
+	 * Sets the own identities to display and copy URIs from.
+	 *
+	 * @param ownIdentities
+	 *            The list of own identities
+	 */
+	public void setOwnIdentities(Collection<? extends OwnIdentity> ownIdentities) {
+		synchronized (this.ownIdentities) {
+			this.ownIdentities.clear();
+			this.ownIdentities.addAll(ownIdentities);
+		}
+		int selectedIndex = -1;
+		int index = 0;
+		for (OwnIdentity ownIdentity : ownIdentities) {
+			if (ownIdentity.getInsertUri().equals(privateKey) && ownIdentity.getRequestUri().equals(publicKey)) {
+				selectedIndex = index;
+			}
+			index++;
+		}
+		ownIdentitiesComboBox.setSelectedIndex(selectedIndex);
+	}
+
 	//
 	// ACTIONS
 	//
@@ -206,6 +247,17 @@ public class KeyDialog extends JDialog {
 		cancelAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.key-dialog.button.cancel.tooltip"));
 		cancelAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_ESCAPE);
 
+		copyFromIdentityAction = new AbstractAction(I18n.getMessage("jsite.key-dialog.button.copy-from-identity")) {
+
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionevent) {
+				actionCopyFromIdentity();
+			}
+		};
+		copyFromIdentityAction.putValue(Action.SHORT_DESCRIPTION, I18n.getMessage("jsite.key-dialog.button.copy-from-identity.tooltip"));
+		copyFromIdentityAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+
 		generateAction = new AbstractAction(I18n.getMessage("jsite.key-dialog.button.generate")) {
 
 			@Override
@@ -236,20 +288,54 @@ public class KeyDialog extends JDialog {
 		contentPanel.add(privateKeyLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 18, 0, 0), 0, 0));
 
 		privateKeyTextField = new JTextField();
-		contentPanel.add(privateKeyTextField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 12, 0, 0), 0, 0));
+		contentPanel.add(privateKeyTextField, new GridBagConstraints(1, 1, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 12, 0, 0), 0, 0));
 
 		final JLabel publicKeyLabel = new JLabel(I18n.getMessage("jsite.key-dialog.label.public-key"));
 		contentPanel.add(publicKeyLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 
 		publicKeyTextField = new JTextField();
-		contentPanel.add(publicKeyTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 12, 0, 0), 0, 0));
+		contentPanel.add(publicKeyTextField, new GridBagConstraints(1, 2, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 12, 0, 0), 0, 0));
+
+		final JLabel identitiesLabel = new JLabel(I18n.getMessage("jsite.key-dialog.label.identities"));
+		contentPanel.add(identitiesLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+
+		final JLabel identityLabel = new JLabel(I18n.getMessage("jsite.key-dialog.label.identity"));
+		contentPanel.add(identityLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 18, 0, 0), 0, 0));
+
+		ownIdentitiesComboBox = new JComboBox(new ComboBoxModelList<OwnIdentity>(ownIdentities));
+		ownIdentitiesComboBox.addActionListener(new ActionListener() {
+
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void actionPerformed(ActionEvent actionevent) {
+				copyFromIdentityAction.setEnabled(ownIdentitiesComboBox.getSelectedIndex() > -1);
+			}
+		});
+		ownIdentitiesComboBox.setRenderer(new DefaultListCellRenderer() {
+
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				if (value == null) {
+					setText("");
+				} else {
+					OwnIdentity ownIdentity = (OwnIdentity) value;
+					setText(String.format("%s (%s)", ownIdentity.getNickname(), ownIdentity.getRequestUri().substring(0, ownIdentity.getRequestUri().indexOf(','))));
+				}
+				return this;
+			}
+		});
+		contentPanel.add(ownIdentitiesComboBox, new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(6, 12, 0, 0), 0, 0));
+
+		JButton copyFromIdentityButton = new JButton(copyFromIdentityAction);
+		contentPanel.add(copyFromIdentityButton, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_END, GridBagConstraints.NONE, new Insets(6, 12, 0, 0), 0, 0));
 
 		final JLabel actionsLabel = new JLabel(I18n.getMessage("jsite.key-dialog.label.actions"));
-		contentPanel.add(actionsLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+		contentPanel.add(actionsLabel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
 		JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 12, 12));
 		actionButtonPanel.setBorder(BorderFactory.createEmptyBorder(-12, -12, -12, -12));
-		contentPanel.add(actionButtonPanel, new GridBagConstraints(0, 4, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 18, 0, 0), 0, 0));
+		contentPanel.add(actionButtonPanel, new GridBagConstraints(0, 6, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 18, 0, 0), 0, 0));
 
 		actionButtonPanel.add(new JButton(generateAction));
 
@@ -270,6 +356,8 @@ public class KeyDialog extends JDialog {
 				keysLabel.setText(I18n.getMessage("jsite.key-dialog.label.keys"));
 				privateKeyLabel.setText(I18n.getMessage("jsite.key-dialog.label.private-key"));
 				publicKeyLabel.setText(I18n.getMessage("jsite.key-dialog.label.public-key"));
+				identitiesLabel.setText(I18n.getMessage("jsite.key-dialog.label.identities"));
+				identityLabel.setText(I18n.getMessage("jsite.key-dialog.label.identity"));
 				actionsLabel.setText(I18n.getMessage("jsite.key-dialog.label.actions"));
 			}
 		});
@@ -299,6 +387,18 @@ public class KeyDialog extends JDialog {
 	private void actionCancel() {
 		cancelled = true;
 		setVisible(false);
+	}
+
+	/**
+	 * Copies the public and private key from the selected identity.
+	 */
+	private void actionCopyFromIdentity() {
+		OwnIdentity ownIdentity = (OwnIdentity) ownIdentitiesComboBox.getSelectedItem();
+		if (ownIdentity == null) {
+			return;
+		}
+		setPublicKey(ownIdentity.getRequestUri());
+		setPrivateKey(ownIdentity.getInsertUri());
 	}
 
 	/**
