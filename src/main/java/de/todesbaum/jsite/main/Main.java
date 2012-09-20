@@ -500,6 +500,15 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		}
 	}
 
+	/**
+	 * Quits jSite, stopping all background services.
+	 */
+	private void quit() {
+		updateChecker.stop();
+		webOfTrustInterface.stop();
+		System.exit(0);
+	}
+
 	//
 	// INTERFACE ListSelectionListener
 	//
@@ -627,21 +636,21 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				int overwriteConfigurationAnswer = JOptionPane.showConfirmDialog(wizard, MessageFormat.format(I18n.getMessage("jsite.quit.overwrite-configuration"), configuration.getConfigurationLocator().getFile(configuration.getConfigurationDirectory())), I18n.getMessage("jsite.quit.overwrite-configuration.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (overwriteConfigurationAnswer == JOptionPane.YES_OPTION) {
 					if (saveConfiguration()) {
-						System.exit(0);
+						quit();
 					}
 				} else if (overwriteConfigurationAnswer == JOptionPane.CANCEL_OPTION) {
 					return;
 				}
 				if (overwriteConfigurationAnswer == JOptionPane.NO_OPTION) {
-					System.exit(0);
+					quit();
 				}
 			} else {
 				if (saveConfiguration()) {
-					System.exit(0);
+					quit();
 				}
 			}
 			if (JOptionPane.showConfirmDialog(wizard, I18n.getMessage("jsite.quit.config-not-saved"), null, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
-				System.exit(0);
+				quit();
 			}
 		}
 	}
