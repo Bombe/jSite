@@ -629,6 +629,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 			KeyDialog keyDialog = new KeyDialog(freenetInterface, wizard);
 			keyDialog.setPrivateKey(selectedProject.getInsertURI());
 			keyDialog.setPublicKey(selectedProject.getRequestURI());
+			keyDialog.setOwnIdentities(webOfTrustInterface.getOwnIdentities());
 			keyDialog.setVisible(true);
 			if (!keyDialog.wasCancelled()) {
 				String originalPublicKey = selectedProject.getRequestURI();

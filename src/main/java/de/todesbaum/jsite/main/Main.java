@@ -341,6 +341,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		projectPage.setName("page.project");
 		projectPage.setProjects(configuration.getProjects());
 		projectPage.setFreenetInterface(freenetInterface);
+		projectPage.setWebOfTrustInterface(webOfTrustInterface);
 		projectPage.addListSelectionListener(this);
 		pages.put(PageType.PAGE_PROJECTS, projectPage);
 
