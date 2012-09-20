@@ -122,6 +122,25 @@ public class WebOfTrustInterface implements Runnable {
 		}
 	}
 
+	/**
+	 * Returns the essential parts of an URI, consisting of only the
+	 * private/public key, decryption key, and the flags.
+	 *
+	 * @param uri
+	 *            The URI to shorten
+	 * @return The shortened URI
+	 */
+	private static String shortenUri(String uri) {
+		String shortenedUri = uri;
+		if (shortenedUri.charAt(3) == '@') {
+			shortenedUri = shortenedUri.substring(4);
+		}
+		if (shortenedUri.indexOf('/') > -1) {
+			shortenedUri = shortenedUri.substring(0, shortenedUri.indexOf('/'));
+		}
+		return shortenedUri;
+	}
+
 	//
 	// RUNNABLE METHODS
 	//
