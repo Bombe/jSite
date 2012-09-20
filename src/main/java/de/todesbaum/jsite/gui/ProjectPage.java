@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -58,6 +59,7 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
 import net.pterodactylus.util.swing.SortedListModel;
+import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.WebOfTrustInterface;
@@ -638,6 +640,9 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 				selectedProject.setRequestURI(keyDialog.getPublicKey());
 				if (!originalPublicKey.equals(selectedProject.getRequestURI()) || !originalPrivateKey.equals(selectedProject.getInsertURI())) {
 					selectedProject.setEdition(-1);
+					for (Entry<String, FileOption> fileOption : selectedProject.getFileOptions().entrySet()) {
+						fileOption.getValue().setLastInsertHash(null);
+					}
 				}
 				updateCompleteURI();
 			}
