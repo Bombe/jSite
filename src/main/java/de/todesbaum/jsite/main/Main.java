@@ -122,7 +122,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	/** The supported locales. */
-	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH };
+	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, new Locale("pl") };
 
 	/** The actions that switch the language. */
 	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
