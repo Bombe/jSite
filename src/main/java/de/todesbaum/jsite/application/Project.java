@@ -60,6 +60,9 @@ public class Project implements Comparable<Project> {
 	/** The edition to insert to. */
 	protected int edition;
 
+	/** Whether to always force inserts. */
+	private boolean alwaysForceInserts;
+
 	/** Whether to ignore hidden directory. */
 	private boolean ignoreHiddenFiles;
 
@@ -89,6 +92,7 @@ public class Project implements Comparable<Project> {
 		localPath = project.localPath;
 		indexFile = project.indexFile;
 		lastInsertionTime = project.lastInsertionTime;
+		alwaysForceInserts = project.alwaysForceInserts;
 		ignoreHiddenFiles = project.ignoreHiddenFiles;
 		fileOptions = new HashMap<String, FileOption>(project.fileOptions);
 	}
@@ -249,6 +253,29 @@ public class Project implements Comparable<Project> {
 	 */
 	public void setRequestURI(String requestURI) {
 		this.requestURI = shortenURI(requestURI);
+	}
+
+	/**
+	 * Returns whether files for this project should always be inserted, even
+	 * when unchanged.
+	 *
+	 * @return {@code true} to always force inserts on this project,
+	 *         {@code false} otherwise
+	 */
+	public boolean isAlwaysForceInsert() {
+		return alwaysForceInserts;
+	}
+
+	/**
+	 * Sets whether files for this project should always be inserted, even when
+	 * unchanged.
+	 *
+	 * @param alwaysForceInsert
+	 *            {@code true} to always force inserts on this project,
+	 *            {@code false} otherwise
+	 */
+	public void setAlwaysForceInsert(boolean alwaysForceInsert) {
+		this.alwaysForceInserts = alwaysForceInsert;
 	}
 
 	/**
