@@ -337,6 +337,7 @@ public class Configuration {
 					} else {
 						project.setIgnoreHiddenFiles(true);
 					}
+					project.setAlwaysForceInsert(Boolean.parseBoolean(projectNode.getValue("always-force-insert", "false")));
 
 					/* load last insert hashes. */
 					Map<String, FileOption> fileOptions = new HashMap<String, FileOption>();
@@ -403,6 +404,7 @@ public class Configuration {
 			projectNode.append("insert-uri", project.getInsertURI());
 			projectNode.append("request-uri", project.getRequestURI());
 			projectNode.append("ignore-hidden-files", String.valueOf(project.isIgnoreHiddenFiles()));
+			projectNode.append("always-force-insert", String.valueOf(project.isAlwaysForceInsert()));
 
 			/* store last insert hashes. */
 			SimpleXML lastInsertHashesNode = projectNode.append("last-insert-hashes");
