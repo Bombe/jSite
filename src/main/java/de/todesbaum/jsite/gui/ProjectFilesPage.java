@@ -85,6 +85,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	/** The “scan files” action. */
 	private Action scanAction;
 
+	/** The “always force insert” checkbox. */
+	private JCheckBox alwaysForceInsertCheckBox;
+
 	/** The “ignore hidden files” checkbox. */
 	private JCheckBox ignoreHiddenFilesCheckBox;
 
@@ -208,16 +211,22 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		JPanel fileOptionsPanel = new JPanel(new GridBagLayout());
 		fileOptionsAlignmentPanel.add(fileOptionsPanel, BorderLayout.PAGE_START);
 
+		alwaysForceInsertCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.always-force-insert"));
+		alwaysForceInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.always-force-insert.tooltip"));
+		alwaysForceInsertCheckBox.setName("always-force-insert");
+		alwaysForceInsertCheckBox.addActionListener(this);
+		fileOptionsPanel.add(alwaysForceInsertCheckBox, new GridBagConstraints(0, 0, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+
 		ignoreHiddenFilesCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.ignore-hidden-files"));
 		ignoreHiddenFilesCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.ignore-hidden-files.tooltip"));
 		ignoreHiddenFilesCheckBox.setName("ignore-hidden-files");
 		ignoreHiddenFilesCheckBox.addActionListener(this);
-		fileOptionsPanel.add(ignoreHiddenFilesCheckBox, new GridBagConstraints(0, 0, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		fileOptionsPanel.add(ignoreHiddenFilesCheckBox, new GridBagConstraints(0, 1, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-		fileOptionsPanel.add(new JButton(scanAction), new GridBagConstraints(0, 1, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+		fileOptionsPanel.add(new JButton(scanAction), new GridBagConstraints(0, 2, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
 
 		final JLabel fileOptionsLabel = new JLabel("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>");
-		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 2, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsLabel, new GridBagConstraints(0, 3, 5, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
 
 		defaultFileCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.default"));
 		defaultFileCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.default.tooltip"));
@@ -225,7 +234,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		defaultFileCheckBox.addActionListener(this);
 		defaultFileCheckBox.setEnabled(false);
 
-		fileOptionsPanel.add(defaultFileCheckBox, new GridBagConstraints(0, 3, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(defaultFileCheckBox, new GridBagConstraints(0, 4, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 18, 0, 0), 0, 0));
 
 		fileOptionsInsertCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.insert"), true);
 		fileOptionsInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.insert.tooltip"));
@@ -234,7 +243,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsInsertCheckBox.addActionListener(this);
 		fileOptionsInsertCheckBox.setEnabled(false);
 
-		fileOptionsPanel.add(fileOptionsInsertCheckBox, new GridBagConstraints(0, 4, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsInsertCheckBox, new GridBagConstraints(0, 5, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 
 		fileOptionsForceInsertCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.force-insert"));
 		fileOptionsForceInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.force-insert.tooltip"));
@@ -243,7 +252,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsForceInsertCheckBox.addActionListener(this);
 		fileOptionsForceInsertCheckBox.setEnabled(false);
 
-		fileOptionsPanel.add(fileOptionsForceInsertCheckBox, new GridBagConstraints(0, 5, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsForceInsertCheckBox, new GridBagConstraints(0, 6, 5, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 
 		fileOptionsCustomKeyTextField = new JTextField(45);
 		fileOptionsCustomKeyTextField.setToolTipText(I18n.getMessage("jsite.project-files.custom-key.tooltip"));
@@ -258,9 +267,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsInsertRedirectCheckBox.setEnabled(false);
 
 		final TLabel customKeyLabel = new TLabel(I18n.getMessage("jsite.project-files.custom-key") + ":", KeyEvent.VK_K, fileOptionsCustomKeyTextField);
-		fileOptionsPanel.add(fileOptionsInsertRedirectCheckBox, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(2, 6, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsInsertRedirectCheckBox, new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(customKeyLabel, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsCustomKeyTextField, new GridBagConstraints(2, 7, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		fileOptionsRenameCheckBox = new JCheckBox(I18n.getMessage("jsite.project-files.rename"), false);
 		fileOptionsRenameCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.rename.tooltip"));
@@ -306,8 +315,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		});
 
-		fileOptionsPanel.add(fileOptionsRenameCheckBox, new GridBagConstraints(0, 7, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsRenameTextField, new GridBagConstraints(2, 7, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsRenameCheckBox, new GridBagConstraints(0, 8, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsRenameTextField, new GridBagConstraints(2, 8, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		fileOptionsMIMETypeComboBox = new JComboBox(MimeTypes.getAllMimeTypes().toArray());
 		fileOptionsMIMETypeComboBox.setToolTipText(I18n.getMessage("jsite.project-files.mime-type.tooltip"));
@@ -317,8 +326,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsMIMETypeComboBox.setEnabled(false);
 
 		final TLabel mimeTypeLabel = new TLabel(I18n.getMessage("jsite.project-files.mime-type") + ":", KeyEvent.VK_M, fileOptionsMIMETypeComboBox);
-		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 8, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
+		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 9, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
+		fileOptionsPanel.add(fileOptionsMIMETypeComboBox, new GridBagConstraints(1, 9, 4, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
 
 		/* create dialog to show while scanning. */
 		scanningFilesDialog = new JDialog(wizard);
@@ -355,6 +364,8 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			@Override
 			@SuppressWarnings("synthetic-access")
 			public void run() {
+				alwaysForceInsertCheckBox.setText(I18n.getMessage("jsite.project-files.always-force-insert"));
+				alwaysForceInsertCheckBox.setToolTipText(I18n.getMessage("jsite.project-files.always-force-insert.tooltip"));
 				ignoreHiddenFilesCheckBox.setText(I18n.getMessage("jsite.project-files.ignore-hidden-files"));
 				ignoreHiddenFilesCheckBox.setToolTipText(I18n.getMessage("jsite.projet-files.ignore-hidden-files.tooltip"));
 				fileOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.project-files.file-options") + "</b></html>");
@@ -390,6 +401,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		setHeading(MessageFormat.format(I18n.getMessage("jsite.project-files.heading"), project.getName()));
 		setDescription(I18n.getMessage("jsite.project-files.description"));
 		ignoreHiddenFilesCheckBox.setSelected(project.isIgnoreHiddenFiles());
+		alwaysForceInsertCheckBox.setSelected(project.isAlwaysForceInsert());
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			@Override
@@ -532,10 +544,17 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		Object source = actionEvent.getSource();
-		if ((source instanceof JCheckBox) && ("ignore-hidden-files".equals(((JCheckBox) source).getName()))) {
-			project.setIgnoreHiddenFiles(((JCheckBox) source).isSelected());
-			actionScan();
-			return;
+		if (source instanceof JCheckBox) {
+			String checkboxName = ((JCheckBox) source).getName();
+			if ("ignore-hidden-files".equals(checkboxName)) {
+				project.setIgnoreHiddenFiles(((JCheckBox) source).isSelected());
+				actionScan();
+				return;
+			} else if ("always-force-insert".equals(checkboxName)) {
+				project.setAlwaysForceInsert(((JCheckBox) source).isSelected());
+				valueChanged(null);
+				return;
+			}
 		}
 		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
 		if (scannedFile == null) {
@@ -603,7 +622,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			FileOption fileOption = project.getFileOption(filename);
 			defaultFileCheckBox.setSelected(filename.equals(project.getIndexFile()));
 			fileOptionsInsertCheckBox.setSelected(fileOption.isInsert());
-			fileOptionsForceInsertCheckBox.setEnabled(scannedFile.getHash().equals(fileOption.getLastInsertHash()));
+			fileOptionsForceInsertCheckBox.setEnabled(!project.isAlwaysForceInsert() && scannedFile.getHash().equals(fileOption.getLastInsertHash()));
 			fileOptionsForceInsertCheckBox.setSelected(fileOption.isForceInsert());
 			fileOptionsInsertRedirectCheckBox.setEnabled(!fileOption.isInsert());
 			fileOptionsInsertRedirectCheckBox.setSelected(fileOption.isInsertRedirect());
