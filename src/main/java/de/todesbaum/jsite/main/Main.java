@@ -80,7 +80,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 10);
+	private static final Version VERSION = new Version(0, 11);
 
 	/** The configuration. */
 	private Configuration configuration;
