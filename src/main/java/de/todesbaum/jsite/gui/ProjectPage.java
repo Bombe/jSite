@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
@@ -442,7 +443,7 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	 * @param projects
 	 *            The list of projects
 	 */
-	public void setProjects(Project[] projects) {
+	public void setProjects(List<Project> projects) {
 		projectListModel.clear();
 		for (Project project : projects) {
 			projectListModel.add(project);
@@ -454,8 +455,8 @@ public class ProjectPage extends TWizardPage implements ListSelectionListener, D
 	 *
 	 * @return The list of projects
 	 */
-	public Project[] getProjects() {
-		return projectListModel.toArray(new Project[projectListModel.size()]);
+	public List<Project> getProjects() {
+		return projectListModel;
 	}
 
 	/**

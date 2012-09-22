@@ -307,7 +307,7 @@ public class Configuration {
 	 *
 	 * @return A list of all projects
 	 */
-	public Project[] getProjects() {
+	public List<Project> getProjects() {
 		List<Project> projects = new ArrayList<Project>();
 		SimpleXML projectsNode = rootNode.getNode("project-list");
 		if (projectsNode != null) {
@@ -381,7 +381,7 @@ public class Configuration {
 				}
 			}
 		}
-		return projects.toArray(new Project[projects.size()]);
+		return projects;
 	}
 
 	/**
@@ -390,7 +390,7 @@ public class Configuration {
 	 * @param projects
 	 *            The list of all projects
 	 */
-	public void setProjects(Project[] projects) {
+	public void setProjects(List<Project> projects) {
 		SimpleXML projectsNode = new SimpleXML("project-list");
 		for (Project project : projects) {
 			SimpleXML projectNode = projectsNode.append("project");

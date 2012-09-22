@@ -19,6 +19,7 @@
 package de.todesbaum.jsite.main;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 import de.todesbaum.jsite.application.Freenet7Interface;
@@ -50,7 +51,7 @@ public class CLI implements InsertListener {
 	private Node[] nodes;
 
 	/** The projects. */
-	private Project[] projects;
+	private List<Project> projects;
 
 	/** Whether the insert has finished. */
 	private boolean finished = false;
