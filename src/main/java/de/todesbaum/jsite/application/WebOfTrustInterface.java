@@ -220,6 +220,8 @@ public class WebOfTrustInterface implements Runnable {
 					}
 				} else if ("ProtocolError".equals(message.getName())) {
 					logger.log(Level.WARNING, "WebOfTrust Plugin not found!");
+				} else if ("Error".equals(message.getName())) {
+					logger.log(Level.WARNING, "WebOfTrust Plugin returned an error!");
 				}
 
 				/* disconnect. */
