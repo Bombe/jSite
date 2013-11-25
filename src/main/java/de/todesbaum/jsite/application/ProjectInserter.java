@@ -72,16 +72,16 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private List<InsertListener> insertListeners = new ArrayList<InsertListener>();
 
 	/** The freenet interface. */
-	protected Freenet7Interface freenetInterface;
+	private Freenet7Interface freenetInterface;
 
 	/** The project to insert. */
-	protected Project project;
+	private Project project;
 
 	/** The file scanner. */
 	private FileScanner fileScanner;
 
 	/** Object used for synchronization. */
-	protected final Object lockObject = new Object();
+	private final Object lockObject = new Object();
 
 	/** The temp directory. */
 	private String tempDirectory;
