@@ -206,12 +206,10 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
 	 *
 	 * @param file
-	 *            The name and hash of the file to insert
-	 * @param edition
-	 *            The current edition
+	 * 		The name and hash of the file to insert
 	 * @return A file entry for the given file
 	 */
-	private FileEntry createFileEntry(ScannedFile file, int edition) {
+	private FileEntry createFileEntry(ScannedFile file) {
 		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (fileOption.isInsert()) {
@@ -375,7 +373,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setPriorityClass(priority);
 		putDir.setManifestPutter(manifestPutter);
 		for (ScannedFile file : files) {
-			FileEntry fileEntry = createFileEntry(file, edition);
+			FileEntry fileEntry = createFileEntry(file);
 			if (fileEntry != null) {
 				try {
 					putDir.addFileEntry(fileEntry);
