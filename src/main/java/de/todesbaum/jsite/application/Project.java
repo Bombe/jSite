@@ -460,7 +460,7 @@ public class Project implements Comparable<Project> {
 			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash()) || fileOption.isForceInsert())) {
 				fileOption.setLastInsertEdition(edition);
 				fileOption.setLastInsertHash(fileOption.getCurrentHash());
-				fileOption.setLastInsertFilename(fileOption.hasChangedName() ? fileOption.getChangedName() : fileOptionEntry.getKey());
+				fileOption.setLastInsertFilename(fileOption.getChangedName().or(fileOptionEntry.getKey()));
 			}
 			fileOption.setForceInsert(false);
 		}

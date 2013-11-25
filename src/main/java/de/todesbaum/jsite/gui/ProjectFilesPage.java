@@ -628,9 +628,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsInsertRedirectCheckBox.setSelected(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setEnabled(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setText(fileOption.getCustomKey());
-			fileOptionsRenameCheckBox.setSelected(fileOption.hasChangedName());
-			fileOptionsRenameTextField.setEnabled(fileOption.hasChangedName());
-			fileOptionsRenameTextField.setText(fileOption.getChangedName());
+			fileOptionsRenameCheckBox.setSelected(fileOption.getChangedName().isPresent());
+			fileOptionsRenameTextField.setEnabled(fileOption.getChangedName().isPresent());
+			fileOptionsRenameTextField.setText(fileOption.getChangedName().or(""));
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
 		} else {
 			defaultFileCheckBox.setSelected(false);

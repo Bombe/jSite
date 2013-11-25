@@ -20,6 +20,7 @@ package de.todesbaum.jsite.application;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.StreamCopier.ProgressListener;
+
+import com.google.common.base.Optional;
 import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
@@ -284,30 +287,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	}
 
 	/**
-	 * Creates an input stream that delivers the given file, replacing edition
-	 * tokens in the file’s content, if necessary.
-	 *
-	 * @param filename
-	 *            The name of the file
-	 * @param fileOption
-	 *            The file options
-	 * @param edition
-	 *            The current edition
-	 * @param length
-	 *            An array containing a single long which is used to
-	 *            <em>return</em> the final length of the file, after all
-	 *            replacements
-	 * @return The input stream for the file
-	 * @throws IOException
-	 *             if an I/O error occurs
-	 */
-	private InputStream createFileInputStream(String filename, FileOption fileOption, int edition, long[] length) throws IOException {
-		File file = new File(project.getLocalPath(), filename);
-		length[0] = file.length();
-		return new FileInputStream(file);
-	}
-
-	/**
 	 * Creates a file entry suitable for handing in to
 	 * {@link ClientPutComplexDir#addFileEntry(FileEntry)}.
 	 *
@@ -318,7 +297,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * @return A file entry for the given file
 	 */
 	private FileEntry createFileEntry(ScannedFile file, int edition) {
-		FileEntry fileEntry = null;
 		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (fileOption.isInsert()) {
@@ -327,21 +305,25 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!project.isAlwaysForceInsert() && !fileOption.isForceInsert() && file.getHash().equals(fileOption.getLastInsertHash())) {
 				/* only insert a redirect. */
 				logger.log(Level.FINE, String.format("Inserting redirect to edition %d for %s.", fileOption.getLastInsertEdition(), filename));
-				return new RedirectFileEntry(fileOption.hasChangedName() ? fileOption.getChangedName() : filename, fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename());
+				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename());
 			}
 			try {
-				long[] fileLength = new long[1];
-				InputStream fileEntryInputStream = createFileInputStream(filename, fileOption, edition, fileLength);
-				fileEntry = new DirectFileEntry(fileOption.hasChangedName() ? fileOption.getChangedName() : filename, fileOption.getMimeType(), fileEntryInputStream, fileLength[0]);
+				return createFileEntry(filename, fileOption.getChangedName(), fileOption.getMimeType());
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
 			if (fileOption.isInsertRedirect()) {
-				fileEntry = new RedirectFileEntry(fileOption.hasChangedName() ? fileOption.getChangedName() : filename, fileOption.getMimeType(), fileOption.getCustomKey());
+				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), fileOption.getCustomKey());
 			}
 		}
-		return fileEntry;
+		return null;
+	}
+
+	private FileEntry createFileEntry(String filename, Optional<String> changedName, String mimeType) throws FileNotFoundException {
+		File physicalFile = new File(project.getLocalPath(), filename);
+		InputStream fileEntryInputStream = new FileInputStream(physicalFile);
+		return new DirectFileEntry(changedName.or(filename), mimeType, fileEntryInputStream, physicalFile.length());
 	}
 
 	/**
@@ -399,10 +381,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				logger.log(Level.FINEST, "Ignoring {0}.", fileOptionEntry.getKey());
 				continue;
 			}
-			String fileName = fileOptionEntry.getKey();
-			if (fileOption.hasChangedName()) {
-				fileName = fileOption.getChangedName();
-			}
+			String fileName = fileOption.getChangedName().or(fileOptionEntry.getKey());
 			logger.log(Level.FINEST, "Adding “{0}” for {1}.", new Object[] { fileName, fileOptionEntry.getKey() });
 			if (!fileNames.add(fileName)) {
 				checkReport.addIssue("error.duplicate-file", true, fileName);
