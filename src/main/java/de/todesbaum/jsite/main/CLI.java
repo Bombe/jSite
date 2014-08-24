@@ -104,6 +104,7 @@ public class CLI implements InsertListener {
 		freenetInterface.setNode(node);
 
 		projectInserter.setFreenetInterface(freenetInterface);
+        projectInserter.setPriority(configuration.getPriority());
 
 		Project currentProject = null;
 		for (String argument : args) {
