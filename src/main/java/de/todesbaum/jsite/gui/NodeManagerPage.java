@@ -198,7 +198,6 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeList.setName("node-list");
 		nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		nodeList.addListSelectionListener(this);
-		nodeList.setPreferredSize(new Dimension(250, -1));
 
 		nodeNameTextField = new JTextField("");
 		nodeNameTextField.getDocument().putProperty("Name", "node-name");
@@ -237,7 +236,9 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeInformationPanel.add(nodePortSpinner, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
 
 		setLayout(new BorderLayout(12, 12));
-		add(new JScrollPane(nodeList), BorderLayout.LINE_START);
+        final JScrollPane nodeListScrollPane = new JScrollPane(nodeList);
+        nodeListScrollPane.setPreferredSize(new Dimension(250, -1));
+        add(nodeListScrollPane, BorderLayout.LINE_START);
 		add(centerPanel, BorderLayout.CENTER);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
