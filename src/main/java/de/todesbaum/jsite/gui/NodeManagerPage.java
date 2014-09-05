@@ -347,6 +347,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
+        nodeList.setSelectedIndex(nodeListModel.size() - 1);
 		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(true);
 		fireNodesUpdated(getNodes());
