@@ -1,5 +1,5 @@
 /*
- * jSite - PreferencesPage.java - Copyright © 2009–2012 David Roden
+ * jSite - PreferencesPage.java - Copyright © 2009–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
