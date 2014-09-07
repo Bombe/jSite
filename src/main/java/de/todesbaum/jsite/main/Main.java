@@ -195,7 +195,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		updateChecker.start();
 
 		webOfTrustInterface = new WebOfTrustInterface(freenetInterface);
-		webOfTrustInterface.start();
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
@@ -506,7 +505,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	private void quit() {
 		updateChecker.stop();
-		webOfTrustInterface.stop();
 		System.exit(0);
 	}
 
