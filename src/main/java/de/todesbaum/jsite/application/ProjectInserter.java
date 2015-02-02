@@ -365,7 +365,13 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		String dirURI = "USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
 		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI, tempDirectory);
 		if ((project.getIndexFile() != null) && (project.getIndexFile().length() > 0)) {
-			putDir.setDefaultName(project.getIndexFile());
+			FileOption indexFileOption = project.getFileOption(project.getIndexFile());
+			Optional<String> changedName = indexFileOption.getChangedName();
+			if (changedName.isPresent()) {
+				putDir.setDefaultName(changedName.get());
+			} else {
+				putDir.setDefaultName(project.getIndexFile());
+			}
 		}
 		putDir.setVerbosity(Verbosity.ALL);
 		putDir.setMaxRetries(-1);
