@@ -1,5 +1,5 @@
 /*
- * jSite - NodeManagerPage.java - Copyright © 2006–2012 David Roden
+ * jSite - NodeManagerPage.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,6 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeList.setName("node-list");
 		nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		nodeList.addListSelectionListener(this);
-		nodeList.setPreferredSize(new Dimension(250, -1));
 
 		nodeNameTextField = new JTextField("");
 		nodeNameTextField.getDocument().putProperty("Name", "node-name");
@@ -237,7 +236,9 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 		nodeInformationPanel.add(nodePortSpinner, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
 
 		setLayout(new BorderLayout(12, 12));
-		add(new JScrollPane(nodeList), BorderLayout.LINE_START);
+        final JScrollPane nodeListScrollPane = new JScrollPane(nodeList);
+        nodeListScrollPane.setPreferredSize(new Dimension(250, -1));
+        add(nodeListScrollPane, BorderLayout.LINE_START);
 		add(centerPanel, BorderLayout.CENTER);
 
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
@@ -347,6 +348,7 @@ public class NodeManagerPage extends TWizardPage implements ListSelectionListene
 	private void addNode() {
 		Node node = new Node("localhost", 9481, I18n.getMessage("jsite.node-manager.new-node"));
 		nodeListModel.addElement(node);
+        nodeList.setSelectedIndex(nodeListModel.size() - 1);
 		deleteNodeAction.setEnabled(nodeListModel.size() > 1);
 		wizard.setNextEnabled(true);
 		fireNodesUpdated(getNodes());

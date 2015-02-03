@@ -1,5 +1,5 @@
 /*
- * jSite - CLI.java - Copyright © 2006–2012 David Roden
+ * jSite - CLI.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ public class CLI implements InsertListener {
 		freenetInterface.setNode(node);
 
 		projectInserter.setFreenetInterface(freenetInterface);
+        projectInserter.setPriority(configuration.getPriority());
 
 		Project currentProject = null;
 		for (String argument : args) {

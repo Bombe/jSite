@@ -1,5 +1,5 @@
 /*
- * jSite - FileOption.java - Copyright © 2006–2012 David Roden
+ * jSite - FileOption.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -18,6 +18,11 @@
 
 package de.todesbaum.jsite.application;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
+import com.google.common.base.Optional;
+
 /**
  * Container for various file options.
  *
@@ -33,9 +38,6 @@ public class FileOption {
 
 	/** The default for the custom key. */
 	private static final String DEFAULT_CUSTOM_KEY = "CHK@";
-
-	/** The default changed name. */
-	private static final String DEFAULT_CHANGED_NAME = null;
 
 	/** The insert state. */
 	private boolean insert;
@@ -62,7 +64,7 @@ public class FileOption {
 	private String customKey;
 
 	/** The changed name. */
-	private String changedName;
+	private Optional<String> changedName = absent();
 
 	/** The default MIME type. */
 	private final String defaultMimeType;
@@ -80,7 +82,6 @@ public class FileOption {
 		insert = DEFAULT_INSERT;
 		insertRedirect = DEFAULT_INSERT_REDIRECT;
 		customKey = DEFAULT_CUSTOM_KEY;
-		changedName = DEFAULT_CHANGED_NAME;
 		this.defaultMimeType = defaultMimeType;
 		mimeType = defaultMimeType;
 	}
@@ -278,24 +279,13 @@ public class FileOption {
 	}
 
 	/**
-	 * Returns whether this file has a changed name. Use
-	 * {@link #getChangedName()} is this method returns {@code true}.
-	 *
-	 * @return {@code true} if this file has a changed name, {@code false}
-	 *         otherwise
-	 */
-	public boolean hasChangedName() {
-		return (changedName != null) && (changedName.length() > 0);
-	}
-
-	/**
 	 * Returns the changed name for this file. This method will return {@code
 	 * null} or an empty {@link String} if this file should not be renamed.
 	 *
 	 * @return The changed name, or {@code null} if this file should not be
 	 *         renamed
 	 */
-	public String getChangedName() {
+	public Optional<String> getChangedName() {
 		return changedName;
 	}
 
@@ -307,7 +297,7 @@ public class FileOption {
 	 *            The new changed name for this file
 	 */
 	public void setChangedName(String changedName) {
-		this.changedName = changedName;
+		this.changedName = ((changedName != null) && (changedName.length() > 0)) ? of(changedName) : Optional.<String>absent();
 	}
 
 	/**
@@ -349,7 +339,7 @@ public class FileOption {
 		if (!customKey.equals(DEFAULT_CUSTOM_KEY)) {
 			return true;
 		}
-		if (((changedName != null) && !changedName.equals(DEFAULT_CHANGED_NAME)) || ((DEFAULT_CHANGED_NAME != null) && !DEFAULT_CHANGED_NAME.equals(changedName))) {
+		if (changedName.isPresent()) {
 			return true;
 		}
 		if (!defaultMimeType.equals(mimeType)) {

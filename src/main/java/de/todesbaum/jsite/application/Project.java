@@ -1,5 +1,5 @@
 /*
- * jSite - Project.java - Copyright © 2006–2012 David Roden
+ * jSite - Project.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -460,7 +460,7 @@ public class Project implements Comparable<Project> {
 			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash()) || fileOption.isForceInsert())) {
 				fileOption.setLastInsertEdition(edition);
 				fileOption.setLastInsertHash(fileOption.getCurrentHash());
-				fileOption.setLastInsertFilename(fileOption.hasChangedName() ? fileOption.getChangedName() : fileOptionEntry.getKey());
+				fileOption.setLastInsertFilename(fileOption.getChangedName().or(fileOptionEntry.getKey()));
 			}
 			fileOption.setForceInsert(false);
 		}

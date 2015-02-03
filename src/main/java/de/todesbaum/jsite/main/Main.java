@@ -1,5 +1,5 @@
 /*
- * jSite - Main.java - Copyright © 2006–2012 David Roden
+ * jSite - Main.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 11, 1);
+	private static final Version VERSION = new Version(0, 12);
 
 	/** The configuration. */
 	private Configuration configuration;
@@ -122,7 +122,13 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	}
 
 	/** The supported locales. */
-	private static final Locale[] SUPPORTED_LOCALES = new Locale[] { Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, new Locale("pl") };
+	private static final Locale[] SUPPORTED_LOCALES = new Locale[] {
+			Locale.ENGLISH,
+			Locale.GERMAN,
+			Locale.FRENCH,
+			new Locale("pl"),
+			new Locale("fi")
+	};
 
 	/** The actions that switch the language. */
 	private Map<Locale, Action> languageActions = new HashMap<Locale, Action>();
@@ -195,7 +201,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		updateChecker.start();
 
 		webOfTrustInterface = new WebOfTrustInterface(freenetInterface);
-		webOfTrustInterface.start();
 
 		initPages();
 		showPage(PageType.PAGE_PROJECTS);
@@ -506,7 +511,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	private void quit() {
 		updateChecker.stop();
-		webOfTrustInterface.stop();
 		System.exit(0);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * jSite - ProjectFilesPage.java - Copyright © 2006–2012 David Roden
+ * jSite - ProjectFilesPage.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -628,9 +628,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsInsertRedirectCheckBox.setSelected(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setEnabled(fileOption.isInsertRedirect());
 			fileOptionsCustomKeyTextField.setText(fileOption.getCustomKey());
-			fileOptionsRenameCheckBox.setSelected(fileOption.hasChangedName());
-			fileOptionsRenameTextField.setEnabled(fileOption.hasChangedName());
-			fileOptionsRenameTextField.setText(fileOption.getChangedName());
+			fileOptionsRenameCheckBox.setSelected(fileOption.getChangedName().isPresent());
+			fileOptionsRenameTextField.setEnabled(fileOption.getChangedName().isPresent());
+			fileOptionsRenameTextField.setText(fileOption.getChangedName().or(""));
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
 		} else {
 			defaultFileCheckBox.setSelected(false);

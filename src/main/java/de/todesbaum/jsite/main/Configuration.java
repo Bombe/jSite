@@ -1,5 +1,5 @@
 /*
- * jSite - Configuration.java - Copyright © 2006–2012 David Roden
+ * jSite - Configuration.java - Copyright © 2006–2014 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -430,7 +430,7 @@ public class Configuration {
 					fileOptionNode.append("insert", String.valueOf(fileOption.isInsert()));
 					fileOptionNode.append("insert-redirect", String.valueOf(fileOption.isInsertRedirect()));
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
-					fileOptionNode.append("changed-name", fileOption.getChangedName());
+					fileOptionNode.append("changed-name", fileOption.getChangedName().orNull());
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
 				}
 			}
