@@ -4,7 +4,7 @@
 	<artifactId>jSite</artifactId>
 	<version>${version}</version>
 	<properties>
-		<version>0.11.1</version>
+		<version>0.12</version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
