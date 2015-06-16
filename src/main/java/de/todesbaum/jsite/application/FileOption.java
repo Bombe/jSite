@@ -86,6 +86,20 @@ public class FileOption {
 		mimeType = defaultMimeType;
 	}
 
+	public FileOption(FileOption other) {
+		this.insert = other.insert;
+		this.forceInsert = other.forceInsert;
+		this.insertRedirect = other.insertRedirect;
+		this.lastInsertHash = other.lastInsertHash;
+		this.lastInsertEdition = other.lastInsertEdition;
+		this.lastInsertFilename = other.lastInsertFilename;
+		this.currentHash = other.currentHash;
+		this.customKey = other.customKey;
+		this.changedName = other.changedName;
+		this.defaultMimeType = other.defaultMimeType;
+		this.mimeType = other.mimeType;
+	}
+
 	/**
 	 * Returns the custom key. The custom key is only used when
 	 * {@link #isInsert()} and {@link #isInsertRedirect()} both return {@code

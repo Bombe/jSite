@@ -94,7 +94,9 @@ public class Project implements Comparable<Project> {
 		lastInsertionTime = project.lastInsertionTime;
 		alwaysForceInserts = project.alwaysForceInserts;
 		ignoreHiddenFiles = project.ignoreHiddenFiles;
-		fileOptions = new HashMap<String, FileOption>(project.fileOptions);
+		for (Entry<String, FileOption> fileOption : fileOptions.entrySet()) {
+			fileOptions.put(fileOption.getKey(), new FileOption(fileOption.getValue()));
+		}
 	}
 
 	/**
