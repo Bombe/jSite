@@ -40,7 +40,6 @@ import javax.swing.JTextField;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
-import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -111,9 +110,6 @@ public class PreferencesPage extends TWizardPage {
 
 	/** The insert priority select box. */
 	private JComboBox insertPriorityComboBox;
-
-	/** The manifest putter select box. */
-	private JComboBox manifestPutterComboBox;
 
 	/**
 	 * Creates a new “preferences” page.
@@ -263,25 +259,6 @@ public class PreferencesPage extends TWizardPage {
 	 */
 	public void setPriority(PriorityClass priority) {
 		insertPriorityComboBox.setSelectedItem(priority);
-	}
-
-	/**
-	 * Returns the selected manifest putter.
-	 *
-	 * @return The selected manifest putter
-	 */
-	public ManifestPutter getManifestPutter() {
-		return (ManifestPutter) manifestPutterComboBox.getSelectedItem();
-	}
-
-	/**
-	 * Sets the manifest putter.
-	 *
-	 * @param manifestPutter
-	 *            The manifest putter
-	 */
-	public void setManifestPutter(ManifestPutter manifestPutter) {
-		manifestPutterComboBox.setSelectedItem(manifestPutter);
 	}
 
 	/**
@@ -466,12 +443,6 @@ public class PreferencesPage extends TWizardPage {
 		insertPriorityComboBox.setAction(priorityAction);
 		preferencesPanel.add(insertPriorityComboBox, new GridBagConstraints(1, 9, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 18, 0, 0), 0, 0));
 
-		final JLabel manifestPutterLabel = new JLabel(I18n.getMessage("jsite.preferences.insert-options.manifest-putter"));
-		preferencesPanel.add(manifestPutterLabel, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
-
-		manifestPutterComboBox = new JComboBox(ManifestPutter.values());
-		preferencesPanel.add(manifestPutterComboBox, new GridBagConstraints(1, 10, 2, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 18, 0, 0), 0, 0));
-
 		I18nContainer.getInstance().registerRunnable(new Runnable() {
 
 			/**
@@ -483,7 +454,6 @@ public class PreferencesPage extends TWizardPage {
 				configurationDirectoryLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.config-directory") + "</b></html>");
 				insertOptionsLabel.setText("<html><b>" + I18n.getMessage("jsite.preferences.insert-options") + "</b></html>");
 				insertPriorityLabel.setText(I18n.getMessage("jsite.preferences.insert-options.priority"));
-				manifestPutterLabel.setText(I18n.getMessage("jsite.preferences.insert-options.manifest-putter"));
 			}
 		});
 

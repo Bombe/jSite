@@ -55,7 +55,6 @@ import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
-import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
@@ -340,17 +339,6 @@ public class ProjectInsertPage extends TWizardPage implements InsertListener, Cl
 	 */
 	public void setPriority(PriorityClass priority) {
 		projectInserter.setPriority(priority);
-	}
-
-	/**
-	 * Sets the manifest putter to use for the insert.
-	 *
-	 * @see ProjectInserter#setManifestPutter(ManifestPutter)
-	 * @param manifestPutter
-	 *            The manifest putter
-	 */
-	public void setManifestPutter(ManifestPutter manifestPutter) {
-		projectInserter.setManifestPutter(manifestPutter);
 	}
 
 	//

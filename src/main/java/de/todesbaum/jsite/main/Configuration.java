@@ -43,7 +43,6 @@ import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
-import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
 
 /**
@@ -620,27 +619,6 @@ public class Configuration {
 	 */
 	public Configuration setPriority(PriorityClass priority) {
 		rootNode.replace("insert-priority", priority.toString());
-		return this;
-	}
-
-	/**
-	 * Returns the manifest putter.
-	 *
-	 * @return The manifest putter
-	 */
-	public ManifestPutter getManifestPutter() {
-		return ManifestPutter.valueOf(getNodeValue(new String[] { "manifest-putter" }, "simple").toUpperCase());
-	}
-
-	/**
-	 * Sets the manifest putter.
-	 *
-	 * @param manifestPutter
-	 *            The manifest putter
-	 * @return This configuration
-	 */
-	public Configuration setManifestPutter(ManifestPutter manifestPutter) {
-		rootNode.replace("manifest-putter", manifestPutter.name().toLowerCase());
 		return this;
 	}
 
