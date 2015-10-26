@@ -126,6 +126,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Locale.ENGLISH,
 			Locale.GERMAN,
 			Locale.FRENCH,
+			Locale.ITALIAN,
 			new Locale("pl"),
 			new Locale("fi")
 	};
