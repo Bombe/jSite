@@ -44,6 +44,7 @@ import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
+import org.w3c.dom.Document;
 
 /**
  * The configuration.
@@ -128,7 +129,10 @@ public class Configuration {
 					StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
 					fileByteOutputStream.close();
 					byte[] fileBytes = fileByteOutputStream.toByteArray();
-					rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
+					Document document = XML.transformToDocument(fileBytes);
+					if (document != null) {
+						rootNode = SimpleXML.fromDocument(document);
+					}
 					return;
 				} catch (FileNotFoundException e) {
 					/* ignore. */
