@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,7 +66,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private static final int random = (int) (Math.random() * Integer.MAX_VALUE);
 
 	/** Counter for FCP connection identifier. */
-	private static int counter = 0;
+	private static final AtomicInteger counter = new AtomicInteger();
 
 	private final ProjectInsertListeners projectInsertListeners = new ProjectInsertListeners();
 
@@ -328,7 +329,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* create connection to node */
 		synchronized (lockObject) {
-			connection = freenetInterface.getConnection("project-insert-" + random + counter++);
+			connection = freenetInterface.getConnection("project-insert-" + random + counter.getAndIncrement());
 		}
 		connection.setTempDirectory(tempDirectory);
 		boolean connected = false;
@@ -349,7 +350,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/* collect files */
 		int edition = project.getEdition();
 		String dirURI = "USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
-		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI, tempDirectory);
+		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter.getAndIncrement(), dirURI, tempDirectory);
 		if ((project.getIndexFile() != null) && (project.getIndexFile().length() > 0)) {
 			FileOption indexFileOption = project.getFileOption(project.getIndexFile());
 			Optional<String> changedName = indexFileOption.getChangedName();
