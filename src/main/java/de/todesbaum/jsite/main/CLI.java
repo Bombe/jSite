@@ -272,6 +272,9 @@ public class CLI implements InsertListener {
 	 */
 	@Override
 	public void projectInsertProgress(Project project, int succeeded, int failed, int fatal, int total, boolean finalized) {
+		if (total == 0) {
+			return;
+		}
 		outputWriter.println("Progress: " + succeeded + " done, " + failed + " failed, " + fatal + " fatal, " + total + " total" + (finalized ? " (finalized)" : "") + ", " + ((succeeded + failed + fatal) * 100 / total) + "%");
 	}
 
