@@ -445,7 +445,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				scanningFilesDialog.setVisible(false);
 			}
 		}, 2000);
-		new Thread(fileScanner).start();
+		fileScanner.startInBackground();
 		new Thread(delayedNotification).start();
 		new Thread(new Runnable() {
 

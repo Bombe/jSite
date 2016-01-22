@@ -173,7 +173,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		this.progressListener = progressListener;
 		fileScanner = new FileScanner(project);
 		fileScanner.addFileScannerListener(this);
-		new Thread(fileScanner).start();
+		fileScanner.startInBackground();
 	}
 
 	/**
@@ -297,7 +297,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				completionLatch.countDown();
 			}
 		});
-		new Thread(fileScanner).start();
+		fileScanner.startInBackground();
 		while (completionLatch.getCount() > 0) {
 			try {
 				completionLatch.await();

@@ -115,6 +115,10 @@ public class FileScanner implements Runnable {
 		return lastFilename;
 	}
 
+	public void startInBackground() {
+		new Thread(this).start();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
