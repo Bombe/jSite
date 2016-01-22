@@ -29,6 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +53,7 @@ public class FileScanner implements Runnable {
 	private final static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
 	/** The list of listeners. */
-	private final List<FileScannerListener> fileScannerListeners = new ArrayList<FileScannerListener>();
+	private final FileScannerListener fileScannerListener;
 
 	/** The project to scan. */
 	private final Project project;
@@ -72,37 +73,9 @@ public class FileScanner implements Runnable {
 	 * @param project
 	 *            The project whose files to scan
 	 */
-	public FileScanner(Project project) {
+	public FileScanner(Project project, FileScannerListener fileScannerListener) {
 		this.project = project;
-	}
-
-	/**
-	 * Adds the given listener to the list of listeners.
-	 *
-	 * @param fileScannerListener
-	 *            The listener to add
-	 */
-	public void addFileScannerListener(FileScannerListener fileScannerListener) {
-		fileScannerListeners.add(fileScannerListener);
-	}
-
-	/**
-	 * Removes the given listener from the list of listeners.
-	 *
-	 * @param fileScannerListener
-	 *            The listener to remove
-	 */
-	public void removeFileScannerListener(FileScannerListener fileScannerListener) {
-		fileScannerListeners.remove(fileScannerListener);
-	}
-
-	/**
-	 * Notifies all listeners that the file scan finished.
-	 */
-	protected void fireFileScannerFinished() {
-		for (FileScannerListener fileScannerListener : new ArrayList<FileScannerListener>(fileScannerListeners)) {
-			fileScannerListener.fileScannerFinished(this);
-		}
+		this.fileScannerListener = Objects.requireNonNull(fileScannerListener);
 	}
 
 	/**
@@ -138,7 +111,7 @@ public class FileScanner implements Runnable {
 		} catch (IOException ioe1) {
 			error = true;
 		}
-		fireFileScannerFinished();
+		fileScannerListener.fileScannerFinished(this);
 	}
 
 	/**

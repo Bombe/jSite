@@ -182,8 +182,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	@Override
 	public void pageAdded(TWizard wizard) {
 		/* create file scanner. */
-		fileScanner = new FileScanner(project);
-		fileScanner.addFileScannerListener(this);
+		fileScanner = new FileScanner(project, this);
 
 		actionScan();
 		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));

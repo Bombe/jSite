@@ -171,8 +171,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	public void start(ProgressListener progressListener) {
 		cancelled = false;
 		this.progressListener = progressListener;
-		fileScanner = new FileScanner(project);
-		fileScanner.addFileScannerListener(this);
+		fileScanner = new FileScanner(project, this);
 		fileScanner.startInBackground();
 	}
 
@@ -288,9 +287,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			}
 		}
 		long totalSize = 0;
-		FileScanner fileScanner = new FileScanner(project);
 		final CountDownLatch completionLatch = new CountDownLatch(1);
-		fileScanner.addFileScannerListener(new FileScannerListener() {
+		FileScanner fileScanner = new FileScanner(project, new FileScannerListener() {
 
 			@Override
 			public void fileScannerFinished(FileScanner fileScanner) {
@@ -440,7 +438,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		} else {
 			projectInsertListeners.fireProjectInsertFinished(project, false, null);
 		}
-		fileScanner.removeFileScannerListener(this);
 	}
 
 	/**
