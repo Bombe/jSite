@@ -433,7 +433,7 @@ public class Configuration {
 					fileOptionNode.append("insert", String.valueOf(fileOption.isInsert()));
 					fileOptionNode.append("insert-redirect", String.valueOf(fileOption.isInsertRedirect()));
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
-					fileOptionNode.append("changed-name", fileOption.getChangedName().orNull());
+					fileOptionNode.append("changed-name", fileOption.getChangedName().orElse(null));
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
 				}
 			}

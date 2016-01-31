@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,7 +39,6 @@ import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 
-import com.google.common.base.Optional;
 import de.todesbaum.jsite.gui.FileScanner;
 import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
@@ -195,7 +195,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * 		The name and hash of the file to insert
 	 * @return A file entry for the given file
 	 */
-	private FileEntry createFileEntry(ScannedFile file) {
+	private Optional<FileEntry> createFileEntry(ScannedFile file) {
 		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (fileOption.isInsert()) {
@@ -204,25 +204,25 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!project.isAlwaysForceInsert() && !fileOption.isForceInsert() && file.getHash().equals(fileOption.getLastInsertHash())) {
 				/* only insert a redirect. */
 				logger.log(Level.FINE, String.format("Inserting redirect to edition %d for %s.", fileOption.getLastInsertEdition(), filename));
-				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename());
+				return Optional.of(new RedirectFileEntry(fileOption.getChangedName().orElse(filename), fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename()));
 			}
 			try {
-				return createFileEntry(filename, fileOption.getChangedName(), fileOption.getMimeType());
+				return Optional.of(createFileEntry(filename, fileOption.getChangedName(), fileOption.getMimeType()));
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
 			if (fileOption.isInsertRedirect()) {
-				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), fileOption.getCustomKey());
+				return Optional.of(new RedirectFileEntry(fileOption.getChangedName().orElse(filename), fileOption.getMimeType(), fileOption.getCustomKey()));
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private FileEntry createFileEntry(String filename, Optional<String> changedName, String mimeType) throws FileNotFoundException {
 		File physicalFile = new File(project.getLocalPath(), filename);
 		InputStream fileEntryInputStream = new FileInputStream(physicalFile);
-		return new DirectFileEntry(changedName.or(filename), mimeType, fileEntryInputStream, physicalFile.length());
+		return new DirectFileEntry(changedName.orElse(filename), mimeType, fileEntryInputStream, physicalFile.length());
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				logger.log(Level.FINEST, "Ignoring {0}.", fileOptionEntry.getKey());
 				continue;
 			}
-			String fileName = fileOption.getChangedName().or(fileOptionEntry.getKey());
+			String fileName = fileOption.getChangedName().orElse(fileOptionEntry.getKey());
 			logger.log(Level.FINEST, "Adding “{0}” for {1}.", new Object[] { fileName, fileOptionEntry.getKey() });
 			if (!fileNames.add(fileName)) {
 				checkReport.addIssue("error.duplicate-file", true, fileName);
@@ -363,10 +363,10 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setEarlyEncode(useEarlyEncode);
 		putDir.setPriorityClass(priority);
 		for (ScannedFile file : files) {
-			FileEntry fileEntry = createFileEntry(file);
-			if (fileEntry != null) {
+			Optional<FileEntry> fileEntry = createFileEntry(file);
+			if (fileEntry.isPresent()) {
 				try {
-					putDir.addFileEntry(fileEntry);
+					putDir.addFileEntry(fileEntry.get());
 				} catch (IOException ioe1) {
 					projectInsertListeners.fireProjectInsertFinished(project, false, ioe1);
 					return;

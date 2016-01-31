@@ -18,10 +18,9 @@
 
 package de.todesbaum.jsite.application;
 
-import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.of;
+import static java.util.Optional.empty;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Container for various file options.
@@ -64,7 +63,7 @@ public class FileOption {
 	private String customKey;
 
 	/** The changed name. */
-	private Optional<String> changedName = absent();
+	private Optional<String> changedName = empty();
 
 	/** The default MIME type. */
 	private final String defaultMimeType;
@@ -311,7 +310,7 @@ public class FileOption {
 	 *            The new changed name for this file
 	 */
 	public void setChangedName(String changedName) {
-		this.changedName = ((changedName != null) && (changedName.length() > 0)) ? of(changedName) : Optional.<String>absent();
+		this.changedName = ((changedName != null) && (changedName.length() > 0)) ? Optional.of(changedName) : Optional.<String>empty();
 	}
 
 	/**
