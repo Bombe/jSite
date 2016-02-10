@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
 import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 
 import de.todesbaum.jsite.gui.FileScanner;
-import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
+import de.todesbaum.jsite.gui.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientPutComplexDir;
@@ -288,13 +289,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		}
 		long totalSize = 0;
 		final CountDownLatch completionLatch = new CountDownLatch(1);
-		FileScanner fileScanner = new FileScanner(project, new FileScannerListener() {
-
-			@Override
-			public void fileScannerFinished(FileScanner fileScanner) {
-				completionLatch.countDown();
-			}
-		});
+		FileScanner fileScanner = new FileScanner(project, (error, files) -> completionLatch.countDown());
 		fileScanner.startInBackground();
 		while (completionLatch.getCount() > 0) {
 			try {
@@ -432,8 +427,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void fileScannerFinished(FileScanner fileScanner) {
-		if (!fileScanner.isError()) {
+	public void fileScannerFinished(boolean error, Collection<ScannedFile> files) {
+		if (!error) {
 			new Thread(this).start();
 		} else {
 			projectInsertListeners.fireProjectInsertFinished(project, false, null);

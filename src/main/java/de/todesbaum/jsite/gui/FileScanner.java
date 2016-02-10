@@ -44,7 +44,7 @@ import de.todesbaum.jsite.i18n.I18n;
  * files as an event.
  *
  * @see Project#getLocalPath()
- * @see FileScannerListener#fileScannerFinished(FileScanner)
+ * @see FileScannerListener#fileScannerFinished(boolean, java.util.Collection)
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class FileScanner implements Runnable {
@@ -98,7 +98,7 @@ public class FileScanner implements Runnable {
 	 * Scans all available files in the project’s local path and emits an event
 	 * when finished.
 	 *
-	 * @see FileScannerListener#fileScannerFinished(FileScanner)
+	 * @see FileScannerListener#fileScannerFinished(boolean, java.util.Collection)
 	 */
 	@Override
 	public void run() {
@@ -111,7 +111,7 @@ public class FileScanner implements Runnable {
 		} catch (IOException ioe1) {
 			error = true;
 		}
-		fileScannerListener.fileScannerFinished(this);
+		fileScannerListener.fileScannerFinished(error, files);
 	}
 
 	/**
@@ -209,97 +209,6 @@ public class FileScanner implements Runnable {
 			hexString.append("0123456789abcdef".charAt((b >>> 4) & 0x0f)).append("0123456789abcdef".charAt(b & 0xf));
 		}
 		return hexString.toString();
-	}
-
-	/**
-	 * Container for a scanned file, consisting of the name of the file and its
-	 * hash.
-	 *
-	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
-	 */
-	public static class ScannedFile implements Comparable<ScannedFile> {
-
-		/** The name of the file. */
-		private final String filename;
-
-		/** The hash of the file. */
-		private final String hash;
-
-		/**
-		 * Creates a new scanned file.
-		 *
-		 * @param filename
-		 *            The name of the file
-		 * @param hash
-		 *            The hash of the file
-		 */
-		public ScannedFile(String filename, String hash) {
-			this.filename = filename;
-			this.hash = hash;
-		}
-
-		//
-		// ACCESSORS
-		//
-
-		/**
-		 * Returns the name of the file.
-		 *
-		 * @return The name of the file
-		 */
-		public String getFilename() {
-			return filename;
-		}
-
-		/**
-		 * Returns the hash of the file.
-		 *
-		 * @return The hash of the file
-		 */
-		public String getHash() {
-			return hash;
-		}
-
-		//
-		// OBJECT METHODS
-		//
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int hashCode() {
-			return filename.hashCode();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			return filename.equals(obj);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String toString() {
-			return filename;
-		}
-
-		//
-		// COMPARABLE METHODS
-		//
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compareTo(ScannedFile scannedFile) {
-			return filename.compareTo(scannedFile.filename);
-		}
-
 	}
 
 }

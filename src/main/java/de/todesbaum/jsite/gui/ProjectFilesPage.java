@@ -29,9 +29,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -65,7 +65,6 @@ import net.pterodactylus.util.swing.SwingUtils;
 import net.pterodactylus.util.thread.StoppableDelay;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
-import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TLabel;
@@ -469,11 +468,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 * Updates the file list.
 	 */
 	@Override
-	public void fileScannerFinished(FileScanner fileScanner) {
+	public void fileScannerFinished(boolean error, Collection<ScannedFile> files) {
 		delayedNotification.finish();
-		final boolean error = fileScanner.isError();
 		if (!error) {
-			final List<ScannedFile> files = fileScanner.getFiles();
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
