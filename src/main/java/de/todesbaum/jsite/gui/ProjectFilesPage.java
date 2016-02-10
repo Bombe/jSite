@@ -336,7 +336,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		scanningFilesDialog.getContentPane().add(progressPanel, BorderLayout.CENTER);
 		progressPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-		final TLabel scanningLabel = new TLabel(I18n.getMessage("jsite.project-files.scanning"), SwingConstants.CENTER);
+		final JLabel scanningLabel = new JLabel(I18n.getMessage("jsite.project-files.scanning"), SwingConstants.CENTER);
 		progressPanel.add(scanningLabel, BorderLayout.NORTH);
 		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
 		progressPanel.add(progressBar, BorderLayout.SOUTH);

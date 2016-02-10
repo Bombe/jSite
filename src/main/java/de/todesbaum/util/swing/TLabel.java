@@ -29,65 +29,11 @@ import javax.swing.JLabel;
  */
 public class TLabel extends JLabel {
 
-	public TLabel() {
-		super();
-	}
-
-	public TLabel(int mnemonic, Component labelFor) {
-		super();
-		setDisplayedMnemonic(mnemonic);
-		setLabelFor(labelFor);
-	}
-
-	public TLabel(Icon image) {
-		super(image);
-	}
-
-	public TLabel(Icon image, int mnemonic, Component labelFor) {
-		super(image);
-		setDisplayedMnemonic(mnemonic);
-		setLabelFor(labelFor);
-	}
-
-	public TLabel(Icon image, int horizontalAlignment) {
-		super(image);
-	}
-
-	public TLabel(Icon image, int horizontalAlignment, int mnemonic, Component labelFor) {
-		super(image);
-		setDisplayedMnemonic(mnemonic);
-		setLabelFor(labelFor);
-	}
-
-	public TLabel(String text) {
-		super(text);
-	}
-
 	public TLabel(String text, int mnemonic, Component labelFor) {
 		super(text);
 		setDisplayedMnemonic(mnemonic);
 		setLabelFor(labelFor);
 		setAlignmentX(0.0f);
-	}
-
-	public TLabel(String text, Icon icon, int horizontalAlignment) {
-		super(text, icon, horizontalAlignment);
-	}
-
-	public TLabel(String text, Icon icon, int horizontalAlignment, int mnemonic, Component labelFor) {
-		super(text, icon, horizontalAlignment);
-		setDisplayedMnemonic(mnemonic);
-		setLabelFor(labelFor);
-	}
-
-	public TLabel(String text, int horizontalAlignment) {
-		super(text, horizontalAlignment);
-	}
-
-	public TLabel(String text, int horizontalAlignment, int mnemonic, Component labelFor) {
-		super(text, horizontalAlignment);
-		setDisplayedMnemonic(mnemonic);
-		setLabelFor(labelFor);
 	}
 
 }
