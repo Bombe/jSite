@@ -196,7 +196,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		jSiteIcon = IconLoader.loadIcon("/jsite-icon.png");
 		wizard.setIcon(jSiteIcon);
 
-		updateChecker = new UpdateChecker(freenetInterface);
+		updateChecker = new UpdateChecker(freenetInterface, getVersion());
 		updateChecker.addUpdateListener(this);
 		updateChecker.start();
 
