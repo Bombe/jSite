@@ -46,31 +46,6 @@ public class Freenet7Interface {
 	private Connection connection;
 
 	/**
-	 * Sets the hostname of the node. The default port for FCP2 connections ({@link Node#DEFAULT_PORT})
-	 * is used.
-	 *
-	 * @param hostname
-	 *            The hostname of the node
-	 */
-	public void setNodeAddress(String hostname) {
-		node = new Node(hostname);
-		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
-	}
-
-	/**
-	 * Sets the hostname and the port of the node.
-	 *
-	 * @param hostname
-	 *            The hostname of the node
-	 * @param port
-	 *            The port number of the node
-	 */
-	public void setNodeAddress(String hostname, int port) {
-		node = new Node(hostname, port);
-		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
-	}
-
-	/**
 	 * Sets hostname and port from the given node.
 	 *
 	 * @param node
@@ -84,14 +59,6 @@ public class Freenet7Interface {
 			this.node = null;
 			connection = null;
 		}
-	}
-
-	/**
-	 * Removes the current node from the interface.
-	 */
-	public void removeNode() {
-		node = null;
-		connection = null;
 	}
 
 	/**
