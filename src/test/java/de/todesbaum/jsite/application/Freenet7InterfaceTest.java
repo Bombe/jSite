@@ -23,7 +23,6 @@ import de.todesbaum.util.freenet.fcp2.Message;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mockito;
 
 /**
  * Unit test for {@link Freenet7Interface}.
@@ -49,6 +48,42 @@ public class Freenet7InterfaceTest {
 	@Test
 	public void defaultConstructorCanBeCalled() {
 		new Freenet7Interface();
+	}
+
+	@Test
+	public void defaultConstructorCreatesDefaultNode() {
+	    Freenet7Interface freenet7Interface = new Freenet7Interface();
+		freenet7Interface.setNode(new Node("foo", 12345));
+		de.todesbaum.util.freenet.fcp2.Node node = freenet7Interface.getNode();
+		assertThat(node.getHostname(), is("foo"));
+		assertThat(node.getPort(), is(12345));
+	}
+
+	@Test
+	public void withoutSettingANodeThereIsNoNode() {
+	    assertThat(freenet7Interface.hasNode(), is(false));
+	}
+
+	@Test
+	public void afterSettingANodeThereIsANode() {
+		when(nodeSupplier.supply(anyString(), anyInt())).thenReturn(mock(de.todesbaum.util.freenet.fcp2.Node.class));
+		when(connectionSupplier.supply(any(de.todesbaum.util.freenet.fcp2.Node.class), anyString())).thenReturn(mock(Connection.class));
+	    freenet7Interface.setNode(new Node("foo", 12345));
+	    assertThat(freenet7Interface.hasNode(), is(true));
+	}
+
+	@Test
+	public void withoutConnectionThereIsNoNode() {
+		when(nodeSupplier.supply(anyString(), anyInt())).thenReturn(mock(de.todesbaum.util.freenet.fcp2.Node.class));
+	    freenet7Interface.setNode(new Node("foo", 12345));
+	    assertThat(freenet7Interface.hasNode(), is(false));
+	}
+
+	@Test
+	public void defaultConstructorCreatesDefaultConnection() {
+		Freenet7Interface freenet7Interface = new Freenet7Interface();
+		Connection connection = freenet7Interface.getConnection("foo");
+		assertThat(connection.getName(), is("foo"));
 	}
 
 	@Test
