@@ -184,7 +184,7 @@ public class Freenet7InterfaceTest {
 		message.put("RequestURI", REQUEST_URI);
 		Client client = mock(Client.class);
 		when(client.readMessage()).thenReturn(message);
-		when(clientSupplier.supply(eq(connection), Mockito.any(GenerateSSK.class))).thenReturn(client);
+		when(clientSupplier.supply(eq(connection), any(GenerateSSK.class))).thenReturn(client);
 		String[] keyPair = freenet7Interface.generateKeyPair();
 		assertThat(keyPair[0], is(INSERT_URI));
 		assertThat(keyPair[1], is(REQUEST_URI));
