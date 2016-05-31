@@ -19,8 +19,10 @@
 package de.todesbaum.jsite.application;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -94,7 +96,9 @@ public class Project implements Comparable<Project> {
 		lastInsertionTime = project.lastInsertionTime;
 		alwaysForceInserts = project.alwaysForceInserts;
 		ignoreHiddenFiles = project.ignoreHiddenFiles;
-		fileOptions = new HashMap<String, FileOption>(project.fileOptions);
+		for (Entry<String, FileOption> fileOption : fileOptions.entrySet()) {
+			fileOptions.put(fileOption.getKey(), new FileOption(fileOption.getValue()));
+		}
 	}
 
 	/**
@@ -363,11 +367,31 @@ public class Project implements Comparable<Project> {
 	 */
 	public FileOption getFileOption(String filename) {
 		FileOption fileOption = fileOptions.get(filename);
+		String defaultMimeType = "application/octet-stream";
 		if (fileOption == null) {
-			fileOption = new FileOption(MimeTypes.getMimeType(filename.substring(filename.lastIndexOf('.') + 1)));
-			fileOptions.put(filename, fileOption);
+			List<String> suffixes = getSuffixes(filename);
+			for (String suffix : suffixes) {
+				String mimeType = MimeTypes.getMimeType(suffix);
+				if (!mimeType.equals(defaultMimeType)) {
+					defaultMimeType = mimeType;
+					break;
+				}
+			}
+			fileOption = new FileOption(defaultMimeType);
 		}
+		fileOptions.put(filename, fileOption);
 		return fileOption;
+	}
+
+	private List<String> getSuffixes(String filename) {
+		List<String> suffixes = new ArrayList<>();
+		int dot = filename.lastIndexOf(".");
+		while (dot > -1) {
+			String suffix = filename.substring(dot + 1);
+			suffixes.add(0, suffix);
+			dot = filename.lastIndexOf(".", dot - 1);
+		}
+		return suffixes;
 	}
 
 	/**
@@ -460,7 +484,7 @@ public class Project implements Comparable<Project> {
 			if ((fileOption.getCurrentHash() != null) && (fileOption.getCurrentHash().length() > 0) && (!fileOption.getCurrentHash().equals(fileOption.getLastInsertHash()) || fileOption.isForceInsert())) {
 				fileOption.setLastInsertEdition(edition);
 				fileOption.setLastInsertHash(fileOption.getCurrentHash());
-				fileOption.setLastInsertFilename(fileOption.getChangedName().or(fileOptionEntry.getKey()));
+				fileOption.setLastInsertFilename(fileOption.getChangedName().orElse(fileOptionEntry.getKey()));
 			}
 			fileOption.setForceInsert(false);
 		}

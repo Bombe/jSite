@@ -43,8 +43,8 @@ import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
-import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.PriorityClass;
+import org.w3c.dom.Document;
 
 /**
  * The configuration.
@@ -129,7 +129,10 @@ public class Configuration {
 					StreamCopier.copy(fileInputStream, fileByteOutputStream, configurationFile.length());
 					fileByteOutputStream.close();
 					byte[] fileBytes = fileByteOutputStream.toByteArray();
-					rootNode = SimpleXML.fromDocument(XML.transformToDocument(fileBytes));
+					Document document = XML.transformToDocument(fileBytes);
+					if (document != null) {
+						rootNode = SimpleXML.fromDocument(document);
+					}
 					return;
 				} catch (FileNotFoundException e) {
 					/* ignore. */
@@ -430,7 +433,7 @@ public class Configuration {
 					fileOptionNode.append("insert", String.valueOf(fileOption.isInsert()));
 					fileOptionNode.append("insert-redirect", String.valueOf(fileOption.isInsertRedirect()));
 					fileOptionNode.append("custom-key", fileOption.getCustomKey());
-					fileOptionNode.append("changed-name", fileOption.getChangedName().orNull());
+					fileOptionNode.append("changed-name", fileOption.getChangedName().orElse(null));
 					fileOptionNode.append("mime-type", fileOption.getMimeType());
 				}
 			}
@@ -620,27 +623,6 @@ public class Configuration {
 	 */
 	public Configuration setPriority(PriorityClass priority) {
 		rootNode.replace("insert-priority", priority.toString());
-		return this;
-	}
-
-	/**
-	 * Returns the manifest putter.
-	 *
-	 * @return The manifest putter
-	 */
-	public ManifestPutter getManifestPutter() {
-		return ManifestPutter.valueOf(getNodeValue(new String[] { "manifest-putter" }, "simple").toUpperCase());
-	}
-
-	/**
-	 * Sets the manifest putter.
-	 *
-	 * @param manifestPutter
-	 *            The manifest putter
-	 * @return This configuration
-	 */
-	public Configuration setManifestPutter(ManifestPutter manifestPutter) {
-		rootNode.replace("manifest-putter", manifestPutter.name().toLowerCase());
 		return this;
 	}
 

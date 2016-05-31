@@ -348,7 +348,9 @@ public class KeyDialog extends JDialog {
 		final JLabel projectLabel = new JLabel(I18n.getMessage("jsite.key-dialog.label.project"));
 		contentPanel.add(projectLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(12, 18, 0, 0), 0, 0));
 
-		projectsComboBox = new JComboBox(new ComboBoxModelList<Project>(projects));
+		synchronized (projects) {
+			projectsComboBox = new JComboBox(new ComboBoxModelList<Project>(projects));
+		}
 		projectsComboBox.addActionListener(new ActionListener() {
 
 			@Override

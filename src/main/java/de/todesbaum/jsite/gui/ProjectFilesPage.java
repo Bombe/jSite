@@ -29,9 +29,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -65,7 +65,6 @@ import net.pterodactylus.util.swing.SwingUtils;
 import net.pterodactylus.util.thread.StoppableDelay;
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
-import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.util.swing.TLabel;
@@ -182,8 +181,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	@Override
 	public void pageAdded(TWizard wizard) {
 		/* create file scanner. */
-		fileScanner = new FileScanner(project);
-		fileScanner.addFileScannerListener(this);
+		fileScanner = new FileScanner(project, this);
 
 		actionScan();
 		this.wizard.setPreviousName(I18n.getMessage("jsite.wizard.previous"));
@@ -338,7 +336,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		scanningFilesDialog.getContentPane().add(progressPanel, BorderLayout.CENTER);
 		progressPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
-		final TLabel scanningLabel = new TLabel(I18n.getMessage("jsite.project-files.scanning"), SwingConstants.CENTER);
+		final JLabel scanningLabel = new JLabel(I18n.getMessage("jsite.project-files.scanning"), SwingConstants.CENTER);
 		progressPanel.add(scanningLabel, BorderLayout.NORTH);
 		progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
 		progressPanel.add(progressBar, BorderLayout.SOUTH);
@@ -445,7 +443,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 				scanningFilesDialog.setVisible(false);
 			}
 		}, 2000);
-		new Thread(fileScanner).start();
+		fileScanner.startInBackground();
 		new Thread(delayedNotification).start();
 		new Thread(new Runnable() {
 
@@ -470,11 +468,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	 * Updates the file list.
 	 */
 	@Override
-	public void fileScannerFinished(FileScanner fileScanner) {
+	public void fileScannerFinished(boolean error, Collection<ScannedFile> files) {
 		delayedNotification.finish();
-		final boolean error = fileScanner.isError();
 		if (!error) {
-			final List<ScannedFile> files = fileScanner.getFiles();
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
@@ -630,7 +626,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 			fileOptionsCustomKeyTextField.setText(fileOption.getCustomKey());
 			fileOptionsRenameCheckBox.setSelected(fileOption.getChangedName().isPresent());
 			fileOptionsRenameTextField.setEnabled(fileOption.getChangedName().isPresent());
-			fileOptionsRenameTextField.setText(fileOption.getChangedName().or(""));
+			fileOptionsRenameTextField.setText(fileOption.getChangedName().orElse(""));
 			fileOptionsMIMETypeComboBox.getModel().setSelectedItem(fileOption.getMimeType());
 		} else {
 			defaultFileCheckBox.setSelected(false);

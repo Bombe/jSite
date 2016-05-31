@@ -21,6 +21,7 @@ package de.todesbaum.jsite.application;
 import java.io.IOException;
 
 import de.todesbaum.util.freenet.fcp2.Client;
+import de.todesbaum.util.freenet.fcp2.Command;
 import de.todesbaum.util.freenet.fcp2.Connection;
 import de.todesbaum.util.freenet.fcp2.GenerateSSK;
 import de.todesbaum.util.freenet.fcp2.Message;
@@ -39,35 +40,24 @@ public class Freenet7Interface {
 	/** Counter. */
 	private static int counter = 0;
 
+	private final NodeSupplier nodeSupplier;
+	private final ConnectionSupplier connectionSupplier;
+	private final ClientSupplier clientSupplier;
+
 	/** The node to connect to. */
 	private Node node;
 
 	/** The connection to the node. */
 	private Connection connection;
 
-	/**
-	 * Sets the hostname of the node. The default port for FCP2 connections ({@link Node#DEFAULT_PORT})
-	 * is used.
-	 *
-	 * @param hostname
-	 *            The hostname of the node
-	 */
-	public void setNodeAddress(String hostname) {
-		node = new Node(hostname);
-		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
+	public Freenet7Interface() {
+		this(new DefaultNodeSupplier(), new DefaultConnectionSupplier(), new DefaultClientSupplier());
 	}
 
-	/**
-	 * Sets the hostname and the port of the node.
-	 *
-	 * @param hostname
-	 *            The hostname of the node
-	 * @param port
-	 *            The port number of the node
-	 */
-	public void setNodeAddress(String hostname, int port) {
-		node = new Node(hostname, port);
-		connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
+	Freenet7Interface(NodeSupplier nodeSupplier, ConnectionSupplier connectionSupplier, ClientSupplier clientSupplier) {
+		this.nodeSupplier = nodeSupplier;
+		this.connectionSupplier = connectionSupplier;
+		this.clientSupplier = clientSupplier;
 	}
 
 	/**
@@ -78,20 +68,12 @@ public class Freenet7Interface {
 	 */
 	public void setNode(de.todesbaum.jsite.application.Node node) {
 		if (node != null) {
-			this.node = new Node(node.getHostname(), node.getPort());
-			connection = new Connection(node, "jSite-" + number + "-connection-" + counter++);
+			this.node = nodeSupplier.supply(node.getHostname(), node.getPort());
+			connection = connectionSupplier.supply(node, "jSite-" + number + "-connection-" + counter++);
 		} else {
 			this.node = null;
 			connection = null;
 		}
-	}
-
-	/**
-	 * Removes the current node from the interface.
-	 */
-	public void removeNode() {
-		node = null;
-		connection = null;
 	}
 
 	/**
@@ -111,7 +93,7 @@ public class Freenet7Interface {
 	 * @return The connection to the node
 	 */
 	public Connection getConnection(String identifier) {
-		return new Connection(node, identifier);
+		return connectionSupplier.supply(node, identifier);
 	}
 
 	/**
@@ -144,7 +126,7 @@ public class Freenet7Interface {
 			throw new IOException("Node is offline.");
 		}
 		GenerateSSK generateSSK = new GenerateSSK();
-		Client client = new Client(connection, generateSSK);
+		Client client = clientSupplier.supply(connection, generateSSK);
 		Message keypairMessage = client.readMessage();
 		return new String[] { keypairMessage.get("InsertURI"), keypairMessage.get("RequestURI") };
 	}
@@ -157,6 +139,51 @@ public class Freenet7Interface {
 	 */
 	public boolean hasNode() {
 		return (node != null) && (connection != null);
+	}
+
+	public interface NodeSupplier {
+
+		Node supply(String hostname, int port);
+
+	}
+
+	public static class DefaultNodeSupplier implements NodeSupplier {
+
+		@Override
+		public Node supply(String hostname, int port) {
+			return new Node(hostname, port);
+		}
+
+	}
+
+	public interface ConnectionSupplier {
+
+		Connection supply(Node node, String identifier);
+
+	}
+
+	public static class DefaultConnectionSupplier implements ConnectionSupplier {
+
+		@Override
+		public Connection supply(Node node, String identifier) {
+			return new Connection(node, identifier);
+		}
+
+	}
+
+	public interface ClientSupplier {
+
+		Client supply(Connection connection, Command command) throws IOException;
+
+	}
+
+	public static class DefaultClientSupplier implements ClientSupplier {
+
+		@Override
+		public Client supply(Connection connection, Command command) throws IOException {
+			return new Client(connection, command);
+		}
+
 	}
 
 }

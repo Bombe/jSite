@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.Closer;
-import de.todesbaum.jsite.main.Main;
 import de.todesbaum.jsite.main.Version;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientGet;
@@ -51,7 +50,7 @@ public class UpdateChecker implements Runnable {
 	private static int counter = 0;
 
 	/** The edition for the update check URL. */
-	private static final int UPDATE_EDITION = 7;
+	private static final int UPDATE_EDITION = 11;
 
 	/** The URL for update checks. */
 	private static final String UPDATE_KEY = "USK@1waTsw46L9-JEQ8yX1khjkfHcn--g0MlMsTlYHax9zQ,oYyxr5jyFnaTsVGDQWk9e3ddOWGKnqEASxAk08MHT2Y,AQACAAE";
@@ -69,7 +68,7 @@ public class UpdateChecker implements Runnable {
 	private int lastUpdateEdition = UPDATE_EDITION;
 
 	/** Last found version. */
-	private Version lastVersion = Main.getVersion();
+	private Version lastVersion;
 
 	/** The freenet interface. */
 	private final Freenet7Interface freenetInterface;
@@ -81,8 +80,9 @@ public class UpdateChecker implements Runnable {
 	 * @param freenetInterface
 	 *            The freenet interface
 	 */
-	public UpdateChecker(Freenet7Interface freenetInterface) {
+	public UpdateChecker(Freenet7Interface freenetInterface, Version currentVersion) {
 		this.freenetInterface = freenetInterface;
+		this.lastVersion = currentVersion;
 	}
 
 	//

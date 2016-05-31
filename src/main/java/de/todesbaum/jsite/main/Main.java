@@ -80,7 +80,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 12);
+	private static final Version VERSION = new Version(0, 13);
 
 	/** The configuration. */
 	private Configuration configuration;
@@ -126,6 +126,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Locale.ENGLISH,
 			Locale.GERMAN,
 			Locale.FRENCH,
+			Locale.ITALIAN,
 			new Locale("pl"),
 			new Locale("fi")
 	};
@@ -196,7 +197,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		jSiteIcon = IconLoader.loadIcon("/jsite-icon.png");
 		wizard.setIcon(jSiteIcon);
 
-		updateChecker = new UpdateChecker(freenetInterface);
+		updateChecker = new UpdateChecker(freenetInterface, getVersion());
 		updateChecker.addUpdateListener(this);
 		updateChecker.start();
 
@@ -483,7 +484,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setHasCustomConfiguration(configuration.getConfigurationLocator().isValidLocation(ConfigurationLocation.CUSTOM));
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setUseEarlyEncode(configuration.useEarlyEncode());
 		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setPriority(configuration.getPriority());
-		((PreferencesPage) pages.get(PageType.PAGE_PREFERENCES)).setManifestPutter(configuration.getManifestPutter());
 		showPage(PageType.PAGE_PREFERENCES);
 		optionsPreferencesAction.setEnabled(false);
 		wizard.setNextEnabled(true);
@@ -588,7 +588,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			projectInsertPage.setTempDirectory(tempDirectory);
 			projectInsertPage.setUseEarlyEncode(configuration.useEarlyEncode());
 			projectInsertPage.setPriority(configuration.getPriority());
-			projectInsertPage.setManifestPutter(configuration.getManifestPutter());
 			projectInsertPage.startInsert();
 			nodeMenu.setEnabled(false);
 			optionsPreferencesAction.setEnabled(false);
@@ -607,7 +606,6 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			optionsPreferencesAction.setEnabled(true);
 			configuration.setUseEarlyEncode(preferencesPage.useEarlyEncode());
 			configuration.setPriority(preferencesPage.getPriority());
-			configuration.setManifestPutter(preferencesPage.getManifestPutter());
 			configuration.setConfigurationLocation(preferencesPage.getConfigurationLocation());
 		}
 	}

@@ -29,6 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,7 @@ import de.todesbaum.jsite.i18n.I18n;
  * files as an event.
  *
  * @see Project#getLocalPath()
- * @see FileScannerListener#fileScannerFinished(FileScanner)
+ * @see FileScannerListener#fileScannerFinished(boolean, java.util.Collection)
  * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
  */
 public class FileScanner implements Runnable {
@@ -52,7 +53,7 @@ public class FileScanner implements Runnable {
 	private final static Logger logger = Logger.getLogger(FileScanner.class.getName());
 
 	/** The list of listeners. */
-	private final List<FileScannerListener> fileScannerListeners = new ArrayList<FileScannerListener>();
+	private final FileScannerListener fileScannerListener;
 
 	/** The project to scan. */
 	private final Project project;
@@ -72,37 +73,9 @@ public class FileScanner implements Runnable {
 	 * @param project
 	 *            The project whose files to scan
 	 */
-	public FileScanner(Project project) {
+	public FileScanner(Project project, FileScannerListener fileScannerListener) {
 		this.project = project;
-	}
-
-	/**
-	 * Adds the given listener to the list of listeners.
-	 *
-	 * @param fileScannerListener
-	 *            The listener to add
-	 */
-	public void addFileScannerListener(FileScannerListener fileScannerListener) {
-		fileScannerListeners.add(fileScannerListener);
-	}
-
-	/**
-	 * Removes the given listener from the list of listeners.
-	 *
-	 * @param fileScannerListener
-	 *            The listener to remove
-	 */
-	public void removeFileScannerListener(FileScannerListener fileScannerListener) {
-		fileScannerListeners.remove(fileScannerListener);
-	}
-
-	/**
-	 * Notifies all listeners that the file scan finished.
-	 */
-	protected void fireFileScannerFinished() {
-		for (FileScannerListener fileScannerListener : new ArrayList<FileScannerListener>(fileScannerListeners)) {
-			fileScannerListener.fileScannerFinished(this);
-		}
+		this.fileScannerListener = Objects.requireNonNull(fileScannerListener);
 	}
 
 	/**
@@ -115,13 +88,17 @@ public class FileScanner implements Runnable {
 		return lastFilename;
 	}
 
+	public void startInBackground() {
+		new Thread(this).start();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * <p>
 	 * Scans all available files in the project’s local path and emits an event
 	 * when finished.
 	 *
-	 * @see FileScannerListener#fileScannerFinished(FileScanner)
+	 * @see FileScannerListener#fileScannerFinished(boolean, java.util.Collection)
 	 */
 	@Override
 	public void run() {
@@ -134,7 +111,7 @@ public class FileScanner implements Runnable {
 		} catch (IOException ioe1) {
 			error = true;
 		}
-		fireFileScannerFinished();
+		fileScannerListener.fileScannerFinished(error, files);
 	}
 
 	/**
@@ -232,97 +209,6 @@ public class FileScanner implements Runnable {
 			hexString.append("0123456789abcdef".charAt((b >>> 4) & 0x0f)).append("0123456789abcdef".charAt(b & 0xf));
 		}
 		return hexString.toString();
-	}
-
-	/**
-	 * Container for a scanned file, consisting of the name of the file and its
-	 * hash.
-	 *
-	 * @author David ‘Bombe’ Roden &lt;bombe@freenetproject.org&gt;
-	 */
-	public static class ScannedFile implements Comparable<ScannedFile> {
-
-		/** The name of the file. */
-		private final String filename;
-
-		/** The hash of the file. */
-		private final String hash;
-
-		/**
-		 * Creates a new scanned file.
-		 *
-		 * @param filename
-		 *            The name of the file
-		 * @param hash
-		 *            The hash of the file
-		 */
-		public ScannedFile(String filename, String hash) {
-			this.filename = filename;
-			this.hash = hash;
-		}
-
-		//
-		// ACCESSORS
-		//
-
-		/**
-		 * Returns the name of the file.
-		 *
-		 * @return The name of the file
-		 */
-		public String getFilename() {
-			return filename;
-		}
-
-		/**
-		 * Returns the hash of the file.
-		 *
-		 * @return The hash of the file
-		 */
-		public String getHash() {
-			return hash;
-		}
-
-		//
-		// OBJECT METHODS
-		//
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int hashCode() {
-			return filename.hashCode();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			return filename.equals(obj);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String toString() {
-			return filename;
-		}
-
-		//
-		// COMPARABLE METHODS
-		//
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compareTo(ScannedFile scannedFile) {
-			return filename.compareTo(scannedFile.filename);
-		}
-
 	}
 
 }

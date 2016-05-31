@@ -18,6 +18,7 @@
 
 package de.todesbaum.jsite.gui;
 
+import java.util.Collection;
 import java.util.EventListener;
 
 /**
@@ -29,12 +30,6 @@ import java.util.EventListener;
  */
 public interface FileScannerListener extends EventListener {
 
-	/**
-	 * Notifies a listener that scanning a project’s local path has finished.
-	 *
-	 * @param fileScanner
-	 *            The file scanner that finished
-	 */
-	public void fileScannerFinished(FileScanner fileScanner);
+	void fileScannerFinished(boolean error, Collection<ScannedFile> files);
 
 }

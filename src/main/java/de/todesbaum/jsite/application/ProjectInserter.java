@@ -25,25 +25,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.pterodactylus.util.io.StreamCopier.ProgressListener;
 
-import com.google.common.base.Optional;
 import de.todesbaum.jsite.gui.FileScanner;
-import de.todesbaum.jsite.gui.FileScanner.ScannedFile;
+import de.todesbaum.jsite.gui.ScannedFile;
 import de.todesbaum.jsite.gui.FileScannerListener;
 import de.todesbaum.util.freenet.fcp2.Client;
 import de.todesbaum.util.freenet.fcp2.ClientPutComplexDir;
-import de.todesbaum.util.freenet.fcp2.ClientPutDir.ManifestPutter;
 import de.todesbaum.util.freenet.fcp2.Connection;
 import de.todesbaum.util.freenet.fcp2.DirectFileEntry;
 import de.todesbaum.util.freenet.fcp2.FileEntry;
@@ -66,7 +67,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	private static final int random = (int) (Math.random() * Integer.MAX_VALUE);
 
 	/** Counter for FCP connection identifier. */
-	private static int counter = 0;
+	private static final AtomicInteger counter = new AtomicInteger();
 
 	private final ProjectInsertListeners projectInsertListeners = new ProjectInsertListeners();
 
@@ -99,9 +100,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 	/** The insert priority. */
 	private PriorityClass priority;
-
-	/** The manifest putter. */
-	private ManifestPutter manifestPutter;
 
 	/**
 	 * Adds a listener to the list of registered listeners.
@@ -166,16 +164,6 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	}
 
 	/**
-	 * Sets the manifest putter to use for inserts.
-	 *
-	 * @param manifestPutter
-	 *            The manifest putter to use
-	 */
-	public void setManifestPutter(ManifestPutter manifestPutter) {
-		this.manifestPutter = manifestPutter;
-	}
-
-	/**
 	 * Starts the insert.
 	 *
 	 * @param progressListener
@@ -184,9 +172,8 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	public void start(ProgressListener progressListener) {
 		cancelled = false;
 		this.progressListener = progressListener;
-		fileScanner = new FileScanner(project);
-		fileScanner.addFileScannerListener(this);
-		new Thread(fileScanner).start();
+		fileScanner = new FileScanner(project, this);
+		fileScanner.startInBackground();
 	}
 
 	/**
@@ -209,7 +196,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * 		The name and hash of the file to insert
 	 * @return A file entry for the given file
 	 */
-	private FileEntry createFileEntry(ScannedFile file) {
+	private Optional<FileEntry> createFileEntry(ScannedFile file) {
 		String filename = file.getFilename();
 		FileOption fileOption = project.getFileOption(filename);
 		if (fileOption.isInsert()) {
@@ -218,25 +205,25 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 			if (!project.isAlwaysForceInsert() && !fileOption.isForceInsert() && file.getHash().equals(fileOption.getLastInsertHash())) {
 				/* only insert a redirect. */
 				logger.log(Level.FINE, String.format("Inserting redirect to edition %d for %s.", fileOption.getLastInsertEdition(), filename));
-				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename());
+				return Optional.of(new RedirectFileEntry(fileOption.getChangedName().orElse(filename), fileOption.getMimeType(), "SSK@" + project.getRequestURI() + "/" + project.getPath() + "-" + fileOption.getLastInsertEdition() + "/" + fileOption.getLastInsertFilename()));
 			}
 			try {
-				return createFileEntry(filename, fileOption.getChangedName(), fileOption.getMimeType());
+				return Optional.of(createFileEntry(filename, fileOption.getChangedName(), fileOption.getMimeType()));
 			} catch (IOException ioe1) {
 				/* ignore, null is returned. */
 			}
 		} else {
 			if (fileOption.isInsertRedirect()) {
-				return new RedirectFileEntry(fileOption.getChangedName().or(filename), fileOption.getMimeType(), fileOption.getCustomKey());
+				return Optional.of(new RedirectFileEntry(fileOption.getChangedName().orElse(filename), fileOption.getMimeType(), fileOption.getCustomKey()));
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private FileEntry createFileEntry(String filename, Optional<String> changedName, String mimeType) throws FileNotFoundException {
 		File physicalFile = new File(project.getLocalPath(), filename);
 		InputStream fileEntryInputStream = new FileInputStream(physicalFile);
-		return new DirectFileEntry(changedName.or(filename), mimeType, fileEntryInputStream, physicalFile.length());
+		return new DirectFileEntry(changedName.orElse(filename), mimeType, fileEntryInputStream, physicalFile.length());
 	}
 
 	/**
@@ -294,23 +281,16 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 				logger.log(Level.FINEST, "Ignoring {0}.", fileOptionEntry.getKey());
 				continue;
 			}
-			String fileName = fileOption.getChangedName().or(fileOptionEntry.getKey());
+			String fileName = fileOption.getChangedName().orElse(fileOptionEntry.getKey());
 			logger.log(Level.FINEST, "Adding “{0}” for {1}.", new Object[] { fileName, fileOptionEntry.getKey() });
 			if (!fileNames.add(fileName)) {
 				checkReport.addIssue("error.duplicate-file", true, fileName);
 			}
 		}
 		long totalSize = 0;
-		FileScanner fileScanner = new FileScanner(project);
 		final CountDownLatch completionLatch = new CountDownLatch(1);
-		fileScanner.addFileScannerListener(new FileScannerListener() {
-
-			@Override
-			public void fileScannerFinished(FileScanner fileScanner) {
-				completionLatch.countDown();
-			}
-		});
-		new Thread(fileScanner).start();
+		FileScanner fileScanner = new FileScanner(project, (error, files) -> completionLatch.countDown());
+		fileScanner.startInBackground();
 		while (completionLatch.getCount() > 0) {
 			try {
 				completionLatch.await();
@@ -342,7 +322,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 
 		/* create connection to node */
 		synchronized (lockObject) {
-			connection = freenetInterface.getConnection("project-insert-" + random + counter++);
+			connection = freenetInterface.getConnection("project-insert-" + random + counter.getAndIncrement());
 		}
 		connection.setTempDirectory(tempDirectory);
 		boolean connected = false;
@@ -363,7 +343,7 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		/* collect files */
 		int edition = project.getEdition();
 		String dirURI = "USK@" + project.getInsertURI() + "/" + project.getPath() + "/" + edition + "/";
-		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter++, dirURI, tempDirectory);
+		ClientPutComplexDir putDir = new ClientPutComplexDir("dir-" + counter.getAndIncrement(), dirURI, tempDirectory);
 		if ((project.getIndexFile() != null) && (project.getIndexFile().length() > 0)) {
 			FileOption indexFileOption = project.getFileOption(project.getIndexFile());
 			Optional<String> changedName = indexFileOption.getChangedName();
@@ -377,12 +357,11 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 		putDir.setMaxRetries(-1);
 		putDir.setEarlyEncode(useEarlyEncode);
 		putDir.setPriorityClass(priority);
-		putDir.setManifestPutter(manifestPutter);
 		for (ScannedFile file : files) {
-			FileEntry fileEntry = createFileEntry(file);
-			if (fileEntry != null) {
+			Optional<FileEntry> fileEntry = createFileEntry(file);
+			if (fileEntry.isPresent()) {
 				try {
-					putDir.addFileEntry(fileEntry);
+					putDir.addFileEntry(fileEntry.get());
 				} catch (IOException ioe1) {
 					projectInsertListeners.fireProjectInsertFinished(project, false, ioe1);
 					return;
@@ -448,13 +427,12 @@ public class ProjectInserter implements FileScannerListener, Runnable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void fileScannerFinished(FileScanner fileScanner) {
-		if (!fileScanner.isError()) {
+	public void fileScannerFinished(boolean error, Collection<ScannedFile> files) {
+		if (!error) {
 			new Thread(this).start();
 		} else {
 			projectInsertListeners.fireProjectInsertFinished(project, false, null);
 		}
-		fileScanner.removeFileScannerListener(this);
 	}
 
 	/**
