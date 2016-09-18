@@ -47,15 +47,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.pterodactylus.util.image.IconLoader;
+
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
-import de.todesbaum.jsite.application.ProjectInserter;
-import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
-import de.todesbaum.jsite.application.ProjectInserter.Issue;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.application.WebOfTrustInterface;
+import de.todesbaum.jsite.application.validation.CheckReport;
+import de.todesbaum.jsite.application.validation.Issue;
+import de.todesbaum.jsite.application.validation.ProjectValidator;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -561,7 +562,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.error.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			CheckReport checkReport = ProjectInserter.validateProject(project);
+			CheckReport checkReport = ProjectValidator.validateProject(project);
 			for (Issue issue : checkReport) {
 				if (issue.isFatal()) {
 					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite." + issue.getErrorKey()), (Object[]) issue.getParameters()), null, JOptionPane.ERROR_MESSAGE);
