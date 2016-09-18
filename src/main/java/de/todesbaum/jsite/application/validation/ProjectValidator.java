@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
@@ -44,8 +45,7 @@ public class ProjectValidator {
 		}
 		String indexFile = project.getIndexFile();
 		boolean hasIndexFile = (indexFile != null) && (indexFile.length() > 0);
-		List<String> allowedIndexContentTypes = Arrays.asList("text/html", "application/xhtml+xml");
-		if (hasIndexFile && !allowedIndexContentTypes.contains(project.getFileOption(indexFile).getMimeType())) {
+		if (hasIndexFile && indexFileIsNotHtml(project, indexFile)) {
 			checkReport.addIssue("warning.index-not-html", false);
 		}
 		Map<String, FileOption> fileOptions = project.getFileOptions();
@@ -102,6 +102,11 @@ public class ProjectValidator {
 			checkReport.addIssue("warning.site-larger-than-2-mib", false);
 		}
 		return checkReport;
+	}
+
+	private static boolean indexFileIsNotHtml(Project project, String indexFile) {
+		return Stream.of("text/html", "application/xhtml+xml")
+				.noneMatch(mimeType -> project.getFileOption(indexFile).getMimeType().startsWith(mimeType));
 	}
 
 }

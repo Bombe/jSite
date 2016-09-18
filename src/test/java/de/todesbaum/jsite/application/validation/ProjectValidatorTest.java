@@ -99,6 +99,13 @@ public class ProjectValidatorTest {
 	}
 
 	@Test
+	public void usingHtmlMimeTypeWithCharsetForIndexFileDoesNotResultInWarning() {
+		project.getFileOption("index.html").setMimeType("text/html; charset=UTF-8");
+		CheckReport checkReport = validateProject(project);
+		assertThat(checkReport.getIssues(), not(hasItem(new Issue("warning.index-not-html", false))));
+	}
+
+	@Test
 	public void notInsertingTheIndexFileAnyFileResultsInError() {
 		project.getFileOption("index.html").setInsert(false);
 		project.getFileOption("index.html").setInsertRedirect(false);
