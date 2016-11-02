@@ -66,6 +66,7 @@ import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
+import de.todesbaum.jsite.main.JarFileLocator.DefaultJarFileLocator;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 import de.todesbaum.util.swing.WizardListener;
@@ -177,7 +178,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	private Main(String configFilename) {
 		/* collect all possible configuration file locations. */
-		ConfigurationLocator configurationLocator = new ConfigurationLocator();
+		ConfigurationLocator configurationLocator = new ConfigurationLocator(new DefaultJarFileLocator(getClass().getClassLoader()));
 		if (configFilename != null) {
 			configurationLocator.setCustomLocation(configFilename);
 		}
