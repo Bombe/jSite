@@ -5,7 +5,7 @@ THIS FILE SHALL BE REMOVED
 Hi, I'm JlXip, the one who translated the program into Spanish.
 
 I'm writing this txt file for letting you know that the Spanish flag file (flag-es.png) doesn't look the same way as others.
-So, either ignore this, or change the flag for a better one.
+So, either ignore this, or change the flag to a better one.
 
 Greetings, JlXip.
 
