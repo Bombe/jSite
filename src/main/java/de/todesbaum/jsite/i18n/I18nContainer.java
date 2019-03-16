@@ -1,5 +1,5 @@
 /*
- * jSite - I18nContainer.java - Copyright © 2007–2014 David Roden
+ * jSite - I18nContainer.java - Copyright © 2007–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
