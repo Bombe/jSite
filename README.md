@@ -10,7 +10,7 @@ Gradle’s build process is handled by [Gradle](https://gradle.org/). Just use t
 
 This will resolve jSite’s dependencies, compile jSite, run all the tests (of which there are only a few, unfortunately), and put the file `jSite-`*&lt;version&gt;*`-jar-with-dependencies.jar` into the `build/libs` directory. This is the file that you can simply run, either by double-clicking it in a file manager of your choice, or by using the command line:
 
-    # java -jar build/libs/jSite-0.13-jar-with-dependencies.jar
+    # java -jar build/libs/jSite-0.14-jar-with-dependencies.jar
 
 ## Using
 
