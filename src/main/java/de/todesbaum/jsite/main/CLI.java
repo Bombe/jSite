@@ -1,5 +1,5 @@
 /*
- * jSite - CLI.java - Copyright © 2006–2014 David Roden
+ * jSite - CLI.java - Copyright © 2006–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import de.todesbaum.jsite.application.InsertListener;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.application.ProjectInserter;
+import de.todesbaum.jsite.main.JarFileLocator.DefaultJarFileLocator;
 
 /**
  * Command-line interface for jSite.
@@ -89,7 +90,7 @@ public class CLI implements InsertListener {
 			}
 		}
 
-		ConfigurationLocator configurationLocator = new ConfigurationLocator();
+		ConfigurationLocator configurationLocator = new ConfigurationLocator(new DefaultJarFileLocator(getClass().getClassLoader()));
 		if (configFile != null) {
 			configurationLocator.setCustomLocation(configFile);
 		}

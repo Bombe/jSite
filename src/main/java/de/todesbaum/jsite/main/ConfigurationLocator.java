@@ -1,5 +1,5 @@
 /*
- * jSite - ConfigurationLocator.java - Copyright © 2011–2014 David Roden
+ * jSite - ConfigurationLocator.java - Copyright © 2011–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package de.todesbaum.jsite.main;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Locator for configuration files in different places.
@@ -61,13 +62,11 @@ public class ConfigurationLocator {
 	 * list, {@link ConfigurationLocation#CUSTOM} has to be enabled by calling
 	 * {@link #setCustomLocation(String)}.
 	 */
-	public ConfigurationLocator() {
+	public ConfigurationLocator(JarFileLocator jarFileLocator) {
 		/* are we executed from a JAR file? */
-		String resource = getClass().getResource("/" + getClass().getName().replace(".", "/") + ".class").toString();
-		if (resource.startsWith("jar:")) {
-			String jarFileLocation = resource.substring(9, resource.indexOf(".jar!") + 4);
-			String jarFileDirectory = new File(jarFileLocation).getParent();
-			File configurationFile = new File(jarFileDirectory, "jSite.conf");
+		Optional<File> jarFile = jarFileLocator.locateJarFile();
+		if (jarFile.isPresent()) {
+			File configurationFile = new File(jarFile.get().getParent(), "jSite.conf");
 			configurationFiles.put(ConfigurationLocation.NEXT_TO_JAR_FILE, configurationFile.getPath());
 		}
 		File homeDirectoryFile = new File(System.getProperty("user.home"), ".jSite/config7");

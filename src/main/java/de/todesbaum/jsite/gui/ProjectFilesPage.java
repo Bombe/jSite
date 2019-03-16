@@ -1,5 +1,5 @@
 /*
- * jSite - ProjectFilesPage.java - Copyright © 2006–2014 David Roden
+ * jSite - ProjectFilesPage.java - Copyright © 2006–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 
 package de.todesbaum.jsite.gui;
 
+import static java.util.Optional.ofNullable;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -32,8 +34,9 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
-
+import java.util.function.Consumer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -59,10 +62,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 import net.pterodactylus.util.io.MimeTypes;
 import net.pterodactylus.util.swing.SwingUtils;
 import net.pterodactylus.util.thread.StoppableDelay;
+
 import de.todesbaum.jsite.application.FileOption;
 import de.todesbaum.jsite.application.Project;
 import de.todesbaum.jsite.i18n.I18n;
@@ -278,40 +283,7 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 
 		fileOptionsRenameTextField = new JTextField();
 		fileOptionsRenameTextField.setEnabled(false);
-		fileOptionsRenameTextField.getDocument().addDocumentListener(new DocumentListener() {
-
-			@SuppressWarnings("synthetic-access")
-			private void storeText(DocumentEvent documentEvent) {
-				FileOption fileOption = getSelectedFile();
-				if (fileOption == null) {
-					/* no file selected. */
-					return;
-				}
-				Document document = documentEvent.getDocument();
-				int documentLength = document.getLength();
-				try {
-					fileOption.setChangedName(document.getText(0, documentLength).trim());
-				} catch (BadLocationException ble1) {
-					/* ignore, it should never happen. */
-				}
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent documentEvent) {
-				storeText(documentEvent);
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent documentEvent) {
-				storeText(documentEvent);
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent documentEvent) {
-				storeText(documentEvent);
-			}
-
-		});
+		fileOptionsRenameTextField.getDocument().addDocumentListener(new StoreDocument(this::updateChangedName));
 
 		fileOptionsPanel.add(fileOptionsRenameCheckBox, new GridBagConstraints(0, 8, 2, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
 		fileOptionsPanel.add(fileOptionsRenameTextField, new GridBagConstraints(2, 8, 3, 1, 1.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(6, 6, 0, 0), 0, 0));
@@ -322,6 +294,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		fileOptionsMIMETypeComboBox.addActionListener(this);
 		fileOptionsMIMETypeComboBox.setEditable(true);
 		fileOptionsMIMETypeComboBox.setEnabled(false);
+		((JTextComponent) fileOptionsMIMETypeComboBox.getEditor().getEditorComponent())
+				.getDocument()
+				.addDocumentListener(new StoreDocument(this::updateMimeType));
 
 		final TLabel mimeTypeLabel = new TLabel(I18n.getMessage("jsite.project-files.mime-type") + ":", KeyEvent.VK_M, fileOptionsMIMETypeComboBox);
 		fileOptionsPanel.add(mimeTypeLabel, new GridBagConstraints(0, 9, 1, 1, 0.0, 0.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(6, 18, 0, 0), 0, 0));
@@ -515,19 +490,9 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		});
 	}
 
-	/**
-	 * Returns the {@link FileOption file options} for the currently selected
-	 * file.
-	 *
-	 * @return The {@link FileOption}s for the selected file, or {@code null} if
-	 *         no file is selected
-	 */
-	private FileOption getSelectedFile() {
-		ScannedFile scannedFile = (ScannedFile) projectFileList.getSelectedValue();
-		if (scannedFile == null) {
-			return null;
-		}
-		return project.getFileOption(scannedFile.getFilename());
+	private Optional<FileOption> getSelectedFile() {
+		return ofNullable(((ScannedFile) projectFileList.getSelectedValue()))
+				.map(scannedFile -> project.getFileOption(scannedFile.getFilename()));
 	}
 
 	//
@@ -592,9 +557,17 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 		} else if (source instanceof JComboBox) {
 			JComboBox comboBox = (JComboBox) source;
 			if ("project-files.mime-type".equals(comboBox.getName())) {
-				fileOption.setMimeType((String) comboBox.getSelectedItem());
+				updateMimeType((String) comboBox.getSelectedItem());
 			}
 		}
+	}
+
+	private void updateMimeType(String mimeType) {
+		getSelectedFile().ifPresent(fileOption -> fileOption.setMimeType(mimeType));
+	}
+
+	private void updateChangedName(String changedName) {
+		getSelectedFile().ifPresent(fileOption -> fileOption.setChangedName(changedName));
 	}
 
 	//
@@ -693,6 +666,39 @@ public class ProjectFilesPage extends TWizardPage implements ActionListener, Lis
 	@Override
 	public void removeUpdate(DocumentEvent documentEvent) {
 		processDocumentUpdate(documentEvent);
+	}
+
+	private static class StoreDocument implements DocumentListener {
+
+		private final Consumer<String> consumer;
+
+		public StoreDocument(Consumer<String> consumer) {
+			this.consumer = consumer;
+		}
+
+		private void storeDocument(DocumentEvent e) {
+			try {
+				consumer.accept(e.getDocument().getText(0, e.getDocument().getLength()));
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			storeDocument(e);
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			storeDocument(e);
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			storeDocument(e);
+		}
+
 	}
 
 }

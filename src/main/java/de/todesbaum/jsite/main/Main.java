@@ -1,5 +1,5 @@
 /*
- * jSite - Main.java - Copyright © 2006–2014 David Roden
+ * jSite - Main.java - Copyright © 2006–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,15 +47,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.pterodactylus.util.image.IconLoader;
+
 import de.todesbaum.jsite.application.Freenet7Interface;
 import de.todesbaum.jsite.application.Node;
 import de.todesbaum.jsite.application.Project;
-import de.todesbaum.jsite.application.ProjectInserter;
-import de.todesbaum.jsite.application.ProjectInserter.CheckReport;
-import de.todesbaum.jsite.application.ProjectInserter.Issue;
 import de.todesbaum.jsite.application.UpdateChecker;
 import de.todesbaum.jsite.application.UpdateListener;
 import de.todesbaum.jsite.application.WebOfTrustInterface;
+import de.todesbaum.jsite.application.validation.CheckReport;
+import de.todesbaum.jsite.application.validation.Issue;
+import de.todesbaum.jsite.application.validation.ProjectValidator;
 import de.todesbaum.jsite.gui.NodeManagerListener;
 import de.todesbaum.jsite.gui.NodeManagerPage;
 import de.todesbaum.jsite.gui.PreferencesPage;
@@ -65,6 +66,7 @@ import de.todesbaum.jsite.gui.ProjectPage;
 import de.todesbaum.jsite.i18n.I18n;
 import de.todesbaum.jsite.i18n.I18nContainer;
 import de.todesbaum.jsite.main.ConfigurationLocator.ConfigurationLocation;
+import de.todesbaum.jsite.main.JarFileLocator.DefaultJarFileLocator;
 import de.todesbaum.util.swing.TWizard;
 import de.todesbaum.util.swing.TWizardPage;
 import de.todesbaum.util.swing.WizardListener;
@@ -80,7 +82,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 13);
+	private static final Version VERSION = new Version(0, 14);
 
 	/** The configuration. */
 	private Configuration configuration;
@@ -127,6 +129,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 			Locale.GERMAN,
 			Locale.FRENCH,
 			Locale.ITALIAN,
+			new Locale("es"),
 			new Locale("pl"),
 			new Locale("fi")
 	};
@@ -176,7 +179,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	 */
 	private Main(String configFilename) {
 		/* collect all possible configuration file locations. */
-		ConfigurationLocator configurationLocator = new ConfigurationLocator();
+		ConfigurationLocator configurationLocator = new ConfigurationLocator(new DefaultJarFileLocator(getClass().getClassLoader()));
 		if (configFilename != null) {
 			configurationLocator.setCustomLocation(configFilename);
 		}
@@ -561,7 +564,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 				JOptionPane.showMessageDialog(wizard, I18n.getMessage("jsite.error.no-node-selected"), null, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			CheckReport checkReport = ProjectInserter.validateProject(project);
+			CheckReport checkReport = ProjectValidator.validateProject(project);
 			for (Issue issue : checkReport) {
 				if (issue.isFatal()) {
 					JOptionPane.showMessageDialog(wizard, MessageFormat.format(I18n.getMessage("jsite." + issue.getErrorKey()), (Object[]) issue.getParameters()), null, JOptionPane.ERROR_MESSAGE);
