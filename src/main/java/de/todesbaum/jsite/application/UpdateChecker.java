@@ -50,7 +50,7 @@ public class UpdateChecker implements Runnable {
 	private static int counter = 0;
 
 	/** The edition for the update check URL. */
-	private static final int UPDATE_EDITION = 11;
+	private static final int UPDATE_EDITION = 12;
 
 	/** The URL for update checks. */
 	private static final String UPDATE_KEY = "USK@1waTsw46L9-JEQ8yX1khjkfHcn--g0MlMsTlYHax9zQ,oYyxr5jyFnaTsVGDQWk9e3ddOWGKnqEASxAk08MHT2Y,AQACAAE";
