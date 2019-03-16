@@ -1,5 +1,5 @@
 /*
- * jSite - Main.java - Copyright © 2006–2014 David Roden
+ * jSite - Main.java - Copyright © 2006–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ public class Main implements ActionListener, ListSelectionListener, WizardListen
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
 
 	/** The version. */
-	private static final Version VERSION = new Version(0, 13);
+	private static final Version VERSION = new Version(0, 14);
 
 	/** The configuration. */
 	private Configuration configuration;

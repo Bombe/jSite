@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 group = 'net.pterodactylus'
-version = '0.13'
+version = '0.14'
 
 repositories {
      maven { url "http://maven.pterodactylus.net/" }

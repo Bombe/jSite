@@ -1,5 +1,5 @@
 /*
- * jSite - UpdateChecker.java - Copyright © 2008–2014 David Roden
+ * jSite - UpdateChecker.java - Copyright © 2008–2019 David Roden
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class UpdateChecker implements Runnable {
 	private static int counter = 0;
 
 	/** The edition for the update check URL. */
-	private static final int UPDATE_EDITION = 11;
+	private static final int UPDATE_EDITION = 12;
 
 	/** The URL for update checks. */
 	private static final String UPDATE_KEY = "USK@1waTsw46L9-JEQ8yX1khjkfHcn--g0MlMsTlYHax9zQ,oYyxr5jyFnaTsVGDQWk9e3ddOWGKnqEASxAk08MHT2Y,AQACAAE";
