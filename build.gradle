@@ -4,8 +4,8 @@ group = 'net.pterodactylus'
 version = '0.14'
 
 repositories {
-     maven { url "http://maven.pterodactylus.net/" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url "https://maven.pterodactylus.net/" }
+     maven { url "https://repo.maven.apache.org/maven2" }
 }
 
 dependencies {
