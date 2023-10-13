@@ -2,10 +2,10 @@ package de.todesbaum.jsite.application;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -106,7 +106,7 @@ public class Freenet7InterfaceTest {
 	@Test
 	public void newConnectionCanBeCreated() {
 		Connection connection = mock(Connection.class);
-		when(connectionSupplier.supply(any(Node.class), eq(IDENTIFIER))).thenReturn(connection);
+		when(connectionSupplier.supply(any(), eq(IDENTIFIER))).thenReturn(connection);
 		Connection returnedConnection = freenet7Interface.getConnection(IDENTIFIER);
 		assertThat(returnedConnection, is(connection));
 	}
@@ -119,8 +119,8 @@ public class Freenet7InterfaceTest {
 	@Test
 	public void interfaceHasNodeOnceANodeWasSet() {
 		Connection connection = mock(Connection.class);
-		when(nodeSupplier.supply(anyString(), anyInt())).thenReturn(mock(Node.class));
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(nodeSupplier.supply(any(), anyInt())).thenReturn(mock(Node.class));
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		assertThat(freenet7Interface.hasNode(), is(true));
 	}
@@ -128,8 +128,8 @@ public class Freenet7InterfaceTest {
 	@Test
 	public void interfaceHasNoNodeIfNodeIsSetToNull() {
 		Connection connection = mock(Connection.class);
-		when(nodeSupplier.supply(anyString(), anyInt())).thenReturn(mock(Node.class));
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(nodeSupplier.supply(any(), anyInt())).thenReturn(mock(Node.class));
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		freenet7Interface.setNode(null);
 		assertThat(freenet7Interface.hasNode(), is(false));
@@ -140,7 +140,7 @@ public class Freenet7InterfaceTest {
 	public void nodeIsPresentIfConnectionIsConnected() throws IOException {
 		Connection connection = mock(Connection.class);
 		when(connection.isConnected()).thenReturn(true);
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		assertThat(freenet7Interface.isNodePresent(), is(true));
 	}
@@ -149,7 +149,7 @@ public class Freenet7InterfaceTest {
 	public void nodeIsPresentIfConnectionCanBeCreated() throws IOException {
 		Connection connection = mock(Connection.class);
 		when(connection.connect()).thenReturn(true);
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		assertThat(freenet7Interface.isNodePresent(), is(true));
 	}
@@ -158,7 +158,7 @@ public class Freenet7InterfaceTest {
 	public void exceptionIsThrownIfNodeIsNotPresentAndConnectionCanNotBeCreated() throws IOException {
 		Connection connection = mock(Connection.class);
 		doThrow(IOException.class).when(connection).connect();
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		expectedException.expect(IOException.class);
 		freenet7Interface.isNodePresent();
@@ -167,7 +167,7 @@ public class Freenet7InterfaceTest {
 	@Test
 	public void keyPairIsNotGeneratedIfNodeIsNotPresent() throws IOException {
 		Connection connection = mock(Connection.class);
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		expectedException.expect(IOException.class);
 		freenet7Interface.generateKeyPair();
@@ -177,7 +177,7 @@ public class Freenet7InterfaceTest {
 	public void keyPairIsGeneratedSuccessfully() throws IOException {
 		Connection connection = mock(Connection.class);
 		when(connection.isConnected()).thenReturn(true);
-		when(connectionSupplier.supply(any(Node.class), anyString())).thenReturn(connection);
+		when(connectionSupplier.supply(any(), anyString())).thenReturn(connection);
 		freenet7Interface.setNode(mock(Node.class));
 		Message message = new Message("SSKKeyPair");
 		message.put("InsertURI", INSERT_URI);
