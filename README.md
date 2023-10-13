@@ -4,7 +4,7 @@ jSite is a tool that uploads websites from a local directory into Freenet.
 
 ## Compiling
 
-Gradle’s build process is handled by [Gradle](https://gradle.org/). Just use the Gradle wrapper that comes with jSite:
+jSite’s build process is handled by [Gradle](https://gradle.org/). Just use the Gradle wrapper that comes with jSite:
 
     # ./gradlew clean build fatJar
 
